@@ -1,0 +1,26 @@
+.layout {
+  display: grid;
+  grid-template-columns:
+    [page-start] minmax(5rem, 1fr) [layout-start] repeat(
+      12,
+                    [col-start] minmax(min-content, 12rem) [col-end]
+    )
+    [layout-end] minmax(5rem, 1fr) [page-end];
+  grid-template-rows: [navigation-start topbar-start] 8.5rem 
+  [topbar-end nav-start] 6.5rem 
+  [navigation-end nav-end content-start] 1fr [content-end];
+
+  height: 100vh;
+
+  &__inner {
+    grid-column: page-start / page-end;
+    grid-row: content-start / content-end;
+
+    display: grid;
+    grid-template-columns: subgrid;
+    row-gap: 20rem;
+
+
+    overflow-y: scroll;
+  }
+}
