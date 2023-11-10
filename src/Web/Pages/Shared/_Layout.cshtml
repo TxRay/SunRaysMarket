@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="shortcut icon" type="image/png" href="~/img/favicon.png"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800"/>
+    <link rel="stylesheet" href="~/css/dev/main.css"/>
+    @await RenderSectionAsync("StyleSheets", required: false)
+    <title>Sun Rays Market | @ViewData["Title"]</title>
+</head>
+<body>
+
+<div class="layout">
+    <div class="navigation">
+        <div class="topbar">
+            <div class="topbar__content">
+                <a href="#" class="topbar__brand">
+                    <img src="img/logo.png" alt="Sun Rays Market Logo"/>
+                </a>
+                
+                <form action="" class="search">
+                    <input
+                        type="text"
+                        class="search__input"
+                        placeholder="Search for products"/>
+                    <button class="search__button">
+                        <svg class="search__icon">
+                            <use xlink:href="img/icons/solid.svg#magnifying-glass"></use>
+                        </svg>
+                    </button>
+                </form>
+                <nav class="topbar__nav">
+                    <a href="#" class="store">
+                        <svg class="store__icon">
+                            <use xlink:href="img/icons/solid.svg#store"></use>
+                        </svg>
+                        <h6 class="store__heading">
+                            Your Store
+                        </h6>
+                        <span class="store__location">North McAllen</span>
+                        <svg class="store__chevron">
+                            <use xlink:href="~/img/icons/solid.svg#chevron-down"></use>
+                        </svg>
+                    </a>
+                    <a href="#" class="cart">
+                        <svg class="cart__icon">
+                            <use xlink:href="img/icons/solid.svg#cart-shopping"></use>
+                        </svg>
+                        <span class="cart__count">4</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+        <nav class="nav">
+            <div class="nav__content">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="#" class="nav__link">Home</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#" class="nav__link">Bakery</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#" class="nav__link">Dairy & Eggs</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#" class="nav__link">Produce</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#" class="nav__link">Meat</a>
+                    </li>
+                </ul>
+                <div class="nav__account">
+                    <a href="" class="nav__account-link">
+                        <svg class="nav__account-icon">
+                            <use xlink:href="img/icons/solid.svg#user-plus"></use>
+                        </svg>
+                        <span>Sign Up</span>
+                    </a>
+
+                    <a href="" class="nav__account-link">
+                        <svg class="nav__account-icon">
+                            <use xlink:href="img/icons/solid.svg#right-to-bracket"></use>
+                        </svg>
+                        <span>Login</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="layout__inner">
+        @RenderBody()
+    </div>
+</div>
+
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
