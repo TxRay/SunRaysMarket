@@ -1,0 +1,72 @@
+@page
+@model Web.Pages.Admin.Products.Add
+
+@{
+    ViewData["Title"] = "Add Product";
+    ViewData["LayoutClasses"] = "admin-page";
+    ViewData["ShowFooter"] = false;
+}
+
+<div class="layout layout__full admin-header">
+    <h1 class="admin-header__heading">Add Product</h1>
+</div>
+
+<form class="form--admin">
+    <div class="form__admin-group">
+        <div>
+            <input type="text" class="form__input" placeholder="Enter product name" id="name">
+            <label for="name" class="form__label form__label--input">Name</label>
+
+        </div>
+        <div>
+            <input type="text" class="form__input" placeholder="Enter product description" id="description">
+            <label for="description" class="form__label form__label--input">Description</label>
+
+        </div>
+        <div>
+            <input type="text" class="form__input" placeholder="Enter photo url" id="photoUrl">
+            <label for="photoUrl" class="form__label form__label--input">Photo Url</label>
+        </div>
+        <div>
+            <input type="text" class="form__input" placeholder="Price = $0.00" id="price">
+            <label for="price" class="form__label form__label--input">Price</label>
+        </div>
+        <div>
+            <input type="text" class="form__input" placeholder="Discount = 0%" id="discount">
+            <label for="discount" class="form__label form__label--input">Discount</label>
+        </div>
+    </div>
+
+    <div class="form__admin-group">
+        <div>
+            <select class="form__select" id="unitOfMeasurement">
+                <option>Pounds (lb)</option>
+                <option>Each (ea)</option>
+                <option>Dozen (dz)</option>
+                <option>Fluid Ounces (fl oz)</option>
+                <option>Quart (qt)</option>
+                <option>Gallon (gal)</option>
+            </select>
+            <label for="unitOfMeasurement" class="form__label">Unit of Measure</label>
+
+        </div>
+        <div>
+            <select class="form__select" id="department">
+                <option>Pounds (lb)</option>
+                <option>Each (ea)</option>
+                <option>Dozen (dz)</option>
+                <option>Fluid Ounces (fl oz)</option>
+                <option>Quart (qt)</option>
+                <option>Gallon (gal)</option>
+            </select>
+            <label for="department" class="form__label">Department</label>
+
+        </div>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn--primary">
+            Submit
+        </button>
+    </div>
+</form>
