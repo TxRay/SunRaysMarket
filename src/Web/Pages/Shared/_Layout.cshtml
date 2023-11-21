@@ -11,12 +11,11 @@
 </head>
 <body>
 
-<div class="layout">
-    <div class="navigation">
+<div class="layout layout--application">
         <div class="topbar">
             <div class="topbar__content">
                 <a href="#" class="topbar__brand">
-                    <img src="img/logo.png" alt="Sun Rays Market Logo"/>
+                    <img src="~/img/logo.png" alt="Sun Rays Market Logo"/>
                 </a>
                 
                 <form action="" class="search">
@@ -26,14 +25,14 @@
                         placeholder="Search for products"/>
                     <button class="search__button">
                         <svg class="search__icon">
-                            <use xlink:href="img/icons/solid.svg#magnifying-glass"></use>
+                            <use xlink:href="~/img/icons/solid.svg#magnifying-glass"></use>
                         </svg>
                     </button>
                 </form>
                 <nav class="topbar__nav">
                     <a href="#" class="store">
                         <svg class="store__icon">
-                            <use xlink:href="img/icons/solid.svg#store"></use>
+                            <use xlink:href="~/img/icons/solid.svg#store"></use>
                         </svg>
                         <h6 class="store__heading">
                             Your Store
@@ -45,7 +44,7 @@
                     </a>
                     <a href="#" class="cart">
                         <svg class="cart__icon">
-                            <use xlink:href="img/icons/solid.svg#cart-shopping"></use>
+                            <use xlink:href="~/img/icons/solid.svg#cart-shopping"></use>
                         </svg>
                         <span class="cart__count">4</span>
                     </a>
@@ -74,23 +73,29 @@
                 <div class="nav__account">
                     <a href="" class="nav__account-link">
                         <svg class="nav__account-icon">
-                            <use xlink:href="img/icons/solid.svg#user-plus"></use>
+                            <use xlink:href="~/img/icons/solid.svg#user-plus"></use>
                         </svg>
                         <span>Sign Up</span>
                     </a>
 
                     <a href="" class="nav__account-link">
                         <svg class="nav__account-icon">
-                            <use xlink:href="img/icons/solid.svg#right-to-bracket"></use>
+                            <use xlink:href="~/img/icons/solid.svg#right-to-bracket"></use>
                         </svg>
                         <span>Login</span>
                     </a>
                 </div>
             </div>
         </nav>
-    </div>
-    <div class="layout__inner">
+    <div class="layout layout--page @ViewData["LayoutClasses"]">
         @RenderBody()
+        
+        @if ((bool)(ViewData["ShowFooter"] ?? true))
+        {
+            <footer class="footer">
+                
+            </footer>
+        }
     </div>
 </div>
 
