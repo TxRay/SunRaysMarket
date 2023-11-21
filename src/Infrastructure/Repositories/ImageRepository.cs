@@ -1,3 +1,4 @@
+using Application.DomainModels;
 using Application.Repositories;
 using Infrastructure.Data;
 using Infrastructure.Data.PersistenceModels;
@@ -41,8 +42,19 @@ internal class ImageRepository : IImageRepository
             .Select(i => i.Url)
             .FirstOrDefaultAsync();
 
-    public Task<byte[]> DownloadAsync(string url)
+    public async Task<ImageDownloadModel?> DownloadAsync(string urlHandle)
     {
-        throw new NotImplementedException();
+        var handleSplit = urlHandle.Split(".");
+        var urlIdentifier = Guid.Parse(handleSplit[0]);
+        
+        return await _dbContext.Images
+            .Where(i => i.UrlIdentifier == urlIdentifier)
+            .Select(i => new ImageDownloadModel
+            {
+                ContentType = i.ContentType,
+                Data = i.Data
+            })
+            .FirstOrDefaultAsync();
+
     }
 }
