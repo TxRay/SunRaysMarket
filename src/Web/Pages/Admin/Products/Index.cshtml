@@ -1,78 +1,44 @@
 @page
+@using Application.Utilities
 @model Web.Pages.Admin.Products.Index
 
 @{
     ViewData["Title"] = "Products Admin Page";
-    ViewData["LayoutClasses"] = "admin-page";
-    ViewData["ShowFooter"] = false;
 }
-
-<div class="layout layout__full admin-header">
-    <h1 class="admin-header__heading">Products Admin Page</h1>
-</div>
 
 <div class="layout__content">
     <a href="/Admin/Products/Add" class="btn btn--primary">
         Add Product
-    </a> 
+    </a>
 </div>
 
 <div class="layout__content">
     <table class="table">
         <thead>
         <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Price</th>
-        <th>Department</th>
-        <th>Actions</th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Regular Price</th>
+            <th>Sale Price</th>
+            <th>Department</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>1</td>
-            <td>Product 1</td>
-            <td>Product 1 Description</td>
-            <td>$2.87 / lb</td>
-            <td>Produce</td>
-            <td>
-                <a href="#">Edit</a> |
-                <a href="#">Delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>Product 1</td>
-            <td>Product 1 Description</td>
-            <td>$2.87 / lb</td>
-            <td>Produce</td>
-            <td>
-                <a href="#">Edit</a> |
-                <a href="#">Delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>Product 1</td>
-            <td>Product 1 Description</td>
-            <td>$2.87 / lb</td>
-            <td>Produce</td>
-            <td>
-                <a href="#">Edit</a> |
-                <a href="#">Delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>Product 1</td>
-            <td>Product 1 Description</td>
-            <td>$2.87 / lb</td>
-            <td>Produce</td>
-            <td>
-                <a href="#">Edit</a> |
-                <a href="#">Delete</a>
-            </td>
-        </tr>
+        @foreach (var product in Model.Products)
+        {
+            <tr>
+                <td>@product.Id</td>
+                <td>@product.Name</td>
+                <td>@product.Price.ToCurrencyString()</td>
+                <td>@product.SalePrice.ToCurrencyString()</td>
+                <td>@product.DepartmentName</td>
+                <td>
+                    <a href="#">Edit</a> |
+                    <a href="#">Delete</a>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>

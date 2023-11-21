@@ -1,0 +1,51 @@
+@page
+@model Web.Pages.Admin.User.Add
+
+@{
+    ViewData["Title"] = "Add Product";
+}
+
+<form class="form--admin">
+    <div class="form__admin-group">
+        <div>
+            <input type="text" class="form__input" placeholder="Enter First Name" id="firstName">
+            <label for="firstName" class="form__label form__label--input">First Name</label>
+        </div>
+        <div>
+            <input type="text" class="form__input" placeholder="Enter Last Name" id="lastName">
+            <label for="lastName" class="form__label form__label--input">Last Name</label>
+        </div>
+        <div>
+            <input type="email" class="form__input" placeholder="Enter email address" id="email">
+            <label for="email" class="form__label form__label--input">Email</label>
+        </div>
+    </div>
+
+    <div class="form__admin-group">
+        <div>
+            <input type="password" class="form__input" placeholder="Enter Password" id="password">
+            <label for="password" class="form__label form__label--input">Password</label>
+        </div>
+        <div>
+            <input type="password" class="form__input" placeholder="Confirm Password" id="confirmPassword">
+            <label for="confirmPassword" class="form__label form__label--input">Confirm Password</label>
+        </div>
+    </div>
+
+    <div class="form__admin-group">
+        <div>
+            <select class="form__select" multiple id="roles">
+                <option>Customer</option>
+                <option>Admin</option>
+                <option> Manager</option>
+            </select>
+            <label for="roles" class="form__label">Unit of Measure</label>
+        </div>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn--primary">
+            Submit
+        </button>
+    </div>
+</form>

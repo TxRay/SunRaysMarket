@@ -3,64 +3,50 @@
 
 @{
     ViewData["Title"] = "Add Product";
-    ViewData["LayoutClasses"] = "admin-page";
-    ViewData["ShowFooter"] = false;
 }
 
-<div class="layout layout__full admin-header">
-    <h1 class="admin-header__heading">Add Product</h1>
-</div>
-
-<form class="form--admin">
+<form class="form--admin" enctype="multipart/form-data" method="post">
     <div class="form__admin-group">
+
         <div>
-            <input type="text" class="form__input" placeholder="Enter product name" id="name">
+            <input type="text" class="form__input" placeholder="Enter product name" id="name" asp-for="NewProduct.Name">
             <label for="name" class="form__label form__label--input">Name</label>
 
         </div>
         <div>
-            <input type="text" class="form__input" placeholder="Enter product description" id="description">
+            <input type="text" class="form__input" placeholder="Enter product description" id="description" asp-for="NewProduct.Description">
             <label for="description" class="form__label form__label--input">Description</label>
 
         </div>
         <div>
-            <input type="text" class="form__input" placeholder="Enter photo url" id="photoUrl">
-            <label for="photoUrl" class="form__label form__label--input">Photo Url</label>
+            <input type="file" class="form__input" placeholder="Upload a product photo" id="photoFile" asp-for="ImageFile">
+            <input type="hidden" id="photoUrl">
+            <label for="photoFile" class="form__label form__label--input">ProductPhoto</label>
         </div>
         <div>
-            <input type="text" class="form__input" placeholder="Price = $0.00" id="price">
+            <input type="text" class="form__input" placeholder="Price = $0.00" id="price" asp-for="NewProduct.Price">
             <label for="price" class="form__label form__label--input">Price</label>
         </div>
         <div>
-            <input type="text" class="form__input" placeholder="Discount = 0%" id="discount">
+            <input type="text" class="form__input" placeholder="Discount = 0%" id="discount" asp-for="NewProduct.DiscountPercent">
             <label for="discount" class="form__label form__label--input">Discount</label>
+        </div>
+        <div>
+            <input type="text" class="form__input" placeholder="Enter the measure" id="measure" asp-for="NewProduct.Measure">
+            <label for="measure" class="form__label form__label--input">Discount</label>
         </div>
     </div>
 
     <div class="form__admin-group">
         <div>
-            <select class="form__select" id="unitOfMeasurement">
-                <option>Pounds (lb)</option>
-                <option>Each (ea)</option>
-                <option>Dozen (dz)</option>
-                <option>Fluid Ounces (fl oz)</option>
-                <option>Quart (qt)</option>
-                <option>Gallon (gal)</option>
+            <select class="form__select" id="unitOfMeasurement" asp-items="Model.UnitsOfMeasure" asp-for="NewProduct.UnitOfMeasureId">
             </select>
             <label for="unitOfMeasurement" class="form__label">Unit of Measure</label>
-
         </div>
         <div>
-            <select class="form__select" id="department">
-                <option>Pounds (lb)</option>
-                <option>Each (ea)</option>
-                <option>Dozen (dz)</option>
-                <option>Fluid Ounces (fl oz)</option>
-                <option>Quart (qt)</option>
-                <option>Gallon (gal)</option>
+            <select class="form__select" id="productType" asp-items="Model.ProductTypes" asp-for="NewProduct.ProductTypeId">
             </select>
-            <label for="department" class="form__label">Department</label>
-
+            <label for="productType" class="form__label">Unit of Measure</label>
         </div>
     </div>
 

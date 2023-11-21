@@ -2,13 +2,13 @@ using Application.DomainModels;
 using Application.UnitOfWork;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Web.Pages.Admin.Products;
+namespace Web.Pages.Admin.ProductType;
 
 public class Index : PageModel
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public List<ProductListModel> Products { get; private set; } = new();
+    public List<ProductTypeDetailsModel> ProductTypes { get; set; } = new();
 
     public Index(IUnitOfWork unitOfWork)
     {
@@ -17,6 +17,6 @@ public class Index : PageModel
 
     public async Task OnGetAsync()
     {
-        Products = (await _unitOfWork.ProductRepository.GetAllAsync()).ToList();
+        ProductTypes = (await _unitOfWork.ProductTypeRepository.GetAllAsync()).ToList();
     }
 }
