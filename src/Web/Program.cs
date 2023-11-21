@@ -1,4 +1,5 @@
 using Infrastructure.Extensions;
+using Web.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,5 +26,6 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapApiEndpoints();
 
 app.Run();
