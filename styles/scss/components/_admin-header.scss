@@ -1,0 +1,14 @@
+@use "../abstracts/variables" as var;
+.admin-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var.$color-grey-light-1;
+  padding: var.$spacing-xl;
+  
+  &__heading {
+    font-size: var.$fs-3xl;
+    //font-weight: var.$weight-bold;
+    //text-align: center;
+  }
+}

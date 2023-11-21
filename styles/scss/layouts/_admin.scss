@@ -1,0 +1,63 @@
+@use "../abstracts/variables" as var;
+
+.admin-page {
+  grid-row: header;
+  row-gap: var.$spacing-5xl;
+
+  padding-bottom: var.$spacing-5xl;
+}
+
+.admin-sidebar {
+  grid-column: col-start 1 / col-end 2 !important;
+  grid-row: content;
+
+  &__menu {
+    display: flex;
+    flex-direction: column;
+    gap: var.$spacing-xs;
+
+    padding: var.$spacing-3xl var.$spacing-xl;
+    background-color: var.$color-grey-light-1;
+    list-style: none;
+  }
+
+  &__item {
+    
+  }
+  
+  &__link {
+    &:link,
+    &:visited {
+      display: block;
+      text-decoration: none;
+      font-size: var.$fs-s;
+      color: inherit;
+      padding: var.$spacing-s;
+      border-radius: 2px;
+      transition: all 200ms;
+    }
+
+    &:hover,
+    {
+      background-color: var.$color-grey-light-2;
+    }
+    
+    &:active {
+        background-color: var.$color-primary-medium;
+        color: #fff;
+    }
+    
+  }
+}
+
+.admin-content {
+  grid-column: col-start 3 / layout-end !important;
+  grid-row: content;
+
+  display: flex;
+  flex-direction: column;
+  gap: var.$spacing-2xl;
+
+  padding: var.$spacing-3xl;
+  overflow-y: scroll;
+}

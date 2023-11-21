@@ -1,26 +1,48 @@
+@use "../abstracts/variables" as var;
+
 .layout {
   display: grid;
+
   grid-template-columns:
     [page-start] minmax(5rem, 1fr) [layout-start] repeat(
       12,
                     [col-start] minmax(min-content, 12rem) [col-end]
     )
     [layout-end] minmax(5rem, 1fr) [page-end];
-  grid-template-rows: [navigation-start topbar-start] 8.5rem 
+  grid-auto-rows: min-content;
+
+  &--application, &--admin {
+    height: 100vh;
+  }
+  
+  &--application {
+    grid-template-rows: [navigation-start topbar-start] 8.5rem 
   [topbar-end nav-start] 6.5rem 
   [navigation-end nav-end content-start] 1fr [content-end];
+    
+  }
+  
+  &--admin {
+    grid-template-rows: [header-start] min-content [header-end content-start] 1fr [content-end];
+    //column-gap: var.$spacing-3xl;
+    row-gap: var.$spacing-3xl;
+    //padding-bottom: var.$spacing-3xl;
+  }
 
-  height: 100vh;
-
-  &__inner {
-    grid-column: page-start / page-end;
-    grid-row: content-start / content-end;
-
-    display: grid;
-    grid-template-columns: subgrid;
-    row-gap: 20rem;
-
-
+  &--page {
+    grid-column: page;
     overflow-y: scroll;
+  }
+
+  &__full {
+    grid-column: page;
+
+    & > * {
+      grid-column: layout;
+    }
+  }
+
+  &__content {
+    grid-column: layout;
   }
 }

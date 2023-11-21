@@ -1,0 +1,113 @@
+@use "../abstracts/variables" as var;
+
+.form {
+  
+  &--admin {
+    grid-column: col-start 3 /  span 8;
+    display: flex;
+    flex-direction: column;
+    gap: var.$spacing-3xl;
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: var.$spacing-s;
+  }
+  
+  &__admin-group {
+    display: grid;
+    
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+       column-gap: var.$spacing-xl;
+         row-gap: var.$spacing-l;
+  }
+
+  &__label {
+    font-size: var.$fs-xs;
+    font-weight: var.$weight-bold;
+    margin-left: var.$spacing-m;
+    margin-top: var.$spacing-xs;
+    display: block;
+    transition: all 300ms;
+    cursor: pointer;
+  }
+
+
+  &__input {
+    font-family: inherit;
+    font-size: var.$fs-m;
+    width: 100%;
+    padding: var.$spacing-s var.$spacing-m;
+    border-radius: 2px;
+    background-color: #fff;
+    border: none;
+    border-bottom: 3px solid transparent;
+    display: block;
+    transition: all 300ms;
+    box-shadow: 0 1rem 2rem rgba(#000, .1);
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 1rem 2rem rgba(#000, .1);
+      border-bottom: 3px solid var.$color-success;
+    }
+
+    &:focus:invalid {
+      border-bottom: 3px solid var.$color-danger;
+    }
+  }
+
+  &__input:placeholder-shown + &__label--input {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4rem);
+  }
+
+  &__select {
+    font-family: inherit;
+    font-size: var.$fs-m;
+    padding: var.$spacing-s var.$spacing-m;
+    border-radius: 2px;
+    background-color: #fff;
+    border: none;
+    border-bottom: 3px solid transparent;
+    display: block;
+    transition: all 300ms;
+    box-shadow: 0 1rem 2rem rgba(#000, .1);
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 1rem 2rem rgba(#000, .1);
+      border-bottom: 3px solid var.$color-success;
+    }
+
+    &:focus:invalid {
+      border-bottom: 3px solid var.$color-danger;
+    }
+  }
+  
+  &__checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: var.$spacing-s;
+  }
+  
+  
+  &__checkbox {
+   /* width: 2rem;
+    height: 2rem;
+    appearance: none;
+    background-color: var.$color-grey-light-1;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 300ms;
+    border: none;
+    outline: none;
+    
+    &:checked {
+      background-color: var.$color-primary-medium;
+    }*/
+  }
+
+}
