@@ -32,7 +32,7 @@ internal class ImageRepository : IImageRepository
         };
 
         await _dbContext.Images.AddAsync(model);
-        
+
         return model.UrlIdentifier.ToString();
     }
 
@@ -46,15 +46,10 @@ internal class ImageRepository : IImageRepository
     {
         var handleSplit = urlHandle.Split(".");
         var urlIdentifier = Guid.Parse(handleSplit[0]);
-        
+
         return await _dbContext.Images
             .Where(i => i.UrlIdentifier == urlIdentifier)
-            .Select(i => new ImageDownloadModel
-            {
-                ContentType = i.ContentType,
-                Data = i.Data
-            })
+            .Select(i => new ImageDownloadModel { ContentType = i.ContentType, Data = i.Data })
             .FirstOrDefaultAsync();
-
     }
 }

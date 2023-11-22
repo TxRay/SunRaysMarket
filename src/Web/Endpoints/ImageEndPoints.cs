@@ -12,7 +12,7 @@ public static class ImageEndPoints
             .MapGroup("/Images")
             .WithGroupName("Images")
             .WithDescription("Endpoints for managing images.");
-        
+
         imageGroup.MapImageDownloadEndpoint();
 
         return endpoints;
@@ -28,12 +28,11 @@ public static class ImageEndPoints
             {
                 var downloadModel = await unitOfWork.ImageRepository.DownloadAsync(handle);
 
-                if(downloadModel is null)
-                    return Results.NotFound(
-                        "The image you are looking for does not exist.");
+                if (downloadModel is null)
+                    return Results.NotFound("The image you are looking for does not exist.");
 
                 var stream = new MemoryStream(downloadModel.Data);
-                
+
                 return Results.File(stream, downloadModel.ContentType);
             }
         );

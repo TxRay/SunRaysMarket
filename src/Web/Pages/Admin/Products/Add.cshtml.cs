@@ -53,11 +53,11 @@ public class Add : PageModel
             return Page();
         }
 
-        var urlIdentifier =await _unitOfWork.ImageRepository.UploadAsync(ImageFile);
+        var urlIdentifier = await _unitOfWork.ImageRepository.UploadAsync(ImageFile);
         await _unitOfWork.SaveChangesAsync();
-        
-        var photoUrl =await _unitOfWork.ImageRepository.GetUrlAsync(Guid.Parse(urlIdentifier));
-        
+
+        var photoUrl = await _unitOfWork.ImageRepository.GetUrlAsync(Guid.Parse(urlIdentifier));
+
         if (photoUrl is null)
         {
             ModelState.AddModelError("ImageFile", "Image upload failed");
