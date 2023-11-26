@@ -11,6 +11,6 @@ internal class Image : TimeStampBaseModel
     public byte[] Data { get; set; } = null!;
 
     public string Url =>
-        $"api/images/{CreatedAt!.Value.Month}/{CreatedAt!.Value.Day}"
+        $"/api/images/{CreatedAt!.Value.Month}/{CreatedAt!.Value.Day}"
         + $"/{CreatedAt!.Value.Year}/{UrlIdentifier}{FileExtension}";
 }
