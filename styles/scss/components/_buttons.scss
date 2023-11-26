@@ -1,19 +1,11 @@
+@use "../abstracts/mixins" as mxn;
 @use "../abstracts/variables" as var;
 
 .btn {
   &,
   &:link,
   &:visited {
-    text-transform: uppercase;
-    text-decoration: none;
-    padding: 1.5rem 4rem;
-    display: inline-block;
-    border-radius: 10rem;
-    transition: all 0.2s;
-    position: relative;
-    font-size: 1.6rem;
-    border: none;
-    cursor: pointer;
+    @include mxn.btn-base;
   }
 
   &:hover {
@@ -24,6 +16,33 @@
   &:active {
     transform: translateY(-1px);
     box-shadow: 0 0.5rem 1rem rgba(#000, 0.2);
+  }
+
+  &--sm {
+    &,
+    &:link,
+    &:visited {
+      padding: var.$spacing-xs var.$spacing-s;
+      font-size: var.$fs-xs;
+    }
+  }
+
+  &--md {
+    &,
+    &:link,
+    &:visited {
+      padding: var.$spacing-s var.$spacing-m;
+      font-size: var.$fs-s;
+    }
+  }
+
+  &--lg {
+    &,
+    &:link,
+    &:visited {
+      padding: var.$spacing-m var.$spacing-2xl;
+      font-size: var.$fs-l;
+    }
   }
 
   &--primary {
@@ -37,5 +56,9 @@
     &:active {
       background-color: var.$color-primary-light;
     }
+  }
+
+  &--pill {
+    border-radius: 10rem;
   }
 }

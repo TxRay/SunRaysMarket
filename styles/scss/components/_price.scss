@@ -1,0 +1,39 @@
+@use '../abstracts/variables' as var;
+
+.price {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  
+  &--vertical {
+    flex-direction: column;
+    //gap: .35rem;
+  }
+
+  &__amount {
+    font-size: var.$fs-l;
+    font-weight: var.$weight-light;
+
+    &--regular,
+    &--sale {
+      padding: 0.15rem 1rem;
+    }
+
+    &--regular {
+      color: darken(var.$color-secondary-dark, 35%);
+      background-color: var.$color-secondary-light;
+    }
+
+    &--regular-strike {
+      font-size: var.$fs-m;
+      text-decoration: line-through;
+      text-decoration-thickness: 1.25px;
+      color: var.$color-grey-dark-1;
+    }
+
+    &--sale {
+      color: lighten(var.$color-sale, 35%);
+      background-color: var.$color-sale;
+    }
+  }
+}

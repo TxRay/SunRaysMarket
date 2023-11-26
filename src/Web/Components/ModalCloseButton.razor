@@ -1,0 +1,8 @@
+<button class="@Classes" id="modalCloseBtn">&times;</button>
+
+@code {
+    [Parameter]
+    public string CssClasses { get; set; } = string.Empty;
+
+    private string Classes => $"modal__close {CssClasses}".Trim();
+}

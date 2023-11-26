@@ -1,0 +1,9 @@
+@use "../abstracts/variables" as var;
+
+.tag {
+  font-size: var.$fs-s;
+  font-weight: var.$weight-light;
+  color: #fff;
+  background-color: blue;
+  padding: 0.2rem 0.75rem;
+}

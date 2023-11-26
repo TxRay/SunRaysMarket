@@ -3,3 +3,13 @@
   color: inherit;
   font-family: inherit;
 }
+
+@mixin btn-base {
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s;
+  position: relative;
+  border: none;
+  cursor: pointer;
+}

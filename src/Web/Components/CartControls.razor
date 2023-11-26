@@ -1,0 +1,35 @@
+@using Application.Utilities
+
+<div class="@CssClasses" hx-boost="false">
+    <button class="btn btn--primary btn--md" id=@("addToCartBtn".AppendSuffixIfNotNull(IdSuffix))> Add to Cart</button>
+    <div class="cart-controls" id="@Id">
+        <QuantityControl Quantity="Quantity" IdSuffix="@IdSuffix"></QuantityControl>
+        <button class="cart-controls__remove-btn" id="@RemoveBtnId">
+            <svg class="cart-controls__remove-icon">
+                <use href="/img/icons/solid.svg#trash"></use>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<script>
+initializeCartControls('@IdSuffix');
+</script>
+
+@code {
+
+    [Parameter]
+    public string CssClasses { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? IdSuffix { get; set; }
+
+    [Parameter]
+    public int Quantity { get; set; }
+
+        private const string IdBase = "cartControls";
+
+    private string Id => IdBase.AppendSuffixIfNotNull(IdSuffix);
+    private string RemoveBtnId => $"{IdBase}RemoveBtn".AppendSuffixIfNotNull(IdSuffix);
+
+}

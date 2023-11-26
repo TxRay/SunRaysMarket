@@ -1,6 +1,30 @@
 ﻿@page
+@using Application.Utilities
 @model IndexModel
+@using Web.Components
+
 @{
     ViewData["Title"] = "Home";
 }
 
+<main class="layout layout__full main-home">
+    <section class="section">
+        <h3 class="section-heading"> Featured Products </h3>
+        <div class="card-grid">
+            @foreach (var product in Model.FeaturedProducts)
+            {
+                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
+                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
+                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
+                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
+                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
+                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
+                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
+                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
+                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
+                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
+                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
+            }
+        </div>
+    </section>
+</main>

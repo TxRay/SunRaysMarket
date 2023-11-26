@@ -1,0 +1,6 @@
+@use "../abstracts/variables" as var;
+
+.section {
+  display: flex;
+  flex-direction: column;
+}

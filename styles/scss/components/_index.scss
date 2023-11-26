@@ -1,4 +1,12 @@
+@use "auth";
 @use "admin-header";
+@use "cards";
+@use "cart-controls";
 @use "buttons";
 @use "form";
+@use "modal";
+@use "price";
+@use "product-details";
+@use "section";
 @use "tables";
+@use "tags";

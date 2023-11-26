@@ -1,0 +1,17 @@
+@keyframes  ModalFadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes ModalContentTransform {
+    0% {
+      transform: translate(-50%, -50%) scale(.5);
+    }
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+}

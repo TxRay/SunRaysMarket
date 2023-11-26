@@ -1,0 +1,111 @@
+@use "../abstracts/variables" as var;
+
+.product-details {
+  grid-template-columns: [x-full-start left-start] 2fr [left-end right-start] 3fr [right-end x-full-end];
+
+  height: 75%;
+  width: 75%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+
+  &__close {
+    grid-column: right;
+    grid-row: header;
+
+    justify-self: end;
+    align-self: start;
+
+    margin-top: .85rem;
+    margin-right: .85rem;
+  }
+
+  &__img {
+    grid-column: left;
+    grid-row: y-full;
+
+    display: block;
+    width: 100%;
+    //margin: var.$spacing-xl;
+  }
+
+
+  &__body {
+    grid-column: right;
+    grid-row: body;
+
+    display: grid;
+    grid-template-columns: 1fr max-content max-content;
+    grid-auto-rows: min-content;
+    align-items: center;
+    column-gap: 2rem;
+    //row-gap: 1.6rem;
+
+
+    margin: 4rem;
+  }
+
+
+  &__name {
+    grid-column: 1 / -2;
+
+    font-size: 3.6rem;
+    font-weight: 300;
+    color: var.$color-grey-dark-2;
+  }
+
+  &__tag {
+    grid-column: -2 / -1;
+
+
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: #fff;
+    background-color: blue;
+    //margin-top: 1.25rem;
+    //margin-right: 1rem;
+    padding: 0.2rem 0.75rem
+  }
+
+  &__price {
+    grid-column: 1 / 2;
+    justify-self: start;
+
+    margin-top: 1.6rem;
+  }
+
+  &__unit-price {
+    grid-column: 2 / -1;
+    justify-self: end;
+
+    color: var.$color-grey-dark-1;
+    margin-top: 1rem;
+  }
+
+  &__description {
+    grid-column: 1 / -1;
+    justify-self: start;
+
+    margin-top: 3.6rem;
+    margin-bottom: 6rem;
+  }
+
+  &__quantity {
+    grid-column: 1 / 2;
+    justify-self: start;
+
+
+  }
+
+  &__cart-controls {
+    grid-column: 1 / 2;
+    justify-self: start;
+  }
+
+  &__btn {
+
+    &--hidden {
+      display: none !important;
+    }
+  }
+
+}

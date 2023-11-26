@@ -1,0 +1,66 @@
+@use "../abstracts/variables" as var;
+@use "../abstracts/mixins" as mxn;
+
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  display: grid;
+  place-items: center;
+
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(#000, 0.85);
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+
+  animation: ModalFadeIn 300ms ease-in;
+
+  &:target {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  &:target &__content {
+    transform: translate(0, 0) scale(1);
+  }
+
+  &__content {
+    display: grid;
+    grid-template-rows: [y-full-start header-start] min-content 
+    [header-end top-start body-start] 1fr 
+    [top-end bottom-start] 1fr [bottom-end body-end y-full-end];
+    
+    //width: 60%;
+    //height: 50%;
+    background-color: #fff;
+    box-shadow: 0 2rem 4rem rgba(#000, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    animation: ModalContentTransform 400ms ease-in-out;
+
+  }
+
+  &__close {
+    &,
+    &:link,
+    &:visited {
+      @include mxn.btn-base;
+      background: transparent;
+      font-size: 3rem;
+      line-height: 0.7;
+      color: var.$color-grey-dark-1;
+      text-decoration: none;
+      transition: all 200ms;
+
+
+      &:hover {
+        color: var.$color-grey-dark-2;
+      }
+    }
+  }
+
+
+}
