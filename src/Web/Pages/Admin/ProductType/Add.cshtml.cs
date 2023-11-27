@@ -31,6 +31,6 @@ public class Add : PageModel
         await _unitOfWork.ProductTypeRepository.CreateAsync(NewProductType);
         await _unitOfWork.SaveChangesAsync();
 
-        return RedirectToPage("Admin/ProductType/Index");
+        return RedirectToPage("/Admin/ProductType/Index");
     }
 }

@@ -4,6 +4,6 @@ namespace Application.Repositories;
 
 public interface ICustomerRepository
 {
-    Task<int> CreateCustomerAsync(int userId);
+    Task CreateCustomerAsync(int userId);
     Task DeleteCustomerAsync(int customerId);
 }

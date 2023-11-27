@@ -1,0 +1,50 @@
+<div class="nav__account" id="navAccount">
+    @if (!IsAuthenticated)
+    {
+        <a class="nav__account-link"
+           hx-get="/components/sign-up"
+           hx-target="#modalOutlet"
+           hx-swap="innerHTML">
+            <svg class="nav__account-icon">
+                <use href="/img/icons/solid.svg#user-plus"></use>
+            </svg>
+            <span>Sign Up</span>
+        </a>
+
+        <a class="nav__account-link"
+           id="navAccountLogin"
+           hx-get="/components/login"
+           hx-target="#modalOutlet"
+           hx-swap="innerHTML">
+            <svg class="nav__account-icon">
+                <use href="/img/icons/solid.svg#right-to-bracket"></use>
+            </svg>
+            <span>Login</span>
+        </a> 
+    }
+    else
+    {
+        <a class="nav__account-link"
+           href="/account">
+            <svg class="nav__account-icon">
+                <use href="/img/icons/solid.svg#user"></use>
+            </svg>
+            <span>Account</span>
+        </a>
+        <a class="nav__account-link"
+           hx-post="/components/logout"
+           hx-target="#navAccount"
+           hx-swap="outerHTML"
+           >
+            <svg class="nav__account-icon">
+                <use href="/img/icons/solid.svg#right-from-bracket"></use>
+            </svg>
+            <span>Logout</span>
+        </a>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public bool IsAuthenticated { get; set; }
+}

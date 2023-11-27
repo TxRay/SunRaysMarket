@@ -1,7 +1,61 @@
+@using Application.DomainModels
+@using Microsoft.AspNetCore.Components.Forms
+
 <Modal ContentClasses="login">
-    
+    <h3 class="auth__title">Login</h3>
+    <ModalCloseButton CssClasses="auth__close-btn"/>
+
+    @if (!ShowConfirmation)
+    {
+        <form class="form--auth"
+              hx-post="/components/login"
+              hx-target="#modal"
+              hx-swap="outerHTML">
+            <div>
+                <input type="email"
+                       class="form__input"
+                       placeholder="Enter your email address"
+                       id="loginEmail"
+                       name="Email"
+                       value="@LoginModel?.Email"
+                       >
+                <label for="loginEmail" class="form__label">Email</label>
+            </div>
+
+            <div>
+                <input type="password" 
+                       class="form__input" 
+                       placeholder="Enter your password" 
+                       id="loginPassword" 
+                       name="Password">
+                <label for="loginPassword" class="form__label">Password</label>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--md" id="loginSubmit">Login</button>
+            <AntiforgeryToken/>
+        </form>
+    }
+    else
+    {
+        <div class="auth__confirmation"
+             hx-get="/components/nav-account"
+             hx-trigger="load"
+             hx-target="#navAccount"
+             hx-swap="outerHTML">
+            <p class="auth__confirmation-text">You have successfully logged in.</p>
+            <button class="btn btn--primary btn--md" onclick="location.href='/'">Continue</button>
+        </div>
+    }
 </Modal>
 
+<script>
+   initializeLogin();
+</script>
+
 @code {
-    
+    [Parameter]
+    public bool ShowConfirmation { get; set; }
+
+    [Parameter]
+    public LoginModel? LoginModel { get; set; }
 }

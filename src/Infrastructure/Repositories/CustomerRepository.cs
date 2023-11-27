@@ -1,12 +1,20 @@
 using Application.Repositories;
+using Application.UnitOfWork;
+using Infrastructure.Data;
+using Infrastructure.Data.PersistenceModels;
 
 namespace Infrastructure.Repositories;
 
-internal class CustomerRepository : ICustomerRepository
+internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRepository
 {
-    public Task<int> CreateCustomerAsync(int userId)
+    public async Task CreateCustomerAsync(int userId)
     {
-        throw new NotImplementedException();
+        var customer = new Customer
+        {
+            UserId = userId
+        };
+        
+        await dbContext.Customers.AddAsync(customer);
     }
 
     public Task DeleteCustomerAsync(int customerId)
