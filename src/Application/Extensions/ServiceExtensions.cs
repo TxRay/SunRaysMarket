@@ -1,4 +1,5 @@
 using Application.Auth;
+using Application.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,7 @@ public static class ServiceExtensions
     {
         services.AddValidatorsFromAssemblyContaining<SignUpService>();
         services.AddAuthServices();
+        services.AddCustomerServices();
         
         return services;
     }
@@ -19,6 +21,14 @@ public static class ServiceExtensions
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<ISignUpService, SignUpService>();
         services.AddScoped<IUserService, UserService>();
+        
+        
+        return services;
+    }
+    
+    private static IServiceCollection AddCustomerServices(this IServiceCollection services)
+    {
+        services.AddScoped<ICustomerService, CustomerService>();
         
         return services;
     }

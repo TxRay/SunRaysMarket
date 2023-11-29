@@ -1,7 +1,9 @@
+using Application.Auth;
 using Application.DomainModels;
 using Application.UnitOfWork;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Web;
 using Web.Components;
 
 namespace Web.Endpoints;
@@ -17,7 +19,8 @@ public static class ComponentEndpoints
 
         componentGroup.MapProductDetailsComponentEndpoint();
         componentGroup.MapCartControlEndpoints();
-        componentGroup.MapSignUpComponentEndpoints();
+        componentGroup.MapAuthComponentEndpoints();
+        componentGroup.MapShoppingCartEndpoints();
 
         return endpoints;
     }
@@ -51,27 +54,82 @@ public static class ComponentEndpoints
         endpoints.MapPost(
             "/quantity-control/{customerId:int}/{productId:int}/{idSuffix}",
             (int customerId, int productId, string? idSuffix, [FromForm] int quantity) =>
-                new RazorComponentResult<QuantityControl>(new {Quantity=quantity, IdSuffix = idSuffix})
-            
+                new RazorComponentResult<QuantityControl>(
+                    new { Quantity = quantity, IdSuffix = idSuffix }
+                )
         );
 
         return endpoints;
     }
-    
-    private static IEndpointRouteBuilder MapSignUpComponentEndpoints(
+
+    private static IEndpointRouteBuilder MapAuthComponentEndpoints(
         this IEndpointRouteBuilder endpoints
     )
     {
-        endpoints.MapGet(
-            "/sign-up",
-            () => new RazorComponentResult<SignUp>()
-        );
+        endpoints.MapGet("/sign-up", () => new RazorComponentResult<SignUp>());
 
         endpoints.MapPost(
             "/sign-up",
-            (SignupModel model) => new RazorComponentResult<SignUp>()
-            );
+            ([FromForm] SignUpModel model, HttpContext context, ISignUpService signUpService) =>
+            {
+                var result = signUpService.CustomerSignUpAsync(model, new[] { Role.Customer });
 
+                return result.Result.WasSuccessful
+                    ? Results.Ok($"<p>{result.Result.Message}</p>")
+                    : new RazorComponentResult<SignUp>();
+            }
+        );
+
+        endpoints.MapGet("/login", (HttpContext context) =>
+        {
+            var loginEmail = context.Session.GetString("LoginEmail") ?? string.Empty;
+            var model = new LoginModel { Email = loginEmail };
+            
+            return new RazorComponentResult<Login>(new {LoginModel = model });
+        });
+
+        endpoints.MapPost(
+            "/login",
+            async ([FromForm] LoginModel model, HttpContext context, ILoginService loginService) =>
+            {
+                var result = await loginService.LoginAsync(model);
+                
+
+                return new RazorComponentResult<Login>(
+                    new { ShowConfirmation = result.WasSuccessful }
+                );
+            }
+        );
+
+        endpoints.MapPost(
+            "/logout",
+            async (HttpContext context, IUserService userService) =>
+            {
+                await userService.LogoutAsync();
+
+                return new RazorComponentResult<NavAccount>(new { IsAuthenticated = false });
+            }
+        );
+
+        endpoints.MapGet(
+            "/nav-account",
+            (HttpContext context) =>
+            {
+                var isAuthenticated = context.User.Identity?.IsAuthenticated ?? false;
+
+                return new RazorComponentResult<NavAccount>(
+                    new { IsAuthenticated = isAuthenticated }
+                );
+            }
+        );
+
+        return endpoints;
+    }
+
+    private static IEndpointRouteBuilder MapShoppingCartEndpoints(this IEndpointRouteBuilder endpoints)
+    {
+        endpoints.MapGet("/shopping-cart", () => new RazorComponentResult<ShoppingCart>());
+        
         return endpoints;
     }
 }

@@ -1,6 +1,8 @@
 using Application.DomainModels;
 using Application.Repositories;
+using Application.Utilities;
 using Infrastructure.Data;
+using Infrastructure.Data.PersistenceModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
@@ -26,4 +28,16 @@ internal class DepartmentRepository : IDepartmentRepository
                     }
             )
             .ToListAsync();
+
+    public async Task CreateAsync(CreateDepartmentModel model)
+    {
+        var department = new Department
+        {
+            Name = model.Name,
+            Slug =Slugs.CreateSlug(model.Name),
+            Description = model.Description
+        };
+        
+        await _dbContext.Departments.AddAsync(department);
+    }
 }

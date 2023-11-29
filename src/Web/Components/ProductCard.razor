@@ -19,7 +19,7 @@
         <span class="price__amount--regular"> @Product.Price.ToCurrencyString() </span>
     </p>
     <p class="tag product-card__tag hx-pc-@Product.Id">@Product.DepartmentName</p>
-    <CartControls CssClasses="product-card__cart-controls" IdSuffix="@IdSuffix" />
+    <CartControls CssClasses="product-card__cart-controls" IdSuffix="@IdSuffix" ProductId="@Product.Id"/>
 </a>
 
 @code {

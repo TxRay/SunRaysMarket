@@ -22,7 +22,7 @@
             <p class="product-details__unit-price">@Product.UnitPrice.ToUnitPriceString(Product.UnitOfMeasure)</p>
             <p class="product-details__description">@Product.Description</p>
  
-                <CartControls CssClasses="product-details__cart-controls" IdSuffix="@IdSuffix"/>
+                <CartControls CssClasses="product-details__cart-controls" IdSuffix="@IdSuffix" ProductId="@Product.Id"/>
         </div>
     }
     else

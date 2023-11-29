@@ -1,22 +1,52 @@
+@using Application.DomainModels
+@using Application.Services
+@using Application.UnitOfWork
 @using Application.Utilities
+@using Web.Cookies
+@inject ICustomerService CustomerService
+@inject IUnitOfWork UnitOfWork
 
 <div class="@CssClasses" hx-boost="false">
-    <button class="btn btn--primary btn--md" id=@("addToCartBtn".AppendSuffixIfNotNull(IdSuffix))> Add to Cart</button>
-    <div class="cart-controls" id="@Id">
-        <QuantityControl Quantity="Quantity" IdSuffix="@IdSuffix"></QuantityControl>
-        <button class="cart-controls__remove-btn" id="@RemoveBtnId">
-            <svg class="cart-controls__remove-icon">
-                <use href="/img/icons/solid.svg#trash"></use>
-            </svg>
+    @if (CartItemInfo is null)
+    {
+                <button class="btn btn--primary btn--md"
+                        id=@("addToCartBtn".AppendSuffixIfNotNull(IdSuffix))>
+                    Add to Cart
+                </button>
+        <div class="cart-controls" id="@Id" data-product-id="@ProductId" data-item-id="">
+            <QuantityControl Quantity="0" IdSuffix="@IdSuffix"></QuantityControl>
+            <button class="cart-controls__remove-btn" id="@RemoveBtnId">
+                <svg class="cart-controls__remove-icon">
+                    <use href="/img/icons/solid.svg#trash"></use>
+                </svg>
+            </button>
+        </div>
+    }
+    else
+    {
+        <button class="btn btn--primary btn--md product-details__btn--hidden"
+                id=@("addToCartBtn".AppendSuffixIfNotNull(IdSuffix))>
+            Add to Cart
         </button>
-    </div>
+        <div class="cart-controls cart-controls--visible" id="@Id" data-product-id="@ProductId" data-item-id="@CartItemInfo.Id">
+            <QuantityControl Quantity="@CartItemInfo.Quantity" IdSuffix="@IdSuffix"></QuantityControl>
+            <button class="cart-controls__remove-btn" id="@RemoveBtnId">
+                <svg class="cart-controls__remove-icon">
+                    <use href="/img/icons/solid.svg#trash"></use>
+                </svg>
+            </button>
+        </div>
+    }
 </div>
 
 <script>
-initializeCartControls('@IdSuffix');
+initializeCartControls(@ProductId, @IdSuffixQuoted);
 </script>
 
 @code {
+
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
 
     [Parameter]
     public string CssClasses { get; set; } = string.Empty;
@@ -25,11 +55,30 @@ initializeCartControls('@IdSuffix');
     public string? IdSuffix { get; set; }
 
     [Parameter]
-    public int Quantity { get; set; }
-
+    public int ProductId { get; set; }
+    
+    private CartItemControlModel? CartItemInfo { get; set; }
+        
         private const string IdBase = "cartControls";
+
+    private MarkupString IdSuffixQuoted => IdSuffix == null ? new MarkupString() : new MarkupString($"'{IdSuffix}'");
 
     private string Id => IdBase.AppendSuffixIfNotNull(IdSuffix);
     private string RemoveBtnId => $"{IdBase}RemoveBtn".AppendSuffixIfNotNull(IdSuffix);
+    
+
+    private async Task<CartItemControlModel?> GetCartItemInfoAsync()
+    {
+        var cartId = (HttpContext?.User.IsAuthenticated() ?? false) ?
+            await CustomerService.GetCustomerCartIdAsync(HttpContext!.User) :
+            HttpContext!.Request.Cookies.GetCartIdCookie();
+
+        return cartId is not null ? await UnitOfWork.CartRepository.GetCartItemControlInfoAsync(cartId.Value, ProductId) : null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CartItemInfo = await GetCartItemInfoAsync();
+    }
 
 }

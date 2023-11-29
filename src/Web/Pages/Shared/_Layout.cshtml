@@ -47,7 +47,10 @@
                         <use href="/img/icons/solid.svg#chevron-down"></use>
                     </svg>
                 </a>
-                <a href="#" class="cart">
+                <a class="cart"
+                   hx-get="/components/shopping-cart"
+                   hx-target="#modalOutlet"
+                   hx-swap="innerHTML">
                     <svg class="cart__icon">
                         <use href="/img/icons/solid.svg#cart-shopping"></use>
                     </svg>
@@ -79,8 +82,7 @@
             <component
                 type="typeof(NavAccount)"
                 param-IsAuthenticated="@(Context.User.Identity is not null && Context.User.Identity.IsAuthenticated)"
-                render-mode="Static"
-                />
+                render-mode="Static"/>
 
         </div>
     </nav>

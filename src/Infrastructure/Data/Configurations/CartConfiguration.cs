@@ -13,10 +13,6 @@ internal class CartConfiguration : TimeStampBaseConfiguration<Cart>
 
         builder.HasIndex(cart => cart.CustomerId).IsUnique();
 
-        builder.Property(cart => cart.CustomerId).IsRequired();
-
-        builder.Property(cart => cart.CustomerId).IsRequired();
-
         builder
             .HasOne(cart => cart.Customer)
             .WithOne(customer => customer.Cart)

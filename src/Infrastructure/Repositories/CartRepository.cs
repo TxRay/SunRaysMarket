@@ -1,47 +1,176 @@
 using Application.DomainModels;
 using Application.Repositories;
+using Application.Utilities;
+using Infrastructure.Data;
+using Infrastructure.Data.PersistenceModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-internal class CartRepository : ICartRepository
+internal class CartRepository(ApplicationDbContext dbContext) : ICartRepository
 {
-    public Task<CartDetailsModel?> GetCartDetailsAsync(int cartId)
+    private Cart? CartPersistenceModel { get; set; }
+    private CartItem? CartItemPersistenceModel { get; set; }
+
+    public async Task<CartDetailsModel?> GetCartDetailsAsync(int cartId, bool persist = false)
     {
-        throw new NotImplementedException();
+        var cartPersistenceModel = await dbContext.Carts
+            .Include(c => c.Customer)
+            .ThenInclude(cm => cm!.User)
+            .Where(c => c.Id == cartId)
+            .FirstOrDefaultAsync();
+
+        if (cartPersistenceModel is null)
+            return null;
+
+        if (persist)
+        {
+            CartPersistenceModel = cartPersistenceModel;
+        }
+
+        return cartPersistenceModel.Customer is null
+            ? new CartDetailsModel { Id = cartPersistenceModel.Id }
+            : new CartDetailsModel
+            {
+                Id = cartPersistenceModel.Id,
+                CustomerId = cartPersistenceModel.CustomerId,
+                FirstName = cartPersistenceModel.Customer.User!.FirstName,
+                LastName = cartPersistenceModel.Customer.User!.LastName,
+                Email = cartPersistenceModel.Customer.User!.Email
+            };
     }
 
-    public Task<IEnumerable<CartItemListModel>> GetCartItemsAsync(int cartId)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<IEnumerable<CartItemListModel>> GetCartItemsAsync(int cartId) =>
+        await dbContext.Carts
+            .Include(c => c.CartItems)
+            .ThenInclude(ci => ci.Product)
+            .Where(c => c.Id == cartId)
+            .SelectMany(c => c.CartItems)
+            .Select(
+                ci =>
+                    new CartItemListModel
+                    {
+                        Id = ci.Id,
+                        CartId = ci.CartId,
+                        ProductId = ci.ProductId,
+                        ProductName = ci.Product.Name,
+                        ProductSlug = ci.Product.Slug,
+                        ProductPhotoUrl = ci.Product.PhotoUrl,
+                        Quantity = ci.Quantity,
+                        RegularPrice = ci.Product.Price,
+                        DiscountDecimal = ci.Product.DiscountPercent
+                    }
+            )
+            .ToListAsync();
 
+    public async Task<CartItemControlModel?> GetCartItemControlInfoAsync(int cartId, int productId)
+    => await dbContext.CartItems
+        .Where(ci => ci.CartId == cartId && ci.ProductId == productId)
+        .Select(ci => new CartItemControlModel { Id = ci.Id, Quantity = ci.Quantity })
+        .FirstOrDefaultAsync();
     public Task<bool> CartExistsAsync(int cartId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> CreateCartAsync(int? customerId)
+    public async Task CreateCartAsync(int? customerId, bool persist = false)
     {
-        throw new NotImplementedException();
+        var cart = new Cart { CustomerId = customerId };
+
+        if (persist)
+            CartPersistenceModel = cart;
+
+        await dbContext.Carts.AddAsync(cart);
     }
 
     public Task<bool> DeleteCartAsync(int cartId)
     {
-        throw new NotImplementedException();
+        var cart = dbContext.Carts.Find(cartId);
+
+        if (cart is null)
+            return Task.FromResult(false);
+
+        dbContext.Carts.Remove(cart);
+        return Task.FromResult(true);
     }
 
-    public Task<bool> AddProductToCartAsync(int cartId, int productId, int quantity)
+    public async Task AddProductToCartAsync(
+        int cartId,
+        int productId,
+        int quantity,
+        bool persist = false
+    )
     {
-        throw new NotImplementedException();
+        var cartItem = new CartItem
+        {
+            CartId = cartId,
+            ProductId = productId,
+            Quantity = quantity
+        };
+
+        if (persist)
+            CartItemPersistenceModel = cartItem;
+
+        await dbContext.CartItems.AddAsync(cartItem);
     }
 
-    public Task<bool> RemoveProductFromCartAsync(int cartId, int productId)
+    public async Task RemoveItemFromCartAsync(int itemId)
     {
-        throw new NotImplementedException();
+        var cartItem = await dbContext.CartItems.FindAsync(itemId);
+
+        if (cartItem is not null)
+            dbContext.CartItems.Remove(cartItem);
     }
 
-    public Task<bool> UpdateProductQuantityAsync(int cartId, int productId, int quantity)
+    public  async Task RemoveItemFromCartAsync(int cartId, int productId)
     {
-        throw new NotImplementedException();
+        var cartItem = await dbContext.CartItems
+            .Where(ci => ci.CartId == cartId && ci.ProductId == productId)
+            .FirstOrDefaultAsync();
+        
+        if (cartItem is not null)
+            dbContext.CartItems.Remove(cartItem);
+    }
+
+    public async Task UpdateProductQuantityAsync(int itemId, int quantity)
+    {
+        var cartItem = await dbContext.CartItems.FindAsync(itemId);
+
+        if (cartItem is not null)
+            cartItem.Quantity = quantity;
+    }
+
+    public int GetPersistedCartId() =>
+        CartPersistenceModel?.Id ?? throw new NullReferenceException("No cart is persisted");
+
+    public CartDetailsModel GetPersistedCartDetails()
+    {
+        if (CartPersistenceModel is null)
+            throw new NullReferenceException("No cart is persisted");
+
+        return CartPersistenceModel.Customer is null
+            ? new CartDetailsModel { Id = CartPersistenceModel.Id }
+            : new CartDetailsModel
+            {
+                Id = CartPersistenceModel.Id,
+                CustomerId = CartPersistenceModel.CustomerId,
+                FirstName = CartPersistenceModel.Customer.User!.FirstName,
+                LastName = CartPersistenceModel.Customer.User!.LastName,
+                Email = CartPersistenceModel.Customer.User!.Email
+            };
+    }
+
+    public int GetPersistedCartItemId() =>
+        CartItemPersistenceModel?.Id
+        ?? throw new NullReferenceException("No cart item is persisted");
+
+    public void ClearPersistedCart()
+    {
+        CartPersistenceModel = null;
+    }
+
+    public void GetPersistedCartItem()
+    {
+        CartItemPersistenceModel = null;
     }
 }

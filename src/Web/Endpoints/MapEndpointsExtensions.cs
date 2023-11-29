@@ -10,6 +10,8 @@ public static class MapEndpointsExtensions
             .WithDescription("Api endpoints");
 
         apiGroup.MapImageEndpoints();
+        apiGroup.MapApplicationEndpoints();
+        apiGroup.MapCartEndpoints();
 
         return endpoints;
     }

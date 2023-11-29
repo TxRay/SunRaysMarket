@@ -13,17 +13,9 @@
         <div class="card-grid">
             @foreach (var product in Model.FeaturedProducts)
             {
-                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
-                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
-                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
-                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
-                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
-                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
-                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
-                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
-                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
-                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
-                <component type="typeof(ProductCard)" param-Product="@product" render-mode="Static"></component>
+                <component type="typeof(ProductCard)"
+                           param-Product="@product"
+                           render-mode="Static"/>
             }
         </div>
     </section>

@@ -145,7 +145,7 @@ internal class ProductRepository : IProductRepository
             Slug = Slugs.CreateSlug(model.Name),
             PhotoUrl = model.PhotoUrl,
             Price = model.Price,
-            DiscountPercent = model.DiscountPercent,
+            DiscountPercent = model.DiscountDecimal,
             ProductTypeId = model.ProductTypeId,
             Measure = model.Measure,
             UnitOfMeasureId = model.UnitOfMeasureId,

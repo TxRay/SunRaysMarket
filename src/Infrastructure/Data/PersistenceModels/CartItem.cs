@@ -4,10 +4,10 @@ namespace Infrastructure.Data.PersistenceModels;
 
 internal class CartItem : TimeStampBaseModel
 {
-    public int CartId { get; init; }
-    public int ProductId { get; init; }
-    public int Quantity { get; init; }
+    public int CartId { get; set; }
+    public int ProductId { get; set; }
+    public int Quantity { get; set; }
 
-    public Cart? Cart { get; init; }
-    public Product? Product { get; init; }
+    public Cart? Cart { get; set; }
+    public Product? Product { get; set; }
 }

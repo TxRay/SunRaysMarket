@@ -16,11 +16,6 @@ public class UserService(
     IValidator<SignUpModel> signUpModelValidator
 ) : IUserService
 {
-    public Task<UserDetailsModel?> GetCurrentUserAsync()
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<UserDetailsModel?> GetCurrentUserAsync(ClaimsPrincipal? claimsPrincipal)
     {
         var userEmailAddress = claimsPrincipal?.Identities

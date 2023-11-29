@@ -11,6 +11,8 @@ internal class CartItemConfiguration : TimeStampBaseConfiguration<CartItem>
     {
         base.Configure(builder);
 
+        builder.HasIndex(cartItem => new { cartItem.CartId, cartItem.ProductId }).IsUnique();
+
         builder.Property(cartItem => cartItem.CartId).IsRequired();
 
         builder.Property(cartItem => cartItem.ProductId).IsRequired();
