@@ -2,10 +2,8 @@ using Application.Cookies;
 using Application.EndpointViewModels;
 using Application.Exceptions;
 using Application.Services;
-using Application.UnitOfWork;
 using Application.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace WebBlazor.Endpoints;
 
