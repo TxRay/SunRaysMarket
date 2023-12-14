@@ -11,11 +11,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services;
 
-internal class CartService(IHttpContextAccessor httpContextAccessor, ICustomerService customerService, IUnitOfWork unitOfWork) : ICartService
+internal class CartService(
+    IHttpContextAccessor httpContextAccessor,
+    ICustomerService customerService,
+    IUnitOfWork unitOfWork
+) : ICartService
 {
     public async Task<CreateCartResponse> CreateCartAsync()
     {
-        var httpContext = httpContextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var httpContext =
+            httpContextAccessor.HttpContext
+            ?? throw new InvalidOperationException("HttpContext is null");
         if (httpContext.User.IsAuthenticated())
             await customerService.CreateCustomerCartAsync(httpContext.User);
         else
@@ -27,15 +33,17 @@ internal class CartService(IHttpContextAccessor httpContextAccessor, ICustomerSe
         var cartId = unitOfWork.CartRepository.GetPersistedCartId();
         httpContext.Response.Cookies.SetCartIdCookie(cartId);
 
-        return new CreateCartResponse { CartId = cartId };    }
+        return new CreateCartResponse { CartId = cartId };
+    }
 
     public Task<CartItemControlModel> GetCartItemInfoAsync(int cartItemId)
     {
         throw new NotImplementedException();
     }
 
-
-    public async Task<AddItemToCartResponse> AddItemToCartAsync(Action<IAddItemToCartOptionsBuilder> buildOptions)
+    public async Task<AddItemToCartResponse> AddItemToCartAsync(
+        Action<IAddItemToCartOptionsBuilder> buildOptions
+    )
     {
         var optionsBuilder = new AddItemToCarCommandOptionsBuilder();
 
@@ -45,7 +53,12 @@ internal class CartService(IHttpContextAccessor httpContextAccessor, ICustomerSe
 
         await unitOfWork
             .CartRepository
-            .AddProductToCartAsync(options.CartId!.Value, options.Command!.ProductId, options.Command!.Quantity, true);
+            .AddProductToCartAsync(
+                options.CartId!.Value,
+                options.Command!.ProductId,
+                options.Command!.Quantity,
+                true
+            );
 
         try
         {
@@ -64,7 +77,9 @@ internal class CartService(IHttpContextAccessor httpContextAccessor, ICustomerSe
         return new AddItemToCartResponse { ItemId = cartItemId };
     }
 
-    public async Task<UpdateCartItemQuantityResponse> UpdateQuantityAsync(UpdateCartItemQuantityCommand command)
+    public async Task<UpdateCartItemQuantityResponse> UpdateQuantityAsync(
+        UpdateCartItemQuantityCommand command
+    )
     {
         await unitOfWork
             .CartRepository

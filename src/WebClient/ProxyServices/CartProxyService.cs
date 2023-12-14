@@ -8,67 +8,68 @@ namespace WebClient.ProxyServices;
 
 internal class CartProxyService(HttpClient client) : ICartService
 {
-    public async Task<CreateCartResponse> CreateCartAsync()
-    => await client.PostAsync("api/cart/create", null)
-        .ContinueWith(
-            messageTask =>
+    public async Task<CreateCartResponse> CreateCartAsync() =>
+        await client
+            .PostAsync("api/cart/create", null)
+            .ContinueWith(messageTask =>
             {
                 var message = messageTask.Result;
                 message.EnsureSuccessStatusCode();
                 return message.Content.ReadFromJsonAsync<CreateCartResponse>();
-            }
-        ).Unwrap()
-        ?? throw new InvalidOperationException("CreateCartResponse was null");
+            })
+            .Unwrap() ?? throw new InvalidOperationException("CreateCartResponse was null");
 
     public Task<CartItemControlModel> GetCartItemInfoAsync(int cartItemId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<AddItemToCartResponse> AddItemToCartAsync(Action<IAddItemToCartOptionsBuilder> buildOptions)
+    public async Task<AddItemToCartResponse> AddItemToCartAsync(
+        Action<IAddItemToCartOptionsBuilder> buildOptions
+    )
     {
         var optionsBuilder = new AddItemToCarCommandOptionsBuilder();
         buildOptions.Invoke(optionsBuilder);
         optionsBuilder.Build();
-        
+
         var command = optionsBuilder.Options.Command!;
-        
-        return await client.PostAsJsonAsync("api/cart/add-item", command)
-            .ContinueWith(
-                messageTask =>
+
+        return await client
+                .PostAsJsonAsync("api/cart/add-item", command)
+                .ContinueWith(messageTask =>
                 {
                     var message = messageTask.Result;
                     message.EnsureSuccessStatusCode();
                     return message.Content.ReadFromJsonAsync<AddItemToCartResponse>();
-                }
-                    
-                ).Unwrap()
-            ?? throw new InvalidOperationException("AddItemToCartResponse was null");
+                })
+                .Unwrap() ?? throw new InvalidOperationException("AddItemToCartResponse was null");
     }
 
-    public async Task<UpdateCartItemQuantityResponse> UpdateQuantityAsync(UpdateCartItemQuantityCommand command)
-    => await client.PostAsJsonAsync("api/cart/update-item-quantity", command)
-        .ContinueWith(
-            messageTask =>
+    public async Task<UpdateCartItemQuantityResponse> UpdateQuantityAsync(
+        UpdateCartItemQuantityCommand command
+    ) =>
+        await client
+            .PostAsJsonAsync("api/cart/update-item-quantity", command)
+            .ContinueWith(messageTask =>
             {
                 var message = messageTask.Result;
                 message.EnsureSuccessStatusCode();
                 return message.Content.ReadFromJsonAsync<UpdateCartItemQuantityResponse>();
-            }
-        ).Unwrap()
+            })
+            .Unwrap()
         ?? throw new InvalidOperationException("UpdateCartItemQuantityResponse was null");
 
     public Task RemoveItemAsync(RemoveCartItemCommand command)
     {
         Console.WriteLine("RemoveItemAsync");
-        
-       return client.PostAsJsonAsync("api/cart/remove-item", command)
-            .ContinueWith(
-                task =>
-                {
-                    task.Result.EnsureSuccessStatusCode();
-                    return Task.CompletedTask;
-                })
+
+        return client
+            .PostAsJsonAsync("api/cart/remove-item", command)
+            .ContinueWith(task =>
+            {
+                task.Result.EnsureSuccessStatusCode();
+                return Task.CompletedTask;
+            })
             .Unwrap();
     }
 }

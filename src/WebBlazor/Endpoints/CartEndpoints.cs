@@ -92,13 +92,11 @@ public static class CartEndpoints
                 try
                 {
                     return Results.Json(
-                        await cartControlsService.AddItemToCartAsync(
-                            builder =>
-                            {
-                                builder.WithCartId(cartId.Value);
-                                builder.WithCommand(command);
-                            }
-                        )
+                        await cartControlsService.AddItemToCartAsync(builder =>
+                        {
+                            builder.WithCartId(cartId.Value);
+                            builder.WithCommand(command);
+                        })
                     );
                 }
                 catch (AddItemFailedException exc)
@@ -116,8 +114,10 @@ public static class CartEndpoints
 
         endpoints.MapPost(
             "/update-item-quantity",
-            async ([FromBody] UpdateCartItemQuantityCommand command, ICartService cartControlsService) =>
-            Results.Json(await cartControlsService.UpdateQuantityAsync(command))
+            async (
+                [FromBody] UpdateCartItemQuantityCommand command,
+                ICartService cartControlsService
+            ) => Results.Json(await cartControlsService.UpdateQuantityAsync(command))
         );
 
         return endpoints;

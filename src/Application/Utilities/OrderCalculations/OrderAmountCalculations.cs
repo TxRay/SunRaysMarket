@@ -14,6 +14,6 @@ public static class OrderAmountCalculations
         order.Discount = orderItemAmountsEnumerable.Sum(x => x.Discount * x.Quantity);
         var totalAfterDiscount = order.Subtotal - order.Discount;
         order.Tax = totalAfterDiscount * taxRate;
-        order.Total =  totalAfterDiscount + order.Tax;
+        order.Total = totalAfterDiscount + order.Tax;
     }
 }

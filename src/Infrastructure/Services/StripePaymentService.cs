@@ -12,16 +12,13 @@ public class StripePaymentService(IStripeClient stripeClient) : IPaymentService
         var options = new PaymentMethodCreateOptions
         {
             Type = "card",
-            Card = new PaymentMethodCardOptions()
-            {
-               Token = token
-            },
+            Card = new PaymentMethodCardOptions() { Token = token },
         };
-        
+
         var service = new PaymentMethodService(stripeClient);
         var paymentMethod = await service.CreateAsync(options);
-        
-        return  paymentMethod.Id;
+
+        return paymentMethod.Id;
     }
 
     public async Task<string> CreateCustomer(CreatePaymentCustomerModel model)
@@ -45,11 +42,8 @@ public class StripePaymentService(IStripeClient stripeClient) : IPaymentService
 
         var service = new ChargeService(stripeClient);
         var charge = await service.CreateAsync(options);
-        
-        var updateOptions = new ChargeUpdateOptions
-        {
-            Customer = model.CustomerPaymentId,
-        };
+
+        var updateOptions = new ChargeUpdateOptions { Customer = model.CustomerPaymentId, };
 
         charge = await service.UpdateAsync(charge.Id, updateOptions);
 
