@@ -20,15 +20,20 @@ public static class AppExtensions
 
         var departmentSeeder = scope.ServiceProvider.GetRequiredService<IDepartmentSeeder>();
         var superAdminSeeder = scope.ServiceProvider.GetRequiredService<ISuperAdminSeeder>();
-        var timeSlotDefinitionsSeeder =
-            scope.ServiceProvider.GetRequiredService<ITimeSlotDefinitionsSeeder>();
+        var timeSlotDefinitionsSeeder = scope
+            .ServiceProvider
+            .GetRequiredService<ITimeSlotDefinitionsSeeder>();
         var unitOfMeasureSeeder = scope.ServiceProvider.GetRequiredService<IUnitsOfMeasureSeeder>();
         var userRolesSeeder = scope.ServiceProvider.GetRequiredService<IUserRolesSeeder>();
+        var storeSeeder = scope.ServiceProvider.GetRequiredService<IStoreSeeder>();
+        var timeSlotSeeder = scope.ServiceProvider.GetRequiredService<ITimeSlotSeeder>();
 
+        await superAdminSeeder.SeedAsync();
         await departmentSeeder.SeedAsync();
         await userRolesSeeder.SeedAsync();
-        await superAdminSeeder.SeedAsync();
         await timeSlotDefinitionsSeeder.SeedAsync();
+        await storeSeeder.SeedAsync();
+        await timeSlotSeeder.SeedAsync();
         await unitOfMeasureSeeder.SeedAsync();
     }
 }

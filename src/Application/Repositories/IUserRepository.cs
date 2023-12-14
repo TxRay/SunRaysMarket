@@ -12,8 +12,8 @@ public interface IUserRepository
     Task AddUserRolesAsync(int userId, IEnumerable<Role> roles);
     Task UpdateUserAsync(UpdateUserModel model);
     Task DeleteUserAsync(int id);
-    
+
     Task<UserDetailsModel?> AuthenticateAsync(LoginModel model);
-    
+
     Task LogoutAsync();
 }

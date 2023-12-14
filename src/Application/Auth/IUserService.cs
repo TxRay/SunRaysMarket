@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Application.DomainModels;
 using Application.Results;
+using FluentValidation.Results;
 
 namespace Application.Auth;
 

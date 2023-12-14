@@ -1,16 +1,12 @@
+using System.Text.Json.Serialization;
+
 namespace Application.Structs;
 
-public struct TimeSlotRange
+[JsonSerializable(typeof(TimeSlotRange))]
+public class TimeSlotRange
 {
     public Time Start { get; init; }
     public Time End { get; init; }
-
-    public static TimeSlotRange Create(DateTime startTime, DateTime endTime) =>
-        new TimeSlotRange
-        {
-            Start = Time.FromDateTime(startTime),
-            End = Time.FromDateTime(endTime)
-        };
 
     public override string ToString()
     {

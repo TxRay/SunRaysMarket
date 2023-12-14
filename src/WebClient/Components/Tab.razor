@@ -1,0 +1,28 @@
+@rendermode InteractiveAuto
+
+@if (Tabs!.IsCurrentTab(Label) && Tabs.TabsLoaded)
+{
+    @ChildContent
+}
+
+@code {
+
+    [CascadingParameter]
+    private Tabs? Tabs { get; set; }
+
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = null!;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+
+    protected override void OnInitialized()
+    {
+        if (Tabs is null)
+            throw new InvalidOperationException("TimeSlotTab must be placed inside a Tabs component");
+        
+        Tabs.AddTab(this);
+    }
+    
+}

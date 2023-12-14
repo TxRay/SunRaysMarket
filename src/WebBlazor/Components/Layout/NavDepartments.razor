@@ -1,0 +1,33 @@
+@using Application.DomainModels
+@using Application.Repositories
+@using Application.UnitOfWork
+@inject IServiceProvider ServiceProvider
+
+@if (Departments.Any())
+{
+    <ul class="nav__list">
+        @foreach (var department in Departments)
+        {
+            <li class="nav__item">
+                <NavLink href="@($"departments/{department.Slug}/{department.Id}")"
+                         class="nav__link">
+                    @department.Name
+                </NavLink>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<DepartmentListModel> Departments { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var scope = ServiceProvider.CreateScope();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+        if (unitOfWork is not null)
+            Departments = (await unitOfWork.DepartmentRepository.GetAllAsync()).ToList();
+    }
+
+}

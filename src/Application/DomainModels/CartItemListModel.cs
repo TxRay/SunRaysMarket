@@ -11,10 +11,9 @@ public class CartItemListModel : TimeStampBaseDomainModel
     public string ProductSlug { get; init; } = null!;
     public string ProductPhotoUrl { get; init; } = null!;
     public int Quantity { get; init; }
-    public float RegularPrice { private get; init; }
+    public float RegularPrice { get; init; }
     public float DiscountDecimal { private get; init; }
-    
-    public float ProductPrice => RegularPrice - (RegularPrice * DiscountDecimal);
-    
-    
+
+    public float Discount => RegularPrice * DiscountDecimal;
+    public float ProductPrice => RegularPrice - Discount;
 }

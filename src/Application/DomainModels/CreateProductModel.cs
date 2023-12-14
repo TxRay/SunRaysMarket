@@ -12,6 +12,6 @@ public class CreateProductModel
     public float DiscountPercent { get; init; }
     public float Measure { get; init; }
     public int UnitOfMeasureId { get; init; }
-    
+
     public float DiscountDecimal => DiscountPercent / 100;
 }

@@ -22,6 +22,12 @@ namespace Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.HasSequence("OrderNumbers")
+                .StartsAt(1000000000L);
+
+            modelBuilder.HasSequence("TransactionNumbers")
+                .StartsAt(1000000000L);
+
             modelBuilder.Entity("Infrastructure.Data.PersistenceModels.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -57,7 +63,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Address");
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("Infrastructure.Data.PersistenceModels.Cart", b =>
@@ -136,6 +142,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<int?>("CartId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("text");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -323,10 +332,18 @@ namespace Infrastructure.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("DeliveryAddressId")
+                        .HasColumnType("integer");
+
                     b.Property<float>("Discount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("real")
                         .HasDefaultValue(0f);
+
+                    b.Property<long>("OrderNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValueSql("nextval('\"OrderNumbers\"')");
 
                     b.Property<int>("OrderType")
                         .HasColumnType("integer");
@@ -363,6 +380,8 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DeliveryAddressId");
 
                     b.HasIndex("StoreId");
 
@@ -407,10 +426,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<float>("TotalPrice")
                         .HasColumnType("real");
-
-                    b.Property<string>("UnitOfMeasurement")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -637,6 +652,11 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -669,6 +689,9 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AddressId")
+                        .IsUnique();
+
                     b.ToTable("Stores");
                 });
 
@@ -683,8 +706,8 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
 
                     b.Property<int>("Filled")
                         .ValueGeneratedOnAdd()
@@ -743,15 +766,19 @@ namespace Infrastructure.Migrations
                     b.Property<float>("AmountPaid")
                         .HasColumnType("real");
 
-                    b.Property<int>("Code")
+                    b.Property<int>("BillingAddressId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ChargeNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("integer");
 
                     b.Property<int>("OrderId")
@@ -767,12 +794,19 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("TimeSlotId")
                         .HasColumnType("integer");
 
+                    b.Property<long>("TransactionNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValueSql("nextval('\"TransactionNumbers\"')");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BillingAddressId");
 
                     b.HasIndex("CustomerId");
 
@@ -1103,6 +1137,11 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("Infrastructure.Data.PersistenceModels.Address", "DeliveryAddress")
+                        .WithMany()
+                        .HasForeignKey("DeliveryAddressId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Infrastructure.Data.PersistenceModels.Store", "Store")
                         .WithMany("Orders")
                         .HasForeignKey("StoreId")
@@ -1116,6 +1155,8 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
+
+                    b.Navigation("DeliveryAddress");
 
                     b.Navigation("Store");
 
@@ -1225,9 +1266,8 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Infrastructure.Data.PersistenceModels.Address", "Address")
                         .WithOne()
-                        .HasForeignKey("Infrastructure.Data.PersistenceModels.Store", "Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("Infrastructure.Data.PersistenceModels.Store", "AddressId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Address");
                 });
@@ -1253,11 +1293,15 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Infrastructure.Data.PersistenceModels.Transaction", b =>
                 {
-                    b.HasOne("Infrastructure.Data.PersistenceModels.Customer", "Customer")
-                        .WithMany("Transactions")
-                        .HasForeignKey("CustomerId")
+                    b.HasOne("Infrastructure.Data.PersistenceModels.Address", "BillingAddress")
+                        .WithMany()
+                        .HasForeignKey("BillingAddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Infrastructure.Data.PersistenceModels.Customer", null)
+                        .WithMany("Transactions")
+                        .HasForeignKey("CustomerId");
 
                     b.HasOne("Infrastructure.Data.PersistenceModels.Order", "Order")
                         .WithMany("Transactions")
@@ -1269,7 +1313,7 @@ namespace Infrastructure.Migrations
                         .WithMany("Transactions")
                         .HasForeignKey("TimeSlotId");
 
-                    b.Navigation("Customer");
+                    b.Navigation("BillingAddress");
 
                     b.Navigation("Order");
                 });

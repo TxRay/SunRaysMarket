@@ -1,0 +1,37 @@
+@using Application.DomainModels
+@using Application.Utilities
+
+
+<a class="product-card">
+    <img class="product-card__img"
+         src="@Product.PhotoUrl"
+         alt=""
+         id="@($"productCardImage{Product.Id}")"/>
+    <h5 class="product-card__product-name "
+        id="@($"productCardHeading{Product.Id}")">
+        @Product.Name
+    </h5>
+    <p class="price price--vertical product-card__price">
+        <span class="price__amount--regular"> @Product.Price.ToCurrencyString() </span>
+    </p>
+    <p class="tag product-card__tag">@Product.DepartmentName</p>
+    <CartControls CssClasses="product-card__cart-controls"
+                  ProductId="@Product.Id"
+                  CartItemInfo="@CartItemInfo"/>
+</a>
+
+@code {
+
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    [Parameter]
+    public ProductListModel Product { get; set; } = null!;
+
+    [Parameter]
+    public IEnumerable<CartItemControlModel> CartItemInfoList { get; set; } = new List<CartItemControlModel>();
+
+    private CartItemControlModel? CartItemInfo 
+        => CartItemInfoList.FirstOrDefault(cartItemInfo => cartItemInfo.ProductId == Product.Id);
+
+}

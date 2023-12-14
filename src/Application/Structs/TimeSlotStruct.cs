@@ -1,8 +1,9 @@
 using System.Dynamic;
+using System.Text.Json.Serialization;
 
 namespace Application.Structs;
 
-public struct TimeSlotStruct
+public class TimeSlotStruct
 {
     public int DayOfWeek { get; init; }
     public int DayOfMonth { get; init; }
@@ -10,7 +11,7 @@ public struct TimeSlotStruct
     public int Year { get; init; }
     public TimeSlotRange TimeSlotRange { get; init; }
 
-    public static TimeSlotStruct Create(DateTime date, TimeSlotRange timeSlotRange) =>
+    public static TimeSlotStruct Create(DateOnly date, TimeSlotRange timeSlotRange) =>
         new()
         {
             DayOfWeek = (int)date.DayOfWeek,

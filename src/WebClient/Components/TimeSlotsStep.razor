@@ -1,0 +1,122 @@
+@using Application.Enums
+@using Application.Services
+@using Application.DomainModels
+@using WebClient.Models
+@inherits OwningComponentBase<ICheckoutService>
+@rendermode InteractiveAuto
+
+<WizardStep Name="time-slots">
+    <Tabs OnTabLoaded="OnTabLoaded" OnTabUnloaded="OnTabUnloaded">
+        <Tab Label="Pickup" @key="OrderType.Pickup">
+            @if (PickupModel is not null)
+            {
+                <EditForm EditContext="@PickupContext" FormName="TimeSlotStepForm">
+                    <InputRadioGroup @bind-Value="PickupModel!.SelectedTimeSlotId">
+                        @foreach (var timeSlot in PickupTimeSlots)
+                        {
+                            <div class="timeslot">
+                                <InputRadio Value="timeSlot.Id"/>
+                                <label>@timeSlot.TimeSlotDefinition.ToString()</label>
+                            </div>
+                        }
+                    </InputRadioGroup>
+                </EditForm>
+            }
+        </Tab>
+        <Tab Label="Delivery" @key="OrderType.Delivery">
+            @if (DeliveryModel is not null)
+            {
+                <EditForm EditContext="@DeliveryContext" FormName="TimeSlotStepForm">
+                    <InputRadioGroup @bind-Value="DeliveryModel!.SelectedTimeSlotId">
+                        @foreach (var timeSlot in DeliveryTimeSlots)
+                        {
+                            <div class="timeslot">
+                                <InputRadio Value="timeSlot.Id"/>
+                                <label>@timeSlot.TimeSlotDefinition.ToString()</label>
+                            </div>
+                        }
+                    </InputRadioGroup>
+                </EditForm>
+            }
+        </Tab>
+    </Tabs>
+</WizardStep>
+
+@code {
+    [CascadingParameter]
+    private IStore? Store { get; set; }
+    
+    [CascadingParameter]
+    private Wizard? Wizard { get; set; }
+
+    private IEnumerable<TimeSlotListModel> PickupTimeSlots { get; set; } = new List<TimeSlotListModel>();
+    private IEnumerable<TimeSlotListModel> DeliveryTimeSlots { get; set; } = new List<TimeSlotListModel>();
+    private TimeSlotStepModel? PickupModel { get; set; }
+    private TimeSlotStepModel? DeliveryModel { get; set; }
+    private EditContext? PickupContext { get; set; }
+    private EditContext? DeliveryContext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Store is null)
+            throw new InvalidOperationException("No store was found in the component tree.");
+        
+        Store.OnChange += StateHasChanged;
+
+        PickupTimeSlots = await Service.GetCheckoutTimeSlotsAsync(2, OrderType.Pickup);
+        DeliveryTimeSlots = await Service.GetCheckoutTimeSlotsAsync(2, OrderType.Delivery);
+    }
+
+    private async Task OnTabLoaded(string tabLabel)
+    {
+        switch (tabLabel)
+        {
+            case "Pickup":
+                PickupModel = await Store!.TryGetValueAsync<TimeSlotStepModel>("time-slots")
+                              ?? new TimeSlotStepModel();
+                PickupModel.SelectedOrderType = OrderType.Pickup;
+                PickupContext = new EditContext(PickupModel);
+                PickupContext.OnFieldChanged += PickupContext_OnFieldChanged;
+                Wizard?.DeactivateStep("delivery-info");
+                break;
+            case "Delivery":
+                DeliveryModel = await Store!.TryGetValueAsync<TimeSlotStepModel>("time-slots")
+                              ?? new TimeSlotStepModel();
+                DeliveryModel.SelectedOrderType = OrderType.Delivery;
+                DeliveryContext = new EditContext(DeliveryModel);
+                DeliveryContext.OnFieldChanged += DeliveryContext_OnFieldChanged;
+                break;
+        }
+    }
+
+    private async Task OnTabUnloaded(string tabLabel)
+    {
+        switch (tabLabel)
+        {
+            case "Pickup":
+                //await Store!.SetValueAsync("time-slots", PickupModel!);
+                PickupContext!.OnFieldChanged -= PickupContext_OnFieldChanged;
+                Wizard.ActivateStep("delivery-info");
+                break;
+            case "Delivery":
+                //await Store!.SetValueAsync("time-slots", DeliveryModel!);
+                DeliveryContext!.OnFieldChanged -= DeliveryContext_OnFieldChanged;
+                break;
+        }
+    }
+
+    private async void PickupContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        PickupModel = PickupContext!.Model as TimeSlotStepModel;
+        await Store!.SetValueAsync("time-slots", PickupModel!);
+        StateHasChanged();
+    }
+
+    private async void DeliveryContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        DeliveryModel = DeliveryContext!.Model as TimeSlotStepModel;
+        await Store!.SetValueAsync("time-slots", DeliveryModel!);
+        StateHasChanged();
+    }
+
+}

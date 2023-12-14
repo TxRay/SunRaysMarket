@@ -6,7 +6,5 @@ namespace Application.Auth;
 
 public interface ISignUpService
 {
-    Task<AuthResult> CustomerSignUpAsync(
-        SignUpModel signUpModel,
-        IEnumerable<Role> roles);
+    Task<AuthResult> CustomerSignUpAsync(SignUpModel signUpModel, IEnumerable<Role> roles);
 }

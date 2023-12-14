@@ -1,10 +1,38 @@
+@use "../abstracts/variables" as var;
+
+.auth {
+  &__close-btn {
+    grid-column: 1 / -1;
+    grid-row: header;
+    justify-self: end;
+    align-self: start;
+    
+    margin-right: var.$spacing-xs;
+    margin-top: var.$spacing-xs;
+  }
+  
+  &__title {
+    //grid-column: 1 / -1;
+    //grid-row: header;
+    justify-self: center;
+    align-self: center;
+    font-size: var.$fs-4xl;
+    font-weight: var.$weight-bold;
+    margin-top: var.$spacing-xs;
+    margin-left: var.$spacing-xs;
+  }
+}
+
 .login {
+  grid-template-columns: 1fr;
+  
   height: 75%;
-  width: 75%;
+  width: 50%;
   
 }
 
 .signup {
   height: 75%;
   width: 75%;
+  overflow: auto;
 }

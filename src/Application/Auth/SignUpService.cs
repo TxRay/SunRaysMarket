@@ -21,17 +21,6 @@ internal class SignUpService(
     )
     {
         logger.LogInformation("Creating user with email {Email}", signUpModel.Email);
-        
-        var validationResult = await validator.ValidateAsync(signUpModel);
-
-        if (!validationResult.IsValid)
-        {
-            logger.LogWarning(
-                "Failed to create user. Validation errors: {ValidationErrors}",
-                validationResult.Errors.Select(e => e.ErrorMessage)
-            );
-            return AuthResult.Failure(validationResult);
-        }
 
         var user = await userRepository.CreateUserAsync(signUpModel);
 
@@ -46,14 +35,15 @@ internal class SignUpService(
 
         if (rolesEnumerable.Any(r => r == Role.Customer))
         {
-            logger.LogInformation("Creating customer for user with email {Email}", signUpModel.Email);
+            logger.LogInformation(
+                "Creating customer for user with email {Email}",
+                signUpModel.Email
+            );
             await unitOfWork.CustomerRepository.CreateCustomerAsync(user.Id);
             await unitOfWork.SaveChangesAsync();
         }
-        
+
         logger.LogInformation("Successfully created user with email {Email}", signUpModel.Email);
         return AuthResult.Success(user);
     }
-
-    
 }

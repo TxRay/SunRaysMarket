@@ -4,7 +4,7 @@
   "description": "Sun Rays Market styles",
   "main": "index.js",
   "scripts": {
-    "watch:sass": "sass scss:../src/Web/wwwroot/css/dev -w",
+    "watch:sass": "sass scss:../src/WebBlazor/wwwroot/css/dev -w",
     "devserver": "live-server",
     "compile:sass": "sass scss/main.scss build/style.comp.css",
     "prefix:css": "postcss --use autoprefixer -b 'last 10 versions' build/style.comp.css -o build/style.prefix.css",

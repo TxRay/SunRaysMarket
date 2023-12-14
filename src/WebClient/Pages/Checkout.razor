@@ -1,0 +1,74 @@
+@using Application.Services
+@using WebClient.Models
+@using Application.DomainModels
+@using Application.DomainModels.Payment
+@using Application.Payment
+@inherits OwningComponentBase<ICheckoutService>
+@inject IStoreFactory StoreFactory
+@rendermode InteractiveAuto
+@page "/checkout/{step?}"
+
+<div class="checkout">
+    <CascadingValue Value="@Store">
+        <Wizard BaseRoute="checkout" ActiveStepName="@Step" OnSubmit="@OnSubmitAsync">
+            <TimeSlotsStep/>
+            <DeliveryInfo/>
+            <BillingInfoStep/>
+            <PaymentInfoStep/>
+        </Wizard>
+    </CascadingValue>
+</div>
+
+@code {
+    private IStore? Store { get; set; }
+
+    [Parameter] public string? Step { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Store = StoreFactory.Create<BrowserSessionStore>("checkout");
+    }
+
+    private async Task OnSubmitAsync()
+    {
+        var timeSlotsStepInfo = await Store!.TryGetValueAsync<TimeSlotStepModel>("time-slots") ?? new TimeSlotStepModel();
+        var deliveryAddress = await Store!.TryGetValueAsync<CreateAddressModel>("delivery-address");
+        var billingAddress = await Store!.TryGetValueAsync<CreateAddressModel>("billing-address") ?? new CreateAddressModel();
+        var paymentInfo = await Store!.TryGetValueAsync<PaymentInfoModel>("payment-info-step") ?? new PaymentInfoModel();
+
+        var (expiryMonth, expiryYear) = paymentInfo.ParseExpiry();
+        
+        var cardModel = new CreateCardModel
+        {
+            Name = paymentInfo.Name,
+            Number = paymentInfo.CardNumber,
+            ExpiryMonth = expiryMonth,
+            ExpiryYear = expiryYear,
+            Cvv = paymentInfo.Cvv
+        };
+        
+        await Service.CheckoutAsync(
+            timeSlotsStepInfo.SelectedTimeSlotId,
+            timeSlotsStepInfo.SelectedOrderType,
+            builder =>
+            {
+                Console.WriteLine("Invoking add billing address.");
+                builder.WithNewAddress(billingAddress);
+            },
+            builder => builder.WithCreditCard(
+                new CardDefinition(
+                    Name: paymentInfo.Name,
+                    Number: paymentInfo.CardNumber,
+                    Expiry: paymentInfo.Expiry,
+                    Cvc: paymentInfo.Cvv
+                    )
+                ),
+            builder =>
+            {
+                if(deliveryAddress is not null)
+                    builder.WithNewAddress(deliveryAddress);
+            }
+        );
+
+    }
+}

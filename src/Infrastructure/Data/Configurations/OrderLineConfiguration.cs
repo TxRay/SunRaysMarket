@@ -15,7 +15,6 @@ internal class OrderLineConfiguration : TimeStampBaseConfiguration<OrderLine>
 
         builder.Property(orderLine => orderLine.ItemId).IsRequired();
         builder.Property(orderLine => orderLine.OrderId).IsRequired();
-        builder.Property(orderLine => orderLine.UnitOfMeasurement).IsRequired();
         builder.Property(orderLine => orderLine.Quantity).IsRequired();
         builder.Property(orderLine => orderLine.Price).IsRequired();
         builder.Property(orderLine => orderLine.Discount).IsRequired();

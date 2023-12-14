@@ -15,7 +15,8 @@ internal class UnitOfMeasureRepository : IUnitOfMeasureRepository
     }
 
     public async Task<IEnumerable<UnitOfMeasureListModel>> GetAllAsync() =>
-        await _dbContext.UnitsOfMeasure
+        await _dbContext
+            .UnitsOfMeasure
             .OrderBy(uom => uom.Name)
             .Select(
                 uom =>

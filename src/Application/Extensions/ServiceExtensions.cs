@@ -10,26 +10,15 @@ public static class ServiceExtensions
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddValidatorsFromAssemblyContaining<SignUpService>();
-        services.AddAuthServices();
-        services.AddCustomerServices();
-        
-        return services;
-    }
-    
-    private static IServiceCollection AddAuthServices(this IServiceCollection services)
-    {
-        services.AddScoped<ILoginService, LoginService>();
-        services.AddScoped<ISignUpService, SignUpService>();
+        //services.AddAuthServices();
+        //services.AddCustomerServices();
+        services.AddScoped<IAddressService, AddressService>();
         services.AddScoped<IUserService, UserService>();
-        
-        
-        return services;
-    }
-    
-    private static IServiceCollection AddCustomerServices(this IServiceCollection services)
-    {
         services.AddScoped<ICustomerService, CustomerService>();
-        
+        services.AddScoped<ICheckoutService, CheckoutService>();
+        services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<ITransactionService, TransactionService>();
+
         return services;
     }
 }

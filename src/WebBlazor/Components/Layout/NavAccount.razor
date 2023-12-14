@@ -1,0 +1,47 @@
+@using Application.Utilities
+
+
+<div class="nav__account" id="navAccount">
+    @if (!UserIsAuthenticated)
+    {
+        <NavLink href="signup" class="nav__account-link">
+            <svg class="nav__account-icon">
+                <use href="/img/icons/solid.svg#user-plus"></use>
+            </svg>
+            <span>Sign Up</span>
+        </NavLink>
+
+        <NavLink href="login" class="nav__account-link" id="navAccountLogin">
+            <svg class="nav__account-icon">
+                <use href="/img/icons/solid.svg#right-to-bracket"></use>
+            </svg>
+            <span>Login</span>
+        </NavLink> 
+    }
+    else
+    {
+        <a class="nav__account-link"
+           href="/account">
+            <svg class="nav__account-icon">
+                <use href="/img/icons/solid.svg#user"></use>
+            </svg>
+            <span>Account</span>
+        </a>
+        <a href="" class="nav__account-link">
+            <svg class="nav__account-icon">
+                <use href="/img/icons/solid.svg#right-from-bracket"></use>
+            </svg>
+            <span>Logout</span>
+        </a>
+    }
+</div>
+
+@code {
+    [CascadingParameter]
+    public HttpContext? Context { get; set; }
+    
+    [Parameter]
+    public bool? IsAuthenticated { get; set; }
+
+    private bool UserIsAuthenticated => IsAuthenticated ?? Context is not null && Context.User.IsAuthenticated();
+}

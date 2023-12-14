@@ -17,7 +17,8 @@ internal class DepartmentRepository : IDepartmentRepository
     }
 
     public async Task<IEnumerable<DepartmentListModel>> GetAllAsync() =>
-        await _dbContext.Departments
+        await _dbContext
+            .Departments
             .Select(
                 d =>
                     new DepartmentListModel
@@ -34,10 +35,10 @@ internal class DepartmentRepository : IDepartmentRepository
         var department = new Department
         {
             Name = model.Name,
-            Slug =Slugs.CreateSlug(model.Name),
+            Slug = Slugs.CreateSlug(model.Name),
             Description = model.Description
         };
-        
+
         await _dbContext.Departments.AddAsync(department);
     }
 }

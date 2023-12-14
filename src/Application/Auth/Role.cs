@@ -6,7 +6,7 @@ public enum Role
     Customer,
     Employee,
     Manager
-    
+
     /*public static readonly string[] Roles =
     {
         "SuperAdmin",

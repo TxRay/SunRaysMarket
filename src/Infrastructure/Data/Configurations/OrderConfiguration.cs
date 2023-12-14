@@ -3,7 +3,6 @@ using Infrastructure.Data.Configurations.Base;
 using Infrastructure.Data.PersistenceModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Data.Configurations;
 
@@ -26,11 +25,22 @@ internal class OrderConfiguration : TimeStampBaseConfiguration<Order>
             )
             .IsUnique();
 
+        builder
+            .Property(x => x.OrderNumber)
+            .IsRequired()
+            .ValueGeneratedOnAdd()
+            .HasDefaultValueSql("nextval('\"OrderNumbers\"')");
         builder.Property(x => x.Subtotal).IsRequired().HasDefaultValue(0f);
         builder.Property(x => x.Discount).IsRequired().HasDefaultValue(0f);
         builder.Property(x => x.Tax).IsRequired().HasDefaultValue(0f);
         builder.Property(x => x.Total).IsRequired().HasDefaultValue(0f);
         builder.Property(order => order.Status).IsRequired().HasDefaultValue(OrderStatus.Received);
+
+        builder
+            .HasOne(order => order.DeliveryAddress)
+            .WithMany()
+            .HasForeignKey(order => order.DeliveryAddressId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(order => order.Customer)

@@ -1,0 +1,22 @@
+.tabs {
+
+}
+
+.tabs__controls {
+    display: flex;
+}
+
+.tabs__control-btn {
+    border: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+
+.tabs__control-btn--active {
+    border-bottom: 2px solid #1c2837;
+}
+
+.tab-content {
+    padding: 1rem;
+    border-top: none;
+}

@@ -4,6 +4,7 @@ namespace Application.UnitOfWork;
 
 public interface IUnitOfWork
 {
+    IAddressRepository AddressRepository { get; }
     public ICartRepository CartRepository { get; }
     public ICustomerRepository CustomerRepository { get; }
     public IDepartmentRepository DepartmentRepository { get; }
@@ -16,6 +17,6 @@ public interface IUnitOfWork
     public ITransactionRepository TransactionRepository { get; }
 
     public IUnitOfMeasureRepository UnitOfMeasureRepository { get; }
-    public IUserRepository UserRepository { get; }
+
     public Task<int> SaveChangesAsync();
 }

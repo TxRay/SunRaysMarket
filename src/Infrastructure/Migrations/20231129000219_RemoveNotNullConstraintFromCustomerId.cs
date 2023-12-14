@@ -16,7 +16,8 @@ namespace Infrastructure.Migrations
                 type: "integer",
                 nullable: true,
                 oldClrType: typeof(int),
-                oldType: "integer");
+                oldType: "integer"
+            );
         }
 
         /// <inheritdoc />
@@ -30,7 +31,8 @@ namespace Infrastructure.Migrations
                 defaultValue: 0,
                 oldClrType: typeof(int),
                 oldType: "integer",
-                oldNullable: true);
+                oldNullable: true
+            );
         }
     }
 }

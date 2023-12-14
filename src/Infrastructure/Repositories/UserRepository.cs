@@ -16,7 +16,8 @@ internal class UserRepository(
     private readonly RoleManager<IdentityRole<int>> _roleManager = roleManager;
 
     public async Task<UserDetailsModel?> GetUserByIdAsync(int id) =>
-        await userManager.Users
+        await userManager
+            .Users
             .Where(u => u.Id == id)
             .Select(
                 u =>
@@ -31,7 +32,8 @@ internal class UserRepository(
             .FirstOrDefaultAsync();
 
     public async Task<UserDetailsModel?> GetUserByEmailAsync(string email) =>
-        await userManager.Users
+        await userManager
+            .Users
             .Where(u => u.Email == email)
             .Select(
                 u =>
@@ -45,19 +47,20 @@ internal class UserRepository(
             )
             .FirstOrDefaultAsync();
 
-    public async Task<IEnumerable<UserListModel>> GetUsersAsync()
-    => await userManager.Users
-        .Select(
-            u =>
-                new UserListModel
-                {
-                    Id = u.Id,
-                    Email = u.Email!,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName,
-                }
-        )
-        .ToListAsync();
+    public async Task<IEnumerable<UserListModel>> GetUsersAsync() =>
+        await userManager
+            .Users
+            .Select(
+                u =>
+                    new UserListModel
+                    {
+                        Id = u.Id,
+                        Email = u.Email!,
+                        FirstName = u.FirstName,
+                        LastName = u.LastName,
+                    }
+            )
+            .ToListAsync();
 
     public async Task<UserDetailsModel?> CreateUserAsync(SignUpModel model)
     {
@@ -71,22 +74,22 @@ internal class UserRepository(
             },
             model.Password
         );
-        
+
         if (!result.Succeeded)
             return null;
-        
+
         return await GetUserByEmailAsync(model.Email);
     }
 
     public async Task AddUserRolesAsync(int userId, IEnumerable<Role> roles)
     {
         var user = await userManager.FindByIdAsync(userId.ToString());
-        
+
         if (user is null)
             return;
 
         var roleNames = roles.Select(r => r.ToString());
-        
+
         await userManager.AddToRolesAsync(user, roleNames);
     }
 
@@ -101,7 +104,6 @@ internal class UserRepository(
 
         if (user is not null)
             await userManager.DeleteAsync(user);
-        
     }
 
     public async Task<UserDetailsModel?> AuthenticateAsync(LoginModel model)
@@ -123,6 +125,4 @@ internal class UserRepository(
     {
         await signInManager.SignOutAsync();
     }
-
-    
 }

@@ -1,0 +1,95 @@
+@rendermode InteractiveAuto
+@using WebClient.Models
+@using Application.Enums
+@using Application.DomainModels
+@using Application.Services
+@inherits OwningComponentBase<ICheckoutService>
+
+
+<Tab Label="@Label">
+    @if (IsLoading || Model is null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <EditForm EditContext="@EditContext" FormName="TimeSlotStepForm">
+            <InputRadioGroup @bind-Value="Model!.SelectedTimeSlotId">
+                @foreach (var timeSlot in TimeSlots)
+                {
+                    <div class="timeslot">
+                        <InputRadio Value="timeSlot.Id"/>
+                        <label>@timeSlot.TimeSlotDefinition.ToString()</label>
+                    </div>
+                }
+            </InputRadioGroup>
+        </EditForm>
+    }
+</Tab>
+
+@code {
+
+    [CascadingParameter]
+    private IStore? Store { get; set; }
+
+    [CascadingParameter]
+    Tabs? Tabs { get; set; }
+
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public OrderType OrderType { get; set; }
+
+    private IEnumerable<TimeSlotListModel> TimeSlots { get; set; } = new List<TimeSlotListModel>();
+
+    private TimeSlotStepModel? Model { get; set; }
+
+    private EditContext EditContext { get; set; } = new(new TimeSlotStepModel());
+
+    private bool IsLoading { get; set; }
+
+        private const string Name = "TimeSlotStep";
+
+
+    protected override void OnInitialized()
+    {
+        if (Store is null)
+            throw new InvalidOperationException("No store was found");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model ??= Tabs!.IsCurrentTab(Label)
+            ? await Store!.TryGetValueAsync<TimeSlotStepModel>(Name) ?? new TimeSlotStepModel()
+            : new TimeSlotStepModel();
+        EditContext = new EditContext(Model);
+        
+        if(Tabs!.IsCurrentTab(Label))
+            EditContext.OnFieldChanged += EditContext_OnFieldChanged;
+
+        TimeSlots = await Service.GetCheckoutTimeSlotsAsync(2, OrderType);
+    }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        Model = Tabs!.IsCurrentTab(Label)
+            ? await Store!.TryGetValueAsync<TimeSlotStepModel>(Name) ?? new TimeSlotStepModel()
+            : new TimeSlotStepModel();
+        EditContext = new EditContext(Model);
+        
+        if(Tabs!.IsCurrentTab(Label))
+            EditContext.OnFieldChanged += EditContext_OnFieldChanged;
+
+    }
+
+    private async void EditContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        
+        Model = EditContext!.Model as TimeSlotStepModel;
+        await Store!.SetValueAsync(Name, Model!);
+        StateHasChanged();
+    }
+
+
+}

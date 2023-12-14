@@ -28,19 +28,37 @@ internal class CustomerService(IUnitOfWork unitOfWork, IUserService userService)
         await unitOfWork.SaveChangesAsync();
 
         var cartId = unitOfWork.CartRepository.GetPersistedCartId();
-        await AddCartToCustomerAsync(customerId, cartId);
+        await SaveCartAsync(customerId, cartId);
     }
 
-    public async Task AddCartToCustomerAsync(int customerId, int cartId)
+    private async Task SaveCartAsync(int customerId, int cartId)
     {
         await unitOfWork.CustomerRepository.AddCartToCustomerAsync(customerId, cartId);
         await unitOfWork.SaveChangesAsync();
     }
 
+    public async Task SaveCartAsync(ClaimsPrincipal user, int cartId)
+    {
+        var customerId =
+            await GetCurrentCustomerIdAsync(user)
+            ?? throw new NullReferenceException("Customer Id is null");
+
+        await SaveCartAsync(customerId, cartId);
+    }
+
     public async Task RemoveCartFromCustomerAsync(int customerId)
     {
-        var customer = unitOfWork.CustomerRepository.RemoveCartFromCustomerAsync(customerId);
+        await unitOfWork.CustomerRepository.RemoveCartFromCustomerAsync(customerId);
         await unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<string?> GetCustomerPaymentIdAsync(ClaimsPrincipal user)
+    {
+        var customerId = await GetCurrentCustomerIdAsync(user);
+
+        return customerId is null
+            ? null
+            : await unitOfWork.CustomerRepository.GetCustomerPaymentIdAsync(customerId.Value);
     }
 
     public async Task<int?> GetCustomerCartIdAsync(ClaimsPrincipal user)

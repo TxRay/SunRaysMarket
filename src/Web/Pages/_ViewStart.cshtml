@@ -1,4 +1,0 @@
-﻿@{
-    var routeUrl = ViewContext.RouteData.Values["Page"]?.ToString();
-    Layout = routeUrl?.StartsWith("/Admin") ?? false ? "_AdminLayout" : "_Layout";
-}

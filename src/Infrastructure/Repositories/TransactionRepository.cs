@@ -1,42 +1,147 @@
 using Application.DomainModels;
 using Application.Repositories;
+using Infrastructure.Data;
+using Infrastructure.Data.PersistenceModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-internal class TransactionRepository : ITransactionRepository
+internal class TransactionRepository(ApplicationDbContext dbContext) : ITransactionRepository
 {
-    public Task AddTransactionAsync(int customerId, CreateTransactionModel model)
+    public async Task AddTransactionAsync(CreateTransactionModel model)
     {
-        throw new NotImplementedException();
+        var newTransaction = new Transaction
+        {
+            OrderId = model.OrderId,
+            BillingAddressId = model.BillingAddressId,
+            Status = model.Status,
+            ChargeNumber = model.ChargeNumber,
+            PaymentMethod = model.PaymentMethod!,
+            AmountPaid = model.AmountPaid
+        };
+
+        await dbContext.Transactions.AddAsync(newTransaction);
     }
 
-    public Task<IEnumerable<TransactionDetailsModel>> GetTransactionsAsync(int customerId)
+    public async Task<IEnumerable<TransactionDetailsModel>> GetTransactionsAsync(int customerId) =>
+        await dbContext
+            .Transactions
+            .Include(t => t.Order)
+            .ThenInclude(o => o!.Customer)
+            .ThenInclude(c => c!.User)
+            .Include(t => t.Order)
+            .Where(t => t.Order!.CustomerId == customerId)
+            .Select(
+                t =>
+                    new TransactionDetailsModel
+                    {
+                        Id = t.Id,
+                        CustomerId = t.Order!.CustomerId,
+                        TransactionNumber = t.TransactionNumber,
+                        OrderNumber = t.Order!.OrderNumber,
+                        CustomerName =
+                            $"{t.Order!.Customer!.User!.FirstName} {t.Order!.Customer!.User!.LastName}",
+                        OrderId = t.OrderId,
+                        Status = t.Status,
+                        PaymentMethod = t.PaymentMethod,
+                        AmountPaid = t.AmountPaid,
+                    }
+            )
+            .ToListAsync();
+
+    public async Task<TransactionDetailsModel?> GetTransactionAsync(long transactionNumber) =>
+        await dbContext
+            .Transactions
+            .Include(t => t.Order)
+            .ThenInclude(t => t!.Customer)
+            .ThenInclude(c => c!.User)
+            .Where(t => t.TransactionNumber == transactionNumber)
+            .Select(
+                t =>
+                    new TransactionDetailsModel
+                    {
+                        Id = t.Id,
+                        CustomerId = t.Order!.CustomerId,
+                        TransactionNumber = t.TransactionNumber,
+                        OrderNumber = t.Order!.OrderNumber,
+                        CustomerName =
+                            $"{t.Order!.Customer!.User!.FirstName} {t.Order!.Customer!.User!.LastName}",
+                        OrderId = t.OrderId,
+                        Status = t.Status,
+                        PaymentMethod = t.PaymentMethod,
+                        AmountPaid = t.AmountPaid,
+                    }
+            )
+            .FirstOrDefaultAsync();
+
+    public async Task<TransactionDetailsModel?> GetTransactionAsync(int transactionId) =>
+        await dbContext
+            .Transactions
+            .Include(t => t.Order)
+            .ThenInclude(o => o!.Customer)
+            .ThenInclude(c => c!.User)
+            .Where(t => t.Id == transactionId)
+            .Select(
+                t =>
+                    new TransactionDetailsModel
+                    {
+                        Id = t.Id,
+                        CustomerId = t.Order!.CustomerId,
+                        TransactionNumber = t.TransactionNumber,
+                        OrderNumber = t.Order!.OrderNumber,
+                        CustomerName =
+                            $"{t.Order!.Customer!.User!.FirstName} {t.Order!.Customer!.User!.LastName}",
+                        OrderId = t.OrderId,
+                        Status = t.Status,
+                        PaymentMethod = t.PaymentMethod,
+                        AmountPaid = t.AmountPaid,
+                    }
+            )
+            .FirstOrDefaultAsync();
+
+    public async Task<bool> UpdateTransactionMethodAsync(int transactionId, string method)
     {
-        throw new NotImplementedException();
+        var transaction = await dbContext.Transactions.FindAsync(transactionId);
+
+        if (transaction is null)
+            return false;
+
+        transaction.PaymentMethod = method;
+
+        return true;
     }
 
-    public Task<TransactionDetailsModel> GetTransactionAsync(int customerId, int transactionId)
+    public async Task<bool> UpdateTransactionStatusAsync(int transactionId, int status)
     {
-        throw new NotImplementedException();
+        var transaction = await dbContext.Transactions.FindAsync(transactionId);
+
+        if (transaction is null)
+            return false;
+
+        transaction.Status = status;
+
+        return true;
     }
 
-    public Task UpdateTransactionMethodAsync(int transactionId, string method)
+    public async Task<bool> UpdateTransactionAmountAsync(int transactionId, float amount)
     {
-        throw new NotImplementedException();
+        var transaction = await dbContext.Transactions.FindAsync(transactionId);
+
+        if (transaction is null)
+            return false;
+
+        transaction.AmountPaid = amount;
+
+        return true;
     }
 
-    public Task UpdateTransactionStatusAsync(int transactionId, int status)
+    public async Task DeleteTransactionAsync(int transactionId)
     {
-        throw new NotImplementedException();
-    }
+        var transaction = await dbContext.Transactions.FindAsync(transactionId);
 
-    public Task UpdateTransactionAmountAsync(int transactionId, float amount)
-    {
-        throw new NotImplementedException();
-    }
+        if (transaction is null)
+            return;
 
-    public Task DeleteTransactionAsync(int transactionId)
-    {
-        throw new NotImplementedException();
+        dbContext.Transactions.Remove(transaction);
     }
 }

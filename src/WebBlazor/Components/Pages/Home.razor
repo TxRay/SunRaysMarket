@@ -1,0 +1,23 @@
+﻿@using WebBlazor.Components.Static
+@using Application.DomainModels
+@using Application.UnitOfWork
+@inherits OwningComponentBase<IUnitOfWork>
+
+@page "/"
+
+<AppPageTitle>Home</AppPageTitle>
+
+<main class="layout layout__full main-home">
+    <ProductSection Heading="Featured Products" FeaturedProducts="@Products"/>
+</main>
+
+@code {
+    
+    private List<ProductListModel> Products { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Products = (await Service.ProductRepository.GetAllAsync()).ToList();
+    }
+
+}

@@ -6,6 +6,7 @@ public interface ICartRepository
 {
     Task<CartDetailsModel?> GetCartDetailsAsync(int cartId, bool persist = false);
     Task<IEnumerable<CartItemListModel>> GetCartItemsAsync(int cartId);
+    Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync(int cartId);
     Task<CartItemControlModel?> GetCartItemControlInfoAsync(int cartId, int productId);
     Task<bool> CartExistsAsync(int cartId);
     Task CreateCartAsync(int? customerId, bool persist = false);
@@ -14,14 +15,13 @@ public interface ICartRepository
     Task RemoveItemFromCartAsync(int itemId);
     Task RemoveItemFromCartAsync(int cartId, int productId);
 
-    Task UpdateProductQuantityAsync(int itemId, int quantity);
+    Task UpdateProductQuantityAsync(int itemId, int quantity, bool persist = false);
     int GetPersistedCartId();
     CartDetailsModel GetPersistedCartDetails();
-    
+
     int GetPersistedCartItemId();
-    
+
     void ClearPersistedCart();
-    
-    void GetPersistedCartItem();
-    
+
+    int? GetPersistedCartItemQuantity();
 }

@@ -1,25 +1,66 @@
 using Application.DomainModels;
 using Application.Enums;
 using Application.Repositories;
+using Application.Structs;
+using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class TimeSlotRepository : ITimeSlotRepository
+internal class TimeSlotRepository(ApplicationDbContext dbContext) : ITimeSlotRepository
 {
-    public Task<IEnumerable<TimeSlotDefinitionListModel>> GetAllTimeSlotDefinitionsAsync(
+    public async Task<IEnumerable<TimeSlotDefinitionListModel>> GetAllTimeSlotDefinitionsAsync(
         OrderType orderType
-    )
-    {
-        throw new NotImplementedException();
-    }
+    ) =>
+        await dbContext
+            .TimeSlotDefinitions
+            .Where(tsd => tsd.OrderType == orderType)
+            .Select(
+                tsd =>
+                    new TimeSlotDefinitionListModel
+                    {
+                        Id = tsd.Id,
+                        TimeSlotRange = new TimeSlotRange
+                        {
+                            Start = new Time { Minutes = tsd.StartTimeMinutes },
+                            End = new Time { Minutes = tsd.EndTimeMinutes }
+                        }
+                    }
+            )
+            .ToListAsync();
 
-    public Task<IEnumerable<TimeSlotListModel>> GetAllTimeSlotsAsync(
+    public async Task<IEnumerable<TimeSlotListModel>> GetAllTimeSlotsAsync(
         int storeId,
         OrderType orderType
-    )
-    {
-        throw new NotImplementedException();
-    }
+    ) =>
+        await dbContext
+            .TimeSlots
+            .Include(ts => ts.TimeSlotDefinition)
+            .Where(ts => ts.StoreId == storeId && ts.TimeSlotDefinition.OrderType == orderType)
+            .Select(
+                ts =>
+                    new TimeSlotListModel
+                    {
+                        Id = ts.Id,
+                        TimeSlotDefinition = TimeSlotStruct.Create(
+                            ts.Date,
+                            new TimeSlotRange
+                            {
+                                Start = new Time
+                                {
+                                    Minutes = ts.TimeSlotDefinition.StartTimeMinutes
+                                },
+                                End = new Time { Minutes = ts.TimeSlotDefinition.EndTimeMinutes }
+                            }
+                        ),
+                        Availability = new TimeSlotAvailability
+                        {
+                            Capacity = ts.Capacity,
+                            Filled = ts.Filled
+                        }
+                    }
+            )
+            .ToListAsync();
 
     public Task<TimeSlotModel?> GetTimeSlotAsync(int timeSlotId, OrderType orderType)
     {

@@ -1,0 +1,86 @@
+@rendermode InteractiveAuto
+
+@if(TabsLoaded)
+{
+<div class="tabs">
+    <div class="tabs__controls">
+        @if (TabIndex.Any())
+        {
+            @foreach (var (index, tab) in TabIndex)
+            {
+                <button class="tabs__control-btn@(CurrentIndex == index ? "tabs__control-btn--active" : string.Empty)"
+                        @onclick="() => ChangeTab(index)">
+                    @tab.Label
+                </button>
+            }
+        }
+    </div>
+    <div class="tab-content">
+        <CascadingValue Value="@this">
+            @ChildContent
+        </CascadingValue>
+    </div>
+</div>
+}
+else
+{
+    <div class="tabs">
+        <div class="tabs__controls">
+            <button class="tabs__control-btn tabs__control-btn--active">
+                Loading...
+            </button>
+        </div>
+        <div class="tab-content">
+            <CascadingValue Value="@this">
+                @ChildContent
+            </CascadingValue>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnTabLoaded { get; set; }
+    
+    [Parameter]
+    public EventCallback<string> OnTabUnloaded { get; set; }
+
+    private Dictionary<string, Tab> TabIndex { get; set; } = new();
+
+    private string? CurrentIndex { get; set; } 
+    
+    internal bool TabsLoaded { get; private set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if(!firstRender) return;
+        
+        CurrentIndex = TabIndex.Keys.FirstOrDefault();
+        TabsLoaded = TabIndex.Any();
+        OnTabLoaded.InvokeAsync(CurrentIndex);
+        StateHasChanged();
+    }
+
+    protected internal void AddTab(Tab tab)
+    {
+        TabIndex.Add(tab.Label, tab);
+    }
+    
+    protected internal bool IsCurrentTab(string index) => CurrentIndex == index;
+
+    private void ChangeTab(string index)
+    {
+        if (index == CurrentIndex) return;
+        
+        OnTabUnloaded.InvokeAsync(CurrentIndex);
+        OnTabLoaded.InvokeAsync(index);
+        
+        CurrentIndex = index;
+        StateHasChanged();
+    }
+
+}

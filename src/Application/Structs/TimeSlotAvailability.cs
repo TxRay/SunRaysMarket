@@ -1,6 +1,6 @@
 namespace Application.Structs;
 
-public struct TimeSlotAvailability
+public class TimeSlotAvailability
 {
     public int Capacity { get; init; }
     public int Filled { get; init; }

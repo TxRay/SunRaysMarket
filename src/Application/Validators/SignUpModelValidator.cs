@@ -35,14 +35,8 @@ public class SignUpModelValidator : AbstractValidator<SignUpModel>
             .Equal(x => x.Password)
             .WithMessage("Confirm password must match password.");
 
-        RuleFor(x => x.FirstName)
-            .NotEmpty()
-            .WithMessage("First name is required.");
+        RuleFor(x => x.FirstName).NotEmpty().WithMessage("First name is required.");
 
-        RuleFor(x => x.LastName)
-            .NotEmpty()
-            .WithMessage("Last name is required.");
-
-
+        RuleFor(x => x.LastName).NotEmpty().WithMessage("Last name is required.");
     }
 }

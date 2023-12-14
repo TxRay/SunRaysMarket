@@ -37,7 +37,8 @@ internal class ImageRepository : IImageRepository
     }
 
     public async Task<string?> GetUrlAsync(Guid urlIdentifier) =>
-        await _dbContext.Images
+        await _dbContext
+            .Images
             .Where(i => i.UrlIdentifier == urlIdentifier)
             .Select(i => i.Url)
             .FirstOrDefaultAsync();
@@ -47,7 +48,8 @@ internal class ImageRepository : IImageRepository
         var handleSplit = urlHandle.Split(".");
         var urlIdentifier = Guid.Parse(handleSplit[0]);
 
-        return await _dbContext.Images
+        return await _dbContext
+            .Images
             .Where(i => i.UrlIdentifier == urlIdentifier)
             .Select(i => new ImageDownloadModel { ContentType = i.ContentType, Data = i.Data })
             .FirstOrDefaultAsync();

@@ -20,7 +20,8 @@ internal class ProductRepository : IProductRepository
     }
 
     public async Task<IEnumerable<ProductListModel>> GetAllAsync() =>
-        await _context.Products
+        await _context
+            .Products
             .Include(p => p.ProductType)
             .ThenInclude(pt => pt!.Department)
             .Include(p => p.InventoryItems)
@@ -43,7 +44,8 @@ internal class ProductRepository : IProductRepository
             .ToListAsync();
 
     public async Task<IEnumerable<ProductListModel>> GetAllAsync(string listTitle, int? storeId) =>
-        await _context.Lists
+        await _context
+            .Lists
             .Include(l => l.Products)
             .ThenInclude(p => p.ProductType)
             .ThenInclude(pt => pt!.Department)
@@ -75,7 +77,8 @@ internal class ProductRepository : IProductRepository
     }
 
     public async Task<IEnumerable<ProductListModel>> GetAllAsync(int departmentId) =>
-        await _context.Departments
+        await _context
+            .Departments
             .Include(d => d.ProductTypes)
             .ThenInclude(pt => pt.Products)
             .Where(d => d.Id == departmentId)
@@ -105,7 +108,8 @@ internal class ProductRepository : IProductRepository
     }
 
     public async Task<ProductDetailsModel?> GetAsync(int id) =>
-        await _context.Products
+        await _context
+            .Products
             .Include(p => p.ProductType)
             .ThenInclude(pt => pt!.Department)
             .Include(p => p.InventoryItems)

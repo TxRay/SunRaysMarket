@@ -1,0 +1,58 @@
+@using Application.DomainModels
+<WizardStep Name="delivery-info">
+    <EditForm EditContext="@EditContext" FormName="DeliveryAddressForm">
+        <div>
+            <label for="street">Street</label>
+            <InputText @bind-Value="@DeliveryAddress!.Street" id="street"/>
+        </div>
+        <div>
+            <label for="city">City</label>
+            <InputText @bind-Value="@DeliveryAddress!.City" id="city"/>
+        </div>
+        <div>
+            <label for="state">City</label>
+            <InputText @bind-Value="@DeliveryAddress!.State" id="state"/>
+        </div>
+        <div>
+            <label for="zip">Zip</label>
+            <InputText @bind-Value="@DeliveryAddress!.PostalCode" id="zip"/>
+        </div>
+        <div>
+            <label for="country">Country</label>
+            <InputText @bind-Value="@DeliveryAddress!.Country" id="country"/>
+        </div>
+    </EditForm>
+</WizardStep>
+
+@code {
+
+    [CascadingParameter] IStore? Store { get; set; }
+
+    private CreateAddressModel? DeliveryAddress { get; set; }
+    private EditContext? EditContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (Store is null)
+            throw new InvalidOperationException("No store was provided");
+
+        Store.OnChange += StateHasChanged;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        DeliveryAddress = await Store!.TryGetValueAsync<CreateAddressModel>("delivery-address")
+                          ?? new CreateAddressModel();
+        EditContext = new EditContext(DeliveryAddress);
+        EditContext.OnFieldChanged += EditContext__OnFieldChange;
+    }
+
+    private async void EditContext__OnFieldChange(object? sender, FieldChangedEventArgs e)
+    {
+        DeliveryAddress = EditContext!.Model as CreateAddressModel;
+        await Store!.SetValueAsync("delivery-address", DeliveryAddress);
+    }
+
+}

@@ -8,6 +8,7 @@ internal class Store : TimeStampBaseModel
     public string PhoneNumber { get; set; } = default!;
     public string EmailAddress { get; set; } = default!;
     public string ManagerName { get; set; } = default!;
+    public int? AddressId { get; set; }
 
     public Address? Address { get; set; }
 

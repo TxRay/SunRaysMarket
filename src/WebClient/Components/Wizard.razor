@@ -1,0 +1,132 @@
+@rendermode InteractiveAuto
+@using WebClient.Stores
+@inject IStoreFactory StoreFactory
+
+
+<div class="wizard">
+    <div class="wizard__content">
+        <CascadingValue Value="@this">
+            @ChildContent
+        </CascadingValue>
+    </div>
+</div>
+<div class="wizard__buttons">
+    <button class="btn btn--md btn--primary"
+            disabled="@(PreviousStepName is null)"
+            @onclick="PreviousStep">
+        Previous
+    </button>
+    <button class="btn btn--md btn--primary"
+            @onclick="NextStepOrSubmit">
+        @(NextStepName is not null ? "Next" : "Submit")
+    </button>
+</div>
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+    [Parameter]
+    public string? ActiveStepName { get; set; }
+
+    [Parameter, EditorRequired]
+    public string BaseRoute { get; set; } = null!;
+
+
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+
+    public IStore Store { get; private set; }
+
+    private List<string> StepNames { get; set; } = new();
+
+    private List<string> InactiveStepNames { get; set; } = new();
+
+    private string? NextStepName { get; set; }
+
+    private string? PreviousStepName { get; set; }
+
+
+    protected override void OnParametersSet()
+    {
+        Store = StoreFactory.Create<BrowserSessionStore>("BaseRoute:WizardModelStore");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender) return;
+        
+
+        ActiveStepName ??= StepNames.FirstOrDefault()
+                           ?? throw new InvalidOperationException("No steps defined");
+        UpdateStep(ActiveStepName);
+        StateHasChanged();
+    }
+
+    public void AddStep(string stepName) => StepNames.Add(stepName);
+
+    public void DeactivateStep(string stepName)
+    {
+        if (InactiveStepNames.Contains(stepName)) return;
+
+        InactiveStepNames.Add(stepName);
+        StateHasChanged();
+    }
+
+    public void ActivateStep(string stepName)
+    {
+        if (!InactiveStepNames.Contains(stepName)) return;
+
+        InactiveStepNames.Remove(stepName);
+        StateHasChanged();
+    }
+
+    public void Refresh() => StateHasChanged();
+    
+    internal bool IsStepActive(string stepName) => ActiveStepName == stepName;
+
+    private void UpdateStep(string newStepName)
+    {
+        Console.WriteLine(InactiveStepNames.FirstOrDefault(x=>x=="delivery-info"));
+        ActiveStepName = newStepName;
+        PreviousStepName = StepNames
+            .TakeWhile(x => x != ActiveStepName || InactiveStepNames.Contains(x))
+            .LastOrDefault(x => !InactiveStepNames.Contains(x));
+        NextStepName = StepNames
+            .SkipWhile(x => x != ActiveStepName)
+            .Skip(1)
+            .FirstOrDefault(x => !InactiveStepNames.Contains(x));
+        Console.WriteLine($"Active: {ActiveStepName}, Previous: {PreviousStepName}, Next: {NextStepName}");
+        StateHasChanged();
+    }
+
+    private void PreviousStep()
+    {
+        if (PreviousStepName is not null)
+            UpdateStep(PreviousStepName);
+    }
+
+    private void NextStepOrSubmit()
+    {
+        if (NextStepName is not null)
+            UpdateStep(NextStepName);
+        else
+            Submit();
+    }
+
+    private void NextStep()
+    {
+        if (NextStepName is not null)
+            UpdateStep(NextStepName);
+    }
+
+    private void Submit()
+    {
+        if (!OnSubmit.HasDelegate) return;
+
+        OnSubmit.InvokeAsync();
+    }
+
+}

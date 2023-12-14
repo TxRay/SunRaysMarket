@@ -13,6 +13,7 @@ internal class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>,
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
 
+    public DbSet<Address> Addresses { get; set; }
     public DbSet<Cart> Carts { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Customer> Customers { get; set; }
@@ -72,12 +73,16 @@ internal class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>,
 
         // Application Entity Model configuration
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+        // Generate sequences
+        builder.HasSequence<long>("OrderNumbers").StartsAt(1000000000).IncrementsBy(1);
+        builder.HasSequence<long>("TransactionNumbers").StartsAt(1000000000).IncrementsBy(1);
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(
             "Host=localhost; Database=srm_db;  User Id=srm_user; Password=Pass@123!"
         );
-    }
+    }*/
 }

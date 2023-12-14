@@ -1,0 +1,74 @@
+@inherits OwningComponentBase
+@using Application.DomainModels
+@using Application.Auth
+@inject IUserService UserService
+@page "/login"
+
+<AppPageTitle>Login</AppPageTitle>
+
+<main class="layout layout__full">
+    <h2 class="auth__title">Login</h2>
+    @if (!ShowLoginConfirmation)
+    {
+        <EditForm
+            class="form--auth"
+            method="post"
+            EditContext="@EditContext"
+            OnValidSubmit="LoginUserAsync"
+            FormName="loginForm">
+            <FluentValidationValidator />
+            <ValidationSummary/>
+            <div>
+                <InputText
+                    class="form__input"
+                    placeholder="Enter your email address"
+                    id="loginEmail"
+                    @bind-Value="@Model!.Email"/>
+                <label for="loginEmail" class="form__label">Email</label>
+            </div>
+
+            <div>
+                <InputText type="password"
+                           class="form__input"
+                           placeholder="Enter your password"
+                           id="loginPassword"
+                           @bind-Value="@Model!.Password"/>
+                <label for="loginPassword" class="form__label">Password</label>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--md" id="loginSubmit">Login</button>
+
+        </EditForm>
+    }
+    else
+    {
+        <div class="alert alert--success">
+            <p>You have successfully logged in!</p>
+        </div>
+    }
+
+</main>
+
+
+@code {
+
+    [SupplyParameterFromForm]
+    public LoginModel? Model { get; set; }
+
+    private EditContext? EditContext { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        Model ??= new LoginModel();
+        EditContext = new EditContext(Model);
+    }
+
+    private bool ShowLoginConfirmation { get; set; } = false;
+    
+    public async Task LoginUserAsync()
+    {
+        var loginResult = await UserService.LoginAsync(Model!);
+        ShowLoginConfirmation = loginResult.WasSuccessful;
+    }
+
+}

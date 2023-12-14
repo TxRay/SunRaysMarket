@@ -23,7 +23,8 @@ internal class ProductTypeRepository : IProductTypeRepository
     }
 
     public async Task<IEnumerable<ProductTypeDetailsModel>> GetAllAsync() =>
-        await _context.ProductTypes
+        await _context
+            .ProductTypes
             .Include(x => x.Department)
             .Select(
                 x =>
@@ -40,7 +41,8 @@ internal class ProductTypeRepository : IProductTypeRepository
             .ToListAsync();
 
     public async Task<ProductTypeDetailsModel?> GetAsync(int id) =>
-        await _context.ProductTypes
+        await _context
+            .ProductTypes
             .Where(p => p.Id == id)
             .Select(
                 p =>

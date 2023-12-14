@@ -6,7 +6,7 @@ internal class TimeSlot : BaseModel
 {
     public int StoreId { get; set; }
     public int TimeSlotDefinitionId { get; set; }
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     public int Capacity { get; set; }
 
