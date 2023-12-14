@@ -1,15 +1,34 @@
 using Application.Builders;
+using Application.Cookies;
 using Application.DomainModels;
 using Application.EndpointViewModels;
 using Application.Exceptions;
 using Application.Options;
 using Application.UnitOfWork;
+using Application.Utilities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services;
 
-internal class CartService(IUnitOfWork unitOfWork) : ICartService
+internal class CartService(IHttpContextAccessor httpContextAccessor, ICustomerService customerService, IUnitOfWork unitOfWork) : ICartService
 {
+    public async Task<CreateCartResponse> CreateCartAsync()
+    {
+        var httpContext = httpContextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        if (httpContext.User.IsAuthenticated())
+            await customerService.CreateCustomerCartAsync(httpContext.User);
+        else
+        {
+            await unitOfWork.CartRepository.CreateCartAsync(null, true);
+            await unitOfWork.SaveChangesAsync();
+        }
+
+        var cartId = unitOfWork.CartRepository.GetPersistedCartId();
+        httpContext.Response.Cookies.SetCartIdCookie(cartId);
+
+        return new CreateCartResponse { CartId = cartId };    }
+
     public Task<CartItemControlModel> GetCartItemInfoAsync(int cartItemId)
     {
         throw new NotImplementedException();

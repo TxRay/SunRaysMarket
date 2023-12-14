@@ -8,6 +8,18 @@ namespace WebClient.ProxyServices;
 
 internal class CartProxyService(HttpClient client) : ICartService
 {
+    public async Task<CreateCartResponse> CreateCartAsync()
+    => await client.PostAsync("api/cart/create", null)
+        .ContinueWith(
+            messageTask =>
+            {
+                var message = messageTask.Result;
+                message.EnsureSuccessStatusCode();
+                return message.Content.ReadFromJsonAsync<CreateCartResponse>();
+            }
+        ).Unwrap()
+        ?? throw new InvalidOperationException("CreateCartResponse was null");
+
     public Task<CartItemControlModel> GetCartItemInfoAsync(int cartItemId)
     {
         throw new NotImplementedException();

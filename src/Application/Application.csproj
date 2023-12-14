@@ -7,8 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
+        <HintPath>..\..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\8.0.0\ref\net8.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
+      </Reference>
       <Reference Include="Microsoft.AspNetCore.Http.Features">
-        <HintPath>..\..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\7.0.13\ref\net7.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+        <HintPath>..\..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\8.0.0\ref\net8.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
       </Reference>
       <Reference Include="Microsoft.EntityFrameworkCore">
         <HintPath>..\..\..\..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\8.0.0\lib\net8.0\Microsoft.EntityFrameworkCore.dll</HintPath>

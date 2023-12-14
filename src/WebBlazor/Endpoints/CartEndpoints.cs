@@ -29,21 +29,7 @@ public static class CartEndpoints
     {
         endpoints.MapPost(
             "/create",
-            async (HttpContext context, ICustomerService customerService, IUnitOfWork unitOfWork) =>
-            {
-                if (context.User.IsAuthenticated())
-                    await customerService.CreateCustomerCartAsync(context.User);
-                else
-                {
-                    await unitOfWork.CartRepository.CreateCartAsync(null, true);
-                    await unitOfWork.SaveChangesAsync();
-                }
-
-                var cartId = unitOfWork.CartRepository.GetPersistedCartId();
-                context.Response.Cookies.SetCartIdCookie(cartId);
-
-                return Results.Json(new CreateCartResponse { CartId = cartId });
-            }
+            async (ICartService cartService) => Results.Json(await cartService.CreateCartAsync())
         );
 
         return endpoints;

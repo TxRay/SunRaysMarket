@@ -81,7 +81,11 @@
     private bool ShowDecrementQuantityButton => CartItemInfo?.Quantity > 1;
     
    private async Task OnAddToCartClick()
-    {
+   {
+       Console.WriteLine("Current cart id: " + CartId);
+       //var createCartResponse = await Service.CreateCartAsync();
+       //CartId = createCartResponse.CartId; 
+       
         var response = await Service.AddItemToCartAsync(
             builder =>
             {
