@@ -12,7 +12,7 @@ public static class ServiceExtensions
         services.AddValidatorsFromAssemblyContaining<SignUpService>();
         //services.AddAuthServices();
         //services.AddCustomerServices();
-        services.AddScoped<ICartControlsService, CartControlService>();
+        services.AddScoped<ICartService, CartService>();
         services.AddScoped<IAddressService, AddressService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ICustomerService, CustomerService>();

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services;
 
-internal class CartControlService(IUnitOfWork unitOfWork) : ICartControlsService
+internal class CartService(IUnitOfWork unitOfWork) : ICartService
 {
     public Task<CartItemControlModel> GetCartItemInfoAsync(int cartItemId)
     {

@@ -17,7 +17,7 @@ public static class ServicesExtensions
     public static IServiceCollection AddWebClientOnlyServices(this IServiceCollection services)
     {
         services.AddScoped<IAddressService, AddressProxyService>();
-        services.AddScoped<ICartControlsService, CartControlsProxyService>();
+        services.AddScoped<ICartService, CartProxyService>();
         services.AddScoped<ICheckoutService, CheckoutProxyService>();
         services.AddScoped<IPaymentService, PaymentProxyService>();
 

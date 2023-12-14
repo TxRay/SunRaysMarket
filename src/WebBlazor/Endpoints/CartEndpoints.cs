@@ -95,7 +95,7 @@ public static class CartEndpoints
             async (
                 [FromBody] AddItemToCartCommand command,
                 HttpContext context,
-                ICartControlsService cartControlsService
+                ICartService cartControlsService
             ) =>
             {
                 var cartId = context.Request.Cookies.GetCartIdCookie();
@@ -124,13 +124,13 @@ public static class CartEndpoints
 
         endpoints.MapPost(
             "/remove-item",
-            ([FromBody] RemoveCartItemCommand command, ICartControlsService cartControlsService) =>
+            ([FromBody] RemoveCartItemCommand command, ICartService cartControlsService) =>
                 cartControlsService.RemoveItemAsync(command)
         );
 
         endpoints.MapPost(
             "/update-item-quantity",
-            async ([FromBody] UpdateCartItemQuantityCommand command, ICartControlsService cartControlsService) =>
+            async ([FromBody] UpdateCartItemQuantityCommand command, ICartService cartControlsService) =>
             Results.Json(await cartControlsService.UpdateQuantityAsync(command))
         );
 

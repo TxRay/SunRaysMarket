@@ -6,7 +6,7 @@ using Application.Services;
 
 namespace WebClient.ProxyServices;
 
-internal class CartControlsProxyService(HttpClient client) : ICartControlsService
+internal class CartProxyService(HttpClient client) : ICartService
 {
     public Task<CartItemControlModel> GetCartItemInfoAsync(int cartItemId)
     {
