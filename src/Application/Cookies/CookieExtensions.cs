@@ -1,7 +1,8 @@
 using System.Text.Json;
 using Application.Preferences;
+using Microsoft.AspNetCore.Http;
 
-namespace Web.Cookies;
+namespace Application.Cookies;
 
 public static class CookieExtensions
 {

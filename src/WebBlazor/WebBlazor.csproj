@@ -26,4 +26,8 @@
       <_ContentIncludedByDefault Remove="Components\Wizard\WizardStep.razor" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Components\Dynamic\" />
+    </ItemGroup>
+
 </Project>

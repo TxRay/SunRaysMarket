@@ -1,6 +1,6 @@
+using Application.Cookies;
 using Application.Services;
 using Application.Utilities;
-using Web.Cookies;
 
 namespace WebBlazor.Middleware;
 

@@ -1,10 +1,11 @@
+using Application.Cookies;
 using Application.EndpointViewModels;
+using Application.Exceptions;
 using Application.Services;
 using Application.UnitOfWork;
 using Application.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Web.Cookies;
 
 namespace WebBlazor.Endpoints;
 
@@ -94,8 +95,7 @@ public static class CartEndpoints
             async (
                 [FromBody] AddItemToCartCommand command,
                 HttpContext context,
-                ICustomerService customerService,
-                IUnitOfWork unitOfWork
+                ICartControlsService cartControlsService
             ) =>
             {
                 var cartId = context.Request.Cookies.GetCartIdCookie();
@@ -103,59 +103,35 @@ public static class CartEndpoints
                 if (cartId is null)
                     return Results.BadRequest("Cart not found.");
 
-                await unitOfWork
-                    .CartRepository
-                    .AddProductToCartAsync(cartId.Value, command.ProductId, command.Quantity, true);
-
                 try
                 {
-                    await unitOfWork.SaveChangesAsync();
-                }
-                catch (DbUpdateException)
-                {
-                    return Results.BadRequest(
-                        "Multiple items of the same product are not allowed in the same cart."
+                    return Results.Json(
+                        await cartControlsService.AddItemToCartAsync(
+                            builder =>
+                            {
+                                builder.WithCartId(cartId.Value);
+                                builder.WithCommand(command);
+                            }
+                        )
                     );
                 }
-
-                var cartItemId = unitOfWork.CartRepository.GetPersistedCartItemId();
-
-                return Results.Json(new AddItemToCartResponse { ItemId = cartItemId });
+                catch (AddItemFailedException exc)
+                {
+                    return Results.BadRequest(exc.Message);
+                }
             }
         );
 
         endpoints.MapPost(
             "/remove-item",
-            async ([FromBody] RemoveCartItemCommand command, IUnitOfWork unitOfWork) =>
-            {
-                await unitOfWork.CartRepository.RemoveItemFromCartAsync(command.ItemId);
-                await unitOfWork.SaveChangesAsync();
-
-                return Results.Ok();
-            }
+            ([FromBody] RemoveCartItemCommand command, ICartControlsService cartControlsService) =>
+                cartControlsService.RemoveItemAsync(command)
         );
 
         endpoints.MapPost(
             "/update-item-quantity",
-            async ([FromBody] UpdateCartItemQuantityCommand command, IUnitOfWork unitOfWork) =>
-            {
-                await unitOfWork
-                    .CartRepository
-                    .UpdateProductQuantityAsync(command.CartItemId, command.NewQuantity, true);
-                await unitOfWork.SaveChangesAsync();
-
-                var persistedQuantity = unitOfWork.CartRepository.GetPersistedCartItemQuantity();
-
-                return Results.Json(
-                    new UpdateCartItemQuantityResponse
-                    {
-                        UpdatedQuantity =
-                            persistedQuantity is null || persistedQuantity != command.NewQuantity
-                                ? command.OldQuantity
-                                : persistedQuantity.Value
-                    }
-                );
-            }
+            async ([FromBody] UpdateCartItemQuantityCommand command, ICartControlsService cartControlsService) =>
+            Results.Json(await cartControlsService.UpdateQuantityAsync(command))
         );
 
         return endpoints;
