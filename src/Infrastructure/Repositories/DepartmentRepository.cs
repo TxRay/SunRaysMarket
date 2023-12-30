@@ -31,16 +31,20 @@ internal class DepartmentRepository : IDepartmentRepository
             )
             .ToListAsync();
 
-    public async Task<UpdateDepartmentModel?> GetForEditAsync(int id) => await _dbContext.Departments
-        .Where(d => d.Id == id)
-        .Select(d => new UpdateDepartmentModel
-        {
-            Id = d.Id,
-            Name = d.Name,
-            Description = d.Description
-        })
-        .FirstOrDefaultAsync();
-
+    public async Task<UpdateDepartmentModel?> GetForEditAsync(int id) =>
+        await _dbContext
+            .Departments
+            .Where(d => d.Id == id)
+            .Select(
+                d =>
+                    new UpdateDepartmentModel
+                    {
+                        Id = d.Id,
+                        Name = d.Name,
+                        Description = d.Description
+                    }
+            )
+            .FirstOrDefaultAsync();
 
     public async Task CreateAsync(CreateDepartmentModel model)
     {
@@ -58,7 +62,8 @@ internal class DepartmentRepository : IDepartmentRepository
     {
         var department = await _dbContext.Departments.FindAsync(model.Id);
 
-        if (department is null) return;
+        if (department is null)
+            return;
 
         department.Name = model.Name;
         department.Slug = Slugs.CreateSlug(model.Name);
@@ -68,8 +73,8 @@ internal class DepartmentRepository : IDepartmentRepository
     public async Task DeleteAsync(int id)
     {
         var department = await _dbContext.Departments.FindAsync(id);
-        
-        if(department is not null)
+
+        if (department is not null)
             _dbContext.Remove(department);
     }
 }

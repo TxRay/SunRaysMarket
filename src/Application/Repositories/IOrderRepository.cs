@@ -7,7 +7,7 @@ public interface IOrderRepository
 {
     Task<OrderDetailsModel?> GetOrderDetailsAsync(int orderId);
     Task<OrderDetailsModel?> GetOrderDetailsAsync(long orderNumber);
-    
+
     Task<IEnumerable<OrderListModel>> GetOrdersAsync();
     Task<IEnumerable<OrderListModel>> GetOrdersAsync(int customerId);
     Task<IEnumerable<OrderLineListModel>> GetOrderLinesAsync(int orderId);

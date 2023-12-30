@@ -97,13 +97,14 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
             )
             .FirstOrDefaultAsync();
 
-    public async Task<IEnumerable<OrderListModel>> GetOrdersAsync()
-    => await dbContext.Orders
-        .Include(o => o.Customer)
-        .ThenInclude(c => c!.User)
-        .Include(o => o.Store)
-        .Include(o => o.TimeSlot)
-        .Select(
+    public async Task<IEnumerable<OrderListModel>> GetOrdersAsync() =>
+        await dbContext
+            .Orders
+            .Include(o => o.Customer)
+            .ThenInclude(c => c!.User)
+            .Include(o => o.Store)
+            .Include(o => o.TimeSlot)
+            .Select(
                 o =>
                     new OrderListModel
                     {

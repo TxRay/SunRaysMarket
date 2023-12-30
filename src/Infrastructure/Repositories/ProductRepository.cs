@@ -140,20 +140,24 @@ internal class ProductRepository : IProductRepository
             )
             .FirstOrDefaultAsync();
 
-    public async Task<CreateProductModel?> GetForEditAsync(int id)
-        => await _context.Products
+    public async Task<CreateProductModel?> GetForEditAsync(int id) =>
+        await _context
+            .Products
             .Where(p => p.Id == id)
-            .Select(p => new CreateProductModel
-            {
-                Name = p.Name,
-                Description = p.Description,
-                PhotoUrl = p.PhotoUrl,
-                DiscountPercent = p.DiscountPercent,
-                Measure = p.Measure,
-                Price = p.Price,
-                ProductTypeId = p.ProductTypeId,
-                UnitOfMeasureId = p.UnitOfMeasureId
-            })
+            .Select(
+                p =>
+                    new CreateProductModel
+                    {
+                        Name = p.Name,
+                        Description = p.Description,
+                        PhotoUrl = p.PhotoUrl,
+                        DiscountPercent = p.DiscountPercent,
+                        Measure = p.Measure,
+                        Price = p.Price,
+                        ProductTypeId = p.ProductTypeId,
+                        UnitOfMeasureId = p.UnitOfMeasureId
+                    }
+            )
             .FirstOrDefaultAsync();
 
     public Task CreateAsync(CreateProductModel model)
