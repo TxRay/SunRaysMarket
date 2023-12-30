@@ -1,0 +1,14 @@
+@using Application.Auth
+@inherits OwningComponentBase<IUserService>
+@page "/logout"
+
+@code {
+    [Inject] NavigationManager Navigation { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Service.LogoutAsync();
+        
+        Navigation.NavigateTo("/", true);
+    }
+}

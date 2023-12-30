@@ -15,6 +15,7 @@
             method="post"
             EditContext="@EditContext"
             OnValidSubmit="LoginUserAsync"
+            OnInvalidSubmit="OnInvalidSubmitAsync"
             FormName="loginForm">
             <FluentValidationValidator />
             <ValidationSummary/>
@@ -52,9 +53,9 @@
 
 @code {
 
-    [SupplyParameterFromForm]
-    public LoginModel? Model { get; set; }
-
+    [Inject] NavigationManager Navigation { get; set; } = default!;
+    [SupplyParameterFromForm] private LoginModel? Model { get; set; }
+    
     private EditContext? EditContext { get; set; }
     
     protected override void OnInitialized()
@@ -65,10 +66,15 @@
 
     private bool ShowLoginConfirmation { get; set; } = false;
     
-    public async Task LoginUserAsync()
+    private async Task LoginUserAsync()
     {
         var loginResult = await UserService.LoginAsync(Model!);
-        ShowLoginConfirmation = loginResult.WasSuccessful;
+        Navigation.NavigateTo("/", true);
+    }
+
+    private async Task OnInvalidSubmitAsync()
+    {
+        
     }
 
 }
