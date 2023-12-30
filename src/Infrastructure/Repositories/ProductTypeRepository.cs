@@ -57,6 +57,17 @@ internal class ProductTypeRepository : IProductTypeRepository
             )
             .FirstOrDefaultAsync();
 
+    public async Task<CreateProductTypeModel?> GetForEditAsync(int id)
+        => await _context.ProductTypes
+            .Where(pt => pt.Id == id)
+            .Select(pt => new CreateProductTypeModel
+            {
+                DepartmentId = pt.DepartmentId,
+                Description = pt.Description,
+                Name = pt.Name
+            })
+            .FirstOrDefaultAsync();
+
     public Task CreateAsync(CreateProductTypeModel model)
     {
         var productType = new ProductType

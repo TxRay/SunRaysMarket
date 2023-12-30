@@ -1,0 +1,57 @@
+@using Application.UnitOfWork
+@using Application.DomainModels
+@using Application.Utilities
+@inherits OwningComponentBase<IUnitOfWork>
+@page "/admin/products"
+
+<SectionContent SectionName="page-title">@PageTitle</SectionContent>
+
+
+<div class="layout__content">
+    <a href="/admin/products/create" class="btn btn--primary">
+        Add Product
+    </a>
+</div>
+
+<div class="layout__content">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Regular Price</th>
+            <th>Sale Price</th>
+            <th>Department</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var product in Products)
+        {
+            <tr>
+                <td>@product.Id</td>
+                <td>@product.Name</td>
+                <td>@product.Price.ToCurrencyString()</td>
+                <td>@product.SalePrice.ToCurrencyString()</td>
+                <td>@product.DepartmentName</td>
+                <td>
+                    <NavLink href=@($"/admin/products/edit/{product.Id}")>Edit</NavLink> |
+                    <NavLink href=@($"/admin/products/delete/{product.Id}")>Delete</NavLink>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private IEnumerable<ProductListModel> Products { get; set; } = new List<ProductListModel>();
+
+    private const string PageTitle = "Products List";
+
+    protected override async Task OnInitializedAsync()
+    {
+       Products = await Service.ProductRepository.GetAllAsync();
+    }
+
+}

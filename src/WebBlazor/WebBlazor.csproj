@@ -24,6 +24,9 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Components\Wizard\Wizard.razor" />
       <_ContentIncludedByDefault Remove="Components\Wizard\WizardStep.razor" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\dev\components\card.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\dev\components\modal.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\dev\components\quantity.css.map" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,0 +1,43 @@
+@using Microsoft.AspNetCore.Components.Sections
+@inherits LayoutComponentBase
+
+<div class="layout layout--admin">
+    <header class="layout layout__full admin-header">
+        <h1 class="admin-header__heading">
+            <SectionOutlet SectionName="page-title" />
+        </h1>
+    </header>
+    <div class="admin-sidebar">
+        <ul class="admin-sidebar__menu">
+            <li class="admin-sidebar__item">
+                <NavLink href="/admin/carts" class="admin-sidebar__link">Carts</NavLink>
+            </li>
+            <li class="admin-sidebar__item">
+                <NavLink href="/admin/departments" class="admin-sidebar__link">Departments</NavLink>
+            </li>
+            <li class="admin-sidebar__item">
+                <NavLink href="/admin/orders" class="admin-sidebar__link">Orders</NavLink>
+            </li>
+            <li class="admin-sidebar__item">
+                <a href="/admin/products" class="admin-sidebar__link">ProductLists</a>
+            </li>
+            <li class="admin-sidebar__item">
+                <a href="/admin/products" class="admin-sidebar__link">Products</a>
+            </li>
+            <li class="admin-sidebar__item">
+                <a href="/admin/product-types" class="admin-sidebar__link">Product Type</a>
+            </li>
+            <li class="admin-sidebar__item">
+                <a href="/admin/users" class="admin-sidebar__link">User</a>
+            </li>
+        </ul>
+    </div>
+    <div class="admin-content">
+        @Body
+    </div>
+</div>
+
+
+@code {
+    
+}

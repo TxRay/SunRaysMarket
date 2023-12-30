@@ -10,6 +10,7 @@ public interface IProductRepository
     Task<IEnumerable<ProductListModel>> GetAllAsync(int departmentId);
     Task<IEnumerable<ProductListModel>> GetAllSearchAsync(string searchQuery);
     Task<ProductDetailsModel?> GetAsync(int id);
+    Task<CreateProductModel?> GetForEditAsync(int id);
     Task CreateAsync(CreateProductModel model);
     Task UpdateAsync(UpdateProductModel model);
     Task DeleteAsync(int id);

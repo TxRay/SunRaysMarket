@@ -97,6 +97,42 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
             )
             .FirstOrDefaultAsync();
 
+    public async Task<IEnumerable<OrderListModel>> GetOrdersAsync()
+    => await dbContext.Orders
+        .Include(o => o.Customer)
+        .ThenInclude(c => c!.User)
+        .Include(o => o.Store)
+        .Include(o => o.TimeSlot)
+        .Select(
+                o =>
+                    new OrderListModel
+                    {
+                        Id = o.Id,
+                        CustomerId = o.CustomerId,
+                        CustomerName = o.Customer!.User!.FirstName,
+                        StoreId = o.StoreId,
+                        DeliveryAddressId = o.DeliveryAddressId,
+                        StoreName = o.Store!.LocationName,
+                        TimeSlot = TimeSlotStruct.Create(
+                            o.TimeSlot!.Date,
+                            new TimeSlotRange
+                            {
+                                Start = new Time
+                                {
+                                    Minutes = o.TimeSlot!.TimeSlotDefinition!.StartTimeMinutes
+                                },
+                                End = new Time
+                                {
+                                    Minutes = o.TimeSlot.TimeSlotDefinition.EndTimeMinutes
+                                }
+                            }
+                        ),
+                        Total = o.Total,
+                        Status = o.Status
+                    }
+            )
+            .ToListAsync();
+
     public async Task<IEnumerable<OrderListModel>> GetOrdersAsync(int customerId) =>
         await dbContext
             .Orders

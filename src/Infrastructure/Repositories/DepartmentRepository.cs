@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.ComTypes;
 using Application.DomainModels;
 using Application.Repositories;
 using Application.Utilities;
@@ -30,6 +31,17 @@ internal class DepartmentRepository : IDepartmentRepository
             )
             .ToListAsync();
 
+    public async Task<UpdateDepartmentModel?> GetForEditAsync(int id) => await _dbContext.Departments
+        .Where(d => d.Id == id)
+        .Select(d => new UpdateDepartmentModel
+        {
+            Id = d.Id,
+            Name = d.Name,
+            Description = d.Description
+        })
+        .FirstOrDefaultAsync();
+
+
     public async Task CreateAsync(CreateDepartmentModel model)
     {
         var department = new Department
@@ -40,5 +52,24 @@ internal class DepartmentRepository : IDepartmentRepository
         };
 
         await _dbContext.Departments.AddAsync(department);
+    }
+
+    public async Task UpdateAsync(UpdateDepartmentModel model)
+    {
+        var department = await _dbContext.Departments.FindAsync(model.Id);
+
+        if (department is null) return;
+
+        department.Name = model.Name;
+        department.Slug = Slugs.CreateSlug(model.Name);
+        department.Description = model.Description;
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        var department = await _dbContext.Departments.FindAsync(id);
+        
+        if(department is not null)
+            _dbContext.Remove(department);
     }
 }
