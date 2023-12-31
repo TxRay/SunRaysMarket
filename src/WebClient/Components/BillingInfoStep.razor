@@ -1,6 +1,7 @@
 @using Application.DomainModels
+@rendermode InteractiveAuto
 
-<WizardStep Name="billing-info">
+<WizardStep Name="billing-info" Title="Billing Information">
     <EditForm EditContext="@EditContext" FormName="BillingAddressForm">
         <div>
             <label for="street">Street</label>

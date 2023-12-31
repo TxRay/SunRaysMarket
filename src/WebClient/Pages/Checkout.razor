@@ -8,9 +8,9 @@
 @rendermode InteractiveAuto
 @page "/checkout/{step?}"
 
-<div class="checkout">
+<div class="layout__content ">
     <CascadingValue Value="@Store">
-        <Wizard BaseRoute="checkout" ActiveStepName="@Step" OnSubmit="@OnSubmitAsync">
+        <Wizard BaseRoute="/checkout" ActiveStepName="@Step" OnSubmit="@OnSubmitAsync">
             <TimeSlotsStep/>
             <DeliveryInfo/>
             <BillingInfoStep/>

@@ -5,7 +5,7 @@
 @inherits OwningComponentBase<ICheckoutService>
 @rendermode InteractiveAuto
 
-<WizardStep Name="time-slots">
+<WizardStep Name="time-slots" Title="Time Slot Selection">
     <Tabs OnTabLoaded="OnTabLoaded" OnTabUnloaded="OnTabUnloaded">
         <Tab Label="Pickup" @key="OrderType.Pickup">
             @if (PickupModel is not null)
@@ -49,8 +49,8 @@
     [CascadingParameter]
     private Wizard? Wizard { get; set; }
 
-    private IEnumerable<TimeSlotListModel> PickupTimeSlots { get; set; } = new List<TimeSlotListModel>();
-    private IEnumerable<TimeSlotListModel> DeliveryTimeSlots { get; set; } = new List<TimeSlotListModel>();
+    private IEnumerable<TimeSlotListModel> PickupTimeSlots { get; set; } = [];
+    private IEnumerable<TimeSlotListModel> DeliveryTimeSlots { get; set; } = [];
     private TimeSlotStepModel? PickupModel { get; set; }
     private TimeSlotStepModel? DeliveryModel { get; set; }
     private EditContext? PickupContext { get; set; }

@@ -3,21 +3,20 @@
 @if (Parent.IsStepActive(Name))
 {
     <div class="wizard-step">
-            @ChildContent
+        <h3 class="wizard-step__title">@Title</h3>
+        @ChildContent
     </div>
 }
 
 @code {
 
-    [CascadingParameter, EditorRequired]
-    protected internal Wizard Parent { get; set; } = null!;
+    [CascadingParameter, EditorRequired] protected internal Wizard Parent { get; set; } = null!;
 
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    [Parameter, EditorRequired]
-    public string Name { get; set; } = null!;
-    
+    [Parameter, EditorRequired] public string Name { get; set; } = null!;
+
+    [Parameter, EditorRequired] public string Title { get; set; } = null!;
  
     protected override void OnInitialized()
     {
@@ -26,5 +25,6 @@
 
         Parent.AddStep(Name);
     }
-
+    
+    protected override bool ShouldRender() => Parent.IsStepActive(Name);
 }

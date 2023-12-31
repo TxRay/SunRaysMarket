@@ -1,6 +1,7 @@
 @rendermode InteractiveAuto
 @using WebClient.Stores
 @inject IStoreFactory StoreFactory
+@inject NavigationManager Navigation
 
 
 <div class="wizard">
@@ -9,40 +10,39 @@
             @ChildContent
         </CascadingValue>
     </div>
+    <div class="wizard__buttons">
+        @if (PreviousStepName is not null)
+        {
+            <button class="btn btn--md btn--primary"
+                    disabled="@(PreviousStepName is null)"
+                    @onclick="GoToPreviousStep">
+                Previous
+            </button>
+        }
+        <button class="btn btn--md btn--primary"
+                @onclick="GoToNextStepOrSubmit">
+            @(NextStepName is not null ? "Next" : "Submit")
+        </button>
+    </div>
 </div>
-<div class="wizard__buttons">
-    <button class="btn btn--md btn--primary"
-            disabled="@(PreviousStepName is null)"
-            @onclick="PreviousStep">
-        Previous
-    </button>
-    <button class="btn btn--md btn--primary"
-            @onclick="NextStepOrSubmit">
-        @(NextStepName is not null ? "Next" : "Submit")
-    </button>
-</div>
+
 
 @code {
+    [Parameter] public RenderFragment ChildContent { get; set; } = null!;
 
-    [Parameter]
-    public RenderFragment ChildContent { get; set; } = null!;
+    [Parameter] public string? ActiveStepName { get; set; }
 
-    [Parameter]
-    public string? ActiveStepName { get; set; }
-
-    [Parameter, EditorRequired]
-    public string BaseRoute { get; set; } = null!;
+    [Parameter, EditorRequired] public string BaseRoute { get; set; } = null!;
 
 
-    [Parameter]
-    public EventCallback OnSubmit { get; set; }
+    [Parameter] public EventCallback OnSubmit { get; set; }
 
 
     public IStore Store { get; private set; }
 
-    private List<string> StepNames { get; set; } = new();
+    private List<string> StepNames { get; set; } = [];
 
-    private List<string> InactiveStepNames { get; set; } = new();
+    private List<string> InactiveStepNames { get; set; } = [];
 
     private string? NextStepName { get; set; }
 
@@ -57,21 +57,29 @@
     protected override void OnAfterRender(bool firstRender)
     {
         if (!firstRender) return;
-        
+
 
         ActiveStepName ??= StepNames.FirstOrDefault()
-                           ?? throw new InvalidOperationException("No steps defined");
-        UpdateStep(ActiveStepName);
+                           ?? throw new InvalidOperationException("No steps were defined");
+        UpdateNextAndPrevious();
         StateHasChanged();
     }
 
-    public void AddStep(string stepName) => StepNames.Add(stepName);
+    public void AddStep(string stepName)
+    {
+        if (!StepNames.Contains(stepName))
+            StepNames.Add(stepName);
+    }
 
     public void DeactivateStep(string stepName)
     {
+        if (stepName == ActiveStepName)
+            throw new InvalidOperationException("The currently active step cannot be deactivated.");
+
         if (InactiveStepNames.Contains(stepName)) return;
 
         InactiveStepNames.Add(stepName);
+        UpdateNextAndPrevious();
         StateHasChanged();
     }
 
@@ -80,46 +88,46 @@
         if (!InactiveStepNames.Contains(stepName)) return;
 
         InactiveStepNames.Remove(stepName);
+        UpdateNextAndPrevious();
         StateHasChanged();
     }
 
     public void Refresh() => StateHasChanged();
-    
+
+    internal void NavigateToStep(string routeParam)
+    {
+        Navigation.NavigateTo($"{BaseRoute}/{routeParam}");
+    }
+
     internal bool IsStepActive(string stepName) => ActiveStepName == stepName;
 
-    private void UpdateStep(string newStepName)
+    private void UpdateNextAndPrevious()
     {
-        Console.WriteLine(InactiveStepNames.FirstOrDefault(x=>x=="delivery-info"));
-        ActiveStepName = newStepName;
-        PreviousStepName = StepNames
-            .TakeWhile(x => x != ActiveStepName || InactiveStepNames.Contains(x))
-            .LastOrDefault(x => !InactiveStepNames.Contains(x));
-        NextStepName = StepNames
-            .SkipWhile(x => x != ActiveStepName)
+        var enabledStepNames = StepNames.Where(sn => !InactiveStepNames.Contains(sn));
+        var stepNames = enabledStepNames as string[] ?? enabledStepNames.ToArray();
+
+        PreviousStepName = stepNames
+            .TakeWhile(sn => sn != ActiveStepName)
+            .LastOrDefault();
+        Console.WriteLine($"Active Step Name = {ActiveStepName}");
+        Console.WriteLine($"Previous Step Name = {PreviousStepName}");
+
+        NextStepName = stepNames
+            .SkipWhile(sn => sn != ActiveStepName)
             .Skip(1)
-            .FirstOrDefault(x => !InactiveStepNames.Contains(x));
-        Console.WriteLine($"Active: {ActiveStepName}, Previous: {PreviousStepName}, Next: {NextStepName}");
-        StateHasChanged();
+            .FirstOrDefault();
     }
 
-    private void PreviousStep()
+    private void GoToPreviousStep()
     {
         if (PreviousStepName is not null)
-            UpdateStep(PreviousStepName);
+            NavigateToStep(PreviousStepName);
     }
 
-    private void NextStepOrSubmit()
+    private void GoToNextStep()
     {
         if (NextStepName is not null)
-            UpdateStep(NextStepName);
-        else
-            Submit();
-    }
-
-    private void NextStep()
-    {
-        if (NextStepName is not null)
-            UpdateStep(NextStepName);
+            NavigateToStep(NextStepName);
     }
 
     private void Submit()
@@ -127,6 +135,14 @@
         if (!OnSubmit.HasDelegate) return;
 
         OnSubmit.InvokeAsync();
+    }
+
+    private void GoToNextStepOrSubmit()
+    {
+        if (NextStepName is not null)
+            GoToNextStep();
+        else
+            Submit();
     }
 
 }

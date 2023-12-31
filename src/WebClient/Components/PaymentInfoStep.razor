@@ -1,6 +1,8 @@
 @using Application.DomainModels.Payment
 @using Application.DomainModels.Checkout
-<WizardStep Name="payment-info">
+@rendermode InteractiveAuto
+
+<WizardStep Name="payment-info" Title="Payment Information">
     <EditForm EditContext="@EditContext">
         <div>
             <label for="card-number">Card Number</label>

@@ -7,8 +7,7 @@
 @rendermode InteractiveAuto
 
 <div class="@CssClasses"
-     id="cartControls-@_uniqueIdSuffix"
-    >
+     id="cartControls-@_uniqueIdSuffix">
 
     @if (ShowAddToCartButton)
     {
@@ -31,17 +30,17 @@
                         <svg class="quantity__icon">
                             <use href="/img/icons/solid.svg#minus"></use>
                         </svg>
-                    </button>  
+                    </button>
                 }
                 else
                 {
-                    <button class="quantity__btn" 
+                    <button class="quantity__btn"
                             id="removeFromCartBtn-@_uniqueIdSuffix"
                             @onclick="OnRemoveFromCartClick">
                         <svg class="quantity__icon">
                             <use href="/img/icons/solid.svg#trash"></use>
                         </svg>
-                    </button> 
+                    </button>
                 }
 
                 <input type="number"
@@ -77,15 +76,15 @@
     private readonly string _uniqueIdSuffix = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
 
     private bool ShowAddToCartButton => CartItemInfo is null;
-    
+
     private bool ShowDecrementQuantityButton => CartItemInfo?.Quantity > 1;
-    
-   private async Task OnAddToCartClick()
-   {
-       Console.WriteLine("Current cart id: " + CartId);
-       //var createCartResponse = await Service.CreateCartAsync();
-       //CartId = createCartResponse.CartId; 
-       
+
+    private async Task OnAddToCartClick()
+    {
+        Console.WriteLine("Current cart id: " + CartId);
+        //var createCartResponse = await Service.CreateCartAsync();
+        //CartId = createCartResponse.CartId; 
+
         var response = await Service.AddItemToCartAsync(
             builder =>
             {
@@ -117,16 +116,14 @@
 
     private async Task OnRemoveFromCartClick()
     {
-
         Console.WriteLine("OnRemoveFromCartClick called for cart item id: " + CartItemInfo?.Id ?? "null");
         await Service.RemoveItemAsync(
             new RemoveCartItemCommand
             {
                 ItemId = CartItemInfo?.Id ?? 0
             });
-        
-        CartItemInfo = null;
 
+        CartItemInfo = null;
     }
 
     private async Task OnQuantityChange(ChangeEventArgs eventArgs)
@@ -149,10 +146,10 @@
     private async Task OnDecrementQuantityClick()
     {
         if (CartItemInfo is null || CartItemInfo.Quantity == 1) return;
-        
+
         var oldQuantity = CartItemInfo.Quantity;
         CartItemInfo.Quantity = CartItemInfo.Quantity > 1 ? CartItemInfo.Quantity - 1 : 1;
-        
+
         var result = await UpdateQuantityAsync(
             CartItemInfo.Id,
             oldQuantity,
@@ -185,6 +182,6 @@
             oldQuantity,
             CartItemInfo.Quantity
         );
-
     }
+
 }

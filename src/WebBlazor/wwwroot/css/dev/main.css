@@ -615,6 +615,36 @@ body {
   padding: 0.2rem 0.75rem;
 }
 
+.wizard {
+  display: grid;
+  grid-template-columns: [content-start] 1fr [conent-end info-start] min-content [info-end];
+  column-gap: 4rem;
+  grid-template-rows: [content-start info-start] min-content [info-end buttons-start] 1fr [buttons-end content-end];
+  margin-top: 9.6rem;
+}
+.wizard__content {
+  grid-column: 1/2;
+  grid-row: 1/-1;
+}
+.wizard__buttons {
+  grid-column: 2/-1;
+  grid-row: 2/-1;
+  align-self: start;
+  justify-self: start;
+  display: flex;
+  gap: 2.4rem;
+}
+
+.wizard-step {
+  display: flex;
+  flex-direction: column;
+  gap: 3.2rem;
+}
+.wizard-step__title {
+  font-size: 3rem;
+  align-self: center;
+}
+
 .admin-page {
   grid-row: header;
   row-gap: 9.6rem;
