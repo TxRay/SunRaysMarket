@@ -1,0 +1,22 @@
+@using Application.Services
+@using Application.DomainModels
+@inherits OwningComponentBase<IProductService>
+@page "/Departments/{slug}/{id:int}"
+
+
+<main class="layout layout__full">
+    <ProductSection Heading="Featured Products" FeaturedProducts="@Products" />
+</main>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [Parameter] public string Slug { get; set; } = string.Empty;
+
+    private IEnumerable<ProductListModel> Products { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        Products = await Service.GetAllProductsAsync(Id);
+    }
+
+}
