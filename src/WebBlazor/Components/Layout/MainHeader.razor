@@ -1,0 +1,13 @@
+<header class="@RenderCssClasses()">
+    @ChildContent
+</header>
+
+@code {
+    [Parameter] public string CssClasses { get; set; } = string.Empty;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool OverWriteCss { get; set; }
+
+    private const string DefaultCssClasses = "layout layout__full";
+
+    private string RenderCssClasses() =>  (OverWriteCss ? string.Empty : DefaultCssClasses) + CssClasses;
+}
