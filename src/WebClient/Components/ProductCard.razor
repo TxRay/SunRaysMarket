@@ -1,8 +1,13 @@
 @using Application.DomainModels
 @using Application.Utilities
+@using WebClient.State
+@inject IServiceProvider ServiceProvider
+
+@rendermode InteractiveAuto
 
 
 <a class="product-card">
+    <CardScreen OnClick="@OnCardScreenClicked"/>
     <img class="product-card__img"
          src="@Product.PhotoUrl"
          alt=""
@@ -21,15 +26,23 @@
 </a>
 
 @code {
+    [Parameter] public ProductListModel Product { get; set; } = null!;
 
-    [CascadingParameter]
-    public HttpContext? HttpContext { get; set; }
+    [Parameter] public IEnumerable<CartItemControlModel> CartItemInfoList { get; set; } 
+        = new List<CartItemControlModel>();
+    
+    private ProductModalState? ModalState { get; set; }
 
-    [Parameter]
-    public ProductListModel Product { get; set; } = null!;
+    protected override void OnParametersSet()
+    {
+        ModalState ??= ServiceProvider.GetService<ProductModalState>();
+    }
 
-    [Parameter]
-    public IEnumerable<CartItemControlModel> CartItemInfoList { get; set; } = new List<CartItemControlModel>();
+    private void OnCardScreenClicked()
+    {
+        Console.WriteLine("OnCardScreenClicked");
+        ModalState?.SetState(Product.Id, true);
+    }
 
     private CartItemControlModel? CartItemInfo 
         => CartItemInfoList.FirstOrDefault(cartItemInfo => cartItemInfo.ProductId == Product.Id);

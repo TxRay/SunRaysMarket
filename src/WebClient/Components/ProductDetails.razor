@@ -1,0 +1,90 @@
+@using Application.DomainModels
+@using Application.Services
+@using Application.Utilities
+@using WebClient.State
+@inject IServiceProvider ServiceProvider
+
+
+@inherits OwningComponentBase<IProductService>
+@rendermode InteractiveAuto
+
+
+<Modal Title="Product Details" 
+       Height="70%" Width="60%" 
+       OnCloseClicked="@OnModalClosed"
+       State="@State"
+       >
+    <div class="product-details">
+        @if (Product is not null)
+        {
+            <img src="@Product.PhotoUrl" alt="Product Photo" class="product-details__img">
+            <div class="product-details__body">
+                <h5 class="product-details__name">@Product.Name</h5>
+                <p class="tag product-details__tag">@Product.DepartmentName</p>
+                <p class="price product-details__price">
+                    @if (Product.DiscountPercent == 0)
+                    {
+                        <span class="price__amount--regular">@Product.Price.ToCurrencyString()</span>
+                    }
+                    else
+                    {
+                        <span class="price__amount--sale">@Product.SalePrice.ToCurrencyString()</span>
+                        <span class="price__amount--regular-strike">@Product.Price.ToCurrencyString()</span>
+                    }
+                </p>
+                <p class="product-details__unit-price">@Product.UnitPrice.ToUnitPriceString(Product.UnitOfMeasure)</p>
+                <p class="product-details__description">@Product.Description</p>
+
+                <CartControls CssClasses="product-card__cart-controls"
+                              ProductId="@Product.Id"
+                              CartItemInfo="@CartItemInfo"/>
+            </div>
+        }
+        else
+        {
+            <button class="product-details__close">&times;</button>
+            <p class="product-details__error">Product not found</p>
+        }
+    </div>
+</Modal>
+
+@code {
+    
+    private ProductDetailsModel? Product { get; set; }
+    private CartItemControlModel? CartItemInfo { get; set; }
+    private ProductModalState? State { get; set; }
+    
+    
+    protected override async Task OnInitializedAsync()
+    {
+        if (State?.ProductId is not null)
+            Product = await Service.GetProductDetailsAsync(State.ProductId.Value);
+    }
+
+    protected override void OnParametersSet()
+    {
+        State ??= ServiceProvider.GetService<ProductModalState>();
+
+        if (State is null) return;
+        
+        State.OnChange += UpdateComponent;
+
+    }
+
+    private async void UpdateComponent()
+    {
+        if (State?.ProductId is not null)
+            Product = await Service.GetProductDetailsAsync(State.ProductId.Value);
+        
+        StateHasChanged();
+    }
+
+    private void OnModalClosed()
+    {
+        Console.WriteLine("OnModalClosed");
+        State?.SetState(null, false);
+    }
+
+    protected override bool ShouldRender() => State?.ShowModal ?? false;
+
+}

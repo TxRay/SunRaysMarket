@@ -8,7 +8,8 @@ namespace Application.Services;
 public interface ICartService
 {
     Task<CreateCartResponse> CreateCartAsync();
-    Task<CartItemControlModel> GetCartItemInfoAsync(int cartItemId);
+    Task<CartItemControlModel?> GetCartItemInfoAsync(int cartItemId);
+    Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync();
     Task<AddItemToCartResponse> AddItemToCartAsync(
         Action<IAddItemToCartOptionsBuilder> buildOptions
     );

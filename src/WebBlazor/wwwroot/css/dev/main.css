@@ -99,6 +99,13 @@ body {
   transform: translateY(-0.75rem) scale(1.05);
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
 }
+.product-card__screen {
+  grid-column: 1/-1;
+  grid-row: 1/3;
+  background-color: transparent;
+  cursor: pointer;
+  z-index: 20;
+}
 .product-card__img {
   grid-column: 1/-1;
   grid-row: 1/3;
@@ -377,16 +384,29 @@ body {
 .modal:target .modal__content {
   transform: translate(0, 0) scale(1);
 }
-.modal__content {
+.modal__body {
+  --width: 0;
+  --height: 0;
   display: grid;
   grid-template-rows: [y-full-start header-start] min-content [header-end top-start body-start] 1fr [top-end bottom-start] 1fr [bottom-end body-end y-full-end];
+  width: var(--width);
+  height: var(--height);
   background-color: #fff;
   box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   overflow: hidden;
   animation: ModalContentTransform 400ms ease-in-out;
 }
+.modal__title {
+  grid-row: header;
+  align-self: center;
+  justify-self: center;
+  font-size: 1.8rem;
+}
 .modal__close, .modal__close:link, .modal__close:visited {
+  grid-row: header;
+  align-self: center;
+  justify-self: end;
   text-transform: uppercase;
   text-decoration: none;
   display: inline-block;
@@ -436,19 +456,8 @@ body {
 }
 
 .product-details {
+  display: grid;
   grid-template-columns: [x-full-start left-start] 2fr [left-end right-start] 3fr [right-end x-full-end];
-  height: 75%;
-  width: 75%;
-  overflow-x: hidden;
-  overflow-y: scroll;
-}
-.product-details__close {
-  grid-column: right;
-  grid-row: header;
-  justify-self: end;
-  align-self: start;
-  margin-top: 0.85rem;
-  margin-right: 0.85rem;
 }
 .product-details__img {
   grid-column: left;

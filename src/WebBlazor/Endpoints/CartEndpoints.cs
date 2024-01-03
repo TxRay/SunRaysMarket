@@ -120,4 +120,26 @@ public static class CartEndpoints
 
         return endpoints;
     }
+
+    private static void MapCartItemInfoEndpoints(this IEndpointRouteBuilder endpoints)
+    {
+        var itemInfoGroup = endpoints.MapGroup("/item-info");
+
+        itemInfoGroup.MapGet("/{itemId:int}",
+            async (int itemId, ICartService cartService)
+                => Results.Json(
+                    await cartService.GetCartItemInfoAsync(itemId)
+                )
+        );
+
+        itemInfoGroup.MapGet("/",
+            async (ICartService cartService)
+                => Results.Json(
+                    new GetCartItemInfoListResponse
+                    {
+                        CartItemInfoList = await cartService.GetAllCartItemInfoAsync()
+                    }
+                )
+        );
+    }
 }

@@ -19,9 +19,30 @@ internal class CartProxyService(HttpClient client) : ICartService
             })
             .Unwrap() ?? throw new InvalidOperationException("CreateCartResponse was null");
 
-    public Task<CartItemControlModel> GetCartItemInfoAsync(int cartItemId)
+    public async Task<CartItemControlModel?> GetCartItemInfoAsync(int cartItemId)
+        => await client.GetAsync($"api/cart/item-info/{cartItemId}")
+            .ContinueWith(messageTask =>
+                {
+                    var message = messageTask.Result;
+                    message.EnsureSuccessStatusCode();
+                    return message.Content.ReadFromJsonAsync<CartItemControlModel>();
+                }
+            )
+            .Unwrap();
+
+    public async Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync()
     {
-        throw new NotImplementedException();
+        var cartItemInfoListModel =  await client.GetAsync("/api/cart/cart-info")
+            .ContinueWith(messageTask =>
+                {
+                    var message = messageTask.Result;
+                    message.EnsureSuccessStatusCode();
+                    return message.Content.ReadFromJsonAsync<GetCartItemInfoListResponse>();
+                }
+                )
+            .Unwrap();
+
+        return cartItemInfoListModel?.CartItemInfoList ?? [];
     }
 
     public async Task<AddItemToCartResponse> AddItemToCartAsync(

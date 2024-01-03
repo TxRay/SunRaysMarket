@@ -42,4 +42,12 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Components\Modal.razor" />
+      <AdditionalFiles Include="Components\ModalOutlet.razor" />
+      <AdditionalFiles Include="Components\ProductCard.razor" />
+      <AdditionalFiles Include="Components\ProductDetails.razor" />
+      <AdditionalFiles Include="Components\ProductSection.razor" />
+    </ItemGroup>
+
 </Project>

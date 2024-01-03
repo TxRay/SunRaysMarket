@@ -1,0 +1,16 @@
+@using WebClient.State
+@inject NavigationManager Navigation
+@rendermode InteractiveAuto
+
+<div class="product-card__screen" @onclick="OnScreenClicked"></div>
+
+@code {
+    [Parameter] public EventCallback OnClick {get; set; }
+    
+    private void OnScreenClicked()
+    {
+        Console.WriteLine("OnScreenClicked");
+        if (OnClick.HasDelegate)
+            OnClick.InvokeAsync();
+    }
+}

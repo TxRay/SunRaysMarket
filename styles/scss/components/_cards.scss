@@ -24,6 +24,15 @@
     box-shadow: 0 1rem 2rem rgba(#000, 0.2);
 
   }
+  
+  &__screen {
+    grid-column: 1  / -1;
+    grid-row: 1 / 3;
+    
+    background-color: transparent;
+    cursor: pointer;
+    z-index: 20;
+  }
 
   &__img {
     grid-column: 1 / -1;

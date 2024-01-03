@@ -1,24 +1,10 @@
 @use "../abstracts/variables" as var;
 
 .product-details {
+  display: grid;
   grid-template-columns: [x-full-start left-start] 2fr [left-end right-start] 3fr [right-end x-full-end];
-
-  height: 75%;
-  width: 75%;
-  overflow-x: hidden;
-  overflow-y: scroll;
-
-  &__close {
-    grid-column: right;
-    grid-row: header;
-
-    justify-self: end;
-    align-self: start;
-
-    margin-top: .85rem;
-    margin-right: .85rem;
-  }
-
+  
+  
   &__img {
     grid-column: left;
     grid-row: y-full;

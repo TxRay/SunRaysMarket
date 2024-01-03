@@ -27,14 +27,16 @@
     transform: translate(0, 0) scale(1);
   }
 
-  &__content {
+  &__body {
+    --width: 0;
+    --height: 0;
     display: grid;
     grid-template-rows: [y-full-start header-start] min-content 
     [header-end top-start body-start] 1fr 
     [top-end bottom-start] 1fr [bottom-end body-end y-full-end];
     
-    //width: 60%;
-    //height: 50%;
+    width: var(--width);
+    height: var(--height);
     background-color: #fff;
     box-shadow: 0 2rem 4rem rgba(#000, 0.2);
     border-radius: 5px;
@@ -42,11 +44,23 @@
     animation: ModalContentTransform 400ms ease-in-out;
 
   }
+  
+  &__title {
+    grid-row: header;
+    align-self: center;
+    justify-self: center;
+    
+    font-size: var.$fs-l;
+  }
 
   &__close {
     &,
     &:link,
     &:visited {
+      grid-row: header;
+      align-self: center;
+      justify-self: end;
+      
       @include mxn.btn-base;
       background: transparent;
       font-size: 3rem;
