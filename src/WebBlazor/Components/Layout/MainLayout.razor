@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="layout layout--application">
+<div class="layout layout--application" xmlns="http://www.w3.org/1999/html">
     <div class="topbar">
         <div class="topbar__content">
             <a href="#" class="topbar__brand">
@@ -29,9 +29,8 @@
     </nav>
     <div class="layout layout--page ">
         @Body
-
-        <footer class="footer"></footer>
         
+        <MainFooter />
     </div>
 </div>
 
