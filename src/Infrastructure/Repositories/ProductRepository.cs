@@ -102,9 +102,35 @@ internal class ProductRepository : IProductRepository
             )
             .ToListAsync();
 
-    public Task<IEnumerable<ProductListModel>> GetAllSearchAsync(string searchQuery)
+    public async Task<IEnumerable<ProductListModel>> GetAllSearchAsync(string? queryString)
     {
-        throw new NotImplementedException();
+        if (queryString is null) return [];
+
+        var queryStringLowered = queryString.ToLower();
+        
+        var query = _context.Products
+            .Include(p => p.ProductType)
+            .ThenInclude(pt => pt!.Department)
+            .Where(p => p.Description.ToLower().Contains(queryStringLowered)
+                        || p.Name.ToLower().Contains(queryStringLowered)
+                        || p.ProductType!.Department!.Name.ToLower().Contains(queryStringLowered));
+
+        return await query.Select(
+            p =>
+                new ProductListModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Slug = p.Slug,
+                    PhotoUrl = p.PhotoUrl,
+                    Price = p.Price,
+                    DiscountPercent = p.DiscountPercent,
+                    DepartmentId = p.ProductType!.DepartmentId,
+                    DepartmentName = p.ProductType!.Department!.Name,
+                    DepartmentSlug = p.ProductType!.Department!.Slug,
+                    InStock = p.InventoryItems.Any(i => i.Quantity > 0)
+                }
+        ).ToListAsync();
     }
 
     public async Task<ProductDetailsModel?> GetAsync(int id) =>

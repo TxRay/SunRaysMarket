@@ -7,22 +7,30 @@
 
 <section class="section">
     <h3 class="section-heading">@Heading</h3>
-    <div class="card-grid">
-        @foreach (var product in FeaturedProducts)
-        {
-            <ProductCard Product="@product" CartItemInfoList="@CartItemInfo"/>
-        }
-    </div>
+    @if (FeaturedProducts.Any())
+    {
+        <div class="card-grid">
+            @foreach (var product in FeaturedProducts)
+            {
+                <ProductCard Product="@product" CartItemInfoList="@CartItemInfo"/>
+            }
+        </div>
+    }
+    else
+    {
+        <p> @FailureMessage </p>
+    }
+
 </section>
 
 <ProductDetails />
 
 @code {
-    [Parameter]
-    public string Heading { get; set; } = string.Empty;
+    [Parameter] public string Heading { get; set; } = string.Empty;
 
-    [Parameter]
-    public IEnumerable<ProductListModel> FeaturedProducts { get; set; } = [];
+    [Parameter] public IEnumerable<ProductListModel> FeaturedProducts { get; set; } = [];
+
+    [Parameter] public string FailureMessage { get; set; } = "No products found";
 
     private int? CartId { get; set; }
 

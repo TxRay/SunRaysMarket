@@ -1,5 +1,6 @@
 using Application.EndpointViewModels;
 using Application.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebBlazor.Endpoints;
 
@@ -30,6 +31,13 @@ public static class ProductEndpoints
                     }
                 )
         );
+
+        allProductsGroup.MapPost("/search", async ([FromBody] ProductSearchCommand searchCommand, IProductService productService)
+        => Results.Json(
+            new GetProductListResponse {
+                Products = await productService.SearchForProductsAsync(searchCommand.Query)
+            }
+        ));
 
         return endpoints;
     }

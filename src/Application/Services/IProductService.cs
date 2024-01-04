@@ -9,4 +9,5 @@ public interface IProductService
     
     Task<IEnumerable<ProductListModel>> GetAllProductsAsync(int departmentId);
 
+    Task<IEnumerable<ProductListModel>> SearchForProductsAsync(string? queryString);
 }

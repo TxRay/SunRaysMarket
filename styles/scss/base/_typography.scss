@@ -1,6 +1,7 @@
 @use "../abstracts/variables" as var;
 
 body {
+    font-size: 1.6rem;
     font-family: var.$typeface-primary;
 }
 

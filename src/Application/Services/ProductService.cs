@@ -13,4 +13,7 @@ public class ProductService(IUnitOfWork unitOfWork) : IProductService
 
     public async Task<IEnumerable<ProductListModel>> GetAllProductsAsync(int departmentId)
         => await unitOfWork.ProductRepository.GetAllAsync(departmentId);
+
+    public async Task<IEnumerable<ProductListModel>> SearchForProductsAsync(string? queryString)
+        => await unitOfWork.ProductRepository.GetAllSearchAsync(queryString);
 }
