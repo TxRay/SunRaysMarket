@@ -2,9 +2,17 @@ namespace Application.Utilities;
 
 public static class FormatHelpers
 {
-    public static string ToCurrencyString(float dollarsDecimal, double exchangeRate = 1.0) =>
-        (dollarsDecimal * exchangeRate).ToString("C");
+    public static string ToCurrencyString(float dollarsDecimal, double exchangeRate = 1.0)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(dollarsDecimal, 0.0f);
 
+        var currencyDecimal = dollarsDecimal * exchangeRate;
+
+        return currencyDecimal > 1.0f
+            ? currencyDecimal.ToString("C")
+            : $"{(currencyDecimal * 100):G2} \u00A2";
+    }
+    
     public static string ToUnitPriceString(
         float dollarsDecimal,
         string unitOfMeasure,
