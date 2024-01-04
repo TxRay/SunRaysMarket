@@ -17,7 +17,7 @@
                 <div class="cart-item">
                     <img src="@item.ProductPhotoUrl" alt="Product photo" class="cart-item__product-img">
                     <h5 class="cart-item__product-name">@item.ProductName</h5>
-                    <p class="cart-item__product-price">@item.ProductPrice.ToCurrencyString()</p>
+                    <p class="cart-item__product-price">@FormatHelpers.ToCurrencyString(item.ProductPrice)</p>
                     <p class="cart-item__product-quantity">@item.Quantity</p>
                 </div>
             }

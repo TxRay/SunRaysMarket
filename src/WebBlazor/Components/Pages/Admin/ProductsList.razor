@@ -31,8 +31,8 @@
             <tr>
                 <td>@product.Id</td>
                 <td>@product.Name</td>
-                <td>@product.Price.ToCurrencyString()</td>
-                <td>@product.SalePrice.ToCurrencyString()</td>
+                <td>@FormatHelpers.ToCurrencyString(product.Price)</td>
+                <td>@FormatHelpers.ToCurrencyString( product.SalePrice)</td>
                 <td>@product.DepartmentName</td>
                 <td>
                     <NavLink href=@($"/admin/products/edit/{product.Id}")>Edit</NavLink> |
@@ -53,5 +53,4 @@
     {
        Products = await Service.ProductRepository.GetAllAsync();
     }
-
 }

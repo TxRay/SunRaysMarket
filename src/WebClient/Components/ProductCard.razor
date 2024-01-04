@@ -17,7 +17,7 @@
         @Product.Name
     </h5>
     <p class="price price--vertical product-card__price">
-        <span class="price__amount--regular"> @Product.Price.ToCurrencyString() </span>
+        <span class="price__amount--regular"> @FormatHelpers.ToCurrencyString(@Product.Price) </span>
     </p>
     <p class="tag product-card__tag">@Product.DepartmentName</p>
     <CartControls CssClasses="product-card__cart-controls"

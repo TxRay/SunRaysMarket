@@ -28,7 +28,7 @@
                 <td>@order.CustomerName</td>
                 <td>@order.StoreName</td>
                 <td>@order.Status</td>
-                <td>@order.Total.ToCurrencyString()</td>
+                <td>@FormatHelpers.ToCurrencyString(order.Total)</td>
                 <td></td>
                 <td></td>
                 <td>

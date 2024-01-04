@@ -14,10 +14,10 @@ public static class CartSummary
 
         return new CartSummaryModel
         {
-            Subtotal = subtotal.ToCurrencyString(),
-            Discount = discount.ToCurrencyString(),
-            Tax = tax.ToCurrencyString(),
-            TotalPrice = totalPrice.ToCurrencyString()
+            Subtotal = FormatHelpers.ToCurrencyString(subtotal),
+            Discount = FormatHelpers.ToCurrencyString(discount),
+            Tax = FormatHelpers.ToCurrencyString(tax),
+            TotalPrice = FormatHelpers.ToCurrencyString(totalPrice)
         };
     }
 }

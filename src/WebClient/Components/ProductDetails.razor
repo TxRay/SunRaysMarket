@@ -24,15 +24,19 @@
                 <p class="price product-details__price">
                     @if (Product.DiscountPercent == 0)
                     {
-                        <span class="price__amount--regular">@Product.Price.ToCurrencyString()</span>
+                        <span class="price__amount--regular">@FormatHelpers.ToCurrencyString(Product.Price)</span>
                     }
                     else
                     {
-                        <span class="price__amount--sale">@Product.SalePrice.ToCurrencyString()</span>
-                        <span class="price__amount--regular-strike">@Product.Price.ToCurrencyString()</span>
+                        <span class="price__amount--sale">
+                            @FormatHelpers.ToCurrencyString( Product.SalePrice)
+                        </span>
+                        <span class="price__amount--regular-strike">@FormatHelpers.ToCurrencyString(Product.Price)</span>
                     }
                 </p>
-                <p class="product-details__unit-price">@Product.UnitPrice.ToUnitPriceString(Product.UnitOfMeasure)</p>
+                <p class="product-details__unit-price">
+                    @FormatHelpers.ToUnitPriceString(Product.UnitPrice, Product.UnitOfMeasure)
+                </p>
                 <p class="product-details__description">@Product.Description</p>
 
                 <CartControls CssClasses="product-card__cart-controls"
