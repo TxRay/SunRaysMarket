@@ -22,7 +22,9 @@
         RegularPrice="@Product.Price"
         DiscountPercent="Product.DiscountPercent"
         SalePriceOrientation="SalePriceDisplayOrientation.Column"/>
-    <span class="unit-price product-card__unit-price">@Product.</span>
+    <span class="unit-price product-card__unit-price">
+        @FormatHelpers.ToUnitPriceString(Product.UnitPrice, Product.UnitOfMeasure)
+    </span>
     <span class="tag product-card__tag">@Product.DepartmentName</span>
     <CartControls CssClasses="product-card__cart-controls"
                   ProductId="@Product.Id"

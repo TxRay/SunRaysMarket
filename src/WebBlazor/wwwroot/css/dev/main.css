@@ -139,6 +139,8 @@ body {
 .product-card__unit-price {
   grid-column: 2/-1;
   grid-row: 4/5;
+  align-self: start;
+  justify-self: end;
 }
 .product-card__cart-controls {
   grid-column: 1/-1;
@@ -482,7 +484,8 @@ body {
 }
 
 .unit-price {
-  color: #8c8c8c;
+  font-size: 1.2rem;
+  color: #545454;
 }
 
 .product-details {

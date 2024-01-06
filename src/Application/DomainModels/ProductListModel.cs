@@ -11,8 +11,8 @@ public class ProductListModel
     public float Price { get; init; }
     
     public float Measure { get; init; }
-    
-    public float UnitOfMeasure { get; init; }
+
+    public string UnitOfMeasure { get; init; } = default!;
     public float DiscountPercent { get; init; }
     
     public int ProductTypeSlug { get; init; } = default!;

@@ -69,6 +69,8 @@
   &__unit-price {
     grid-column: 2 / -1;
     grid-row: 4 / 5;
+    align-self:  start;
+    justify-self: end;
   }
   
   &__cart-controls {
