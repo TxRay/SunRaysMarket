@@ -1,5 +1,6 @@
 @using Application.DomainModels
 @using Application.Utilities
+@using WebClient.Enums
 @using WebClient.State
 @inject IServiceProvider ServiceProvider
 
@@ -16,10 +17,13 @@
         id="@($"productCardHeading{Product.Id}")">
         @Product.Name
     </h5>
-    <p class="price price--vertical product-card__price">
-        <span class="price__amount--regular"> @FormatHelpers.ToCurrencyString(@Product.Price) </span>
-    </p>
-    <p class="tag product-card__tag">@Product.DepartmentName</p>
+    <ProductPrice
+        ClassNames="product-card__price"
+        RegularPrice="@Product.Price"
+        DiscountPercent="Product.DiscountPercent"
+        SalePriceOrientation="SalePriceDisplayOrientation.Column"/>
+    <span class="unit-price product-card__unit-price">@Product.</span>
+    <span class="tag product-card__tag">@Product.DepartmentName</span>
     <CartControls CssClasses="product-card__cart-controls"
                   ProductId="@Product.Id"
                   CartItemInfo="@CartItemInfo"/>

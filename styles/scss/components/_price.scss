@@ -1,14 +1,11 @@
 @use '../abstracts/variables' as var;
 
 .price {
+  --flex-direction: row;
   display: flex;
   align-items: center;
+  flex-direction: var(--flex-direction);
   gap: .35rem;
-  
-  &--vertical {
-    flex-direction: column;
-    //gap: .35rem;
-  }
 
   &__amount {
     font-size: var.$fs-l;
@@ -17,6 +14,7 @@
     &--regular,
     &--sale {
       padding: 0.15rem 1rem;
+      border-radius: 1rem;
     }
 
     &--regular {
@@ -36,4 +34,9 @@
       background-color: var.$color-sale;
     }
   }
+}
+
+.unit-price {
+  color: var.$color-grey-dark-1;
+
 }

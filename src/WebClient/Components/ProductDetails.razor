@@ -21,20 +21,11 @@
             <div class="product-details__body">
                 <h5 class="product-details__name">@Product.Name</h5>
                 <p class="tag product-details__tag">@Product.DepartmentName</p>
-                <p class="price product-details__price">
-                    @if (Product.DiscountPercent == 0)
-                    {
-                        <span class="price__amount--regular">@FormatHelpers.ToCurrencyString(Product.Price)</span>
-                    }
-                    else
-                    {
-                        <span class="price__amount--sale">
-                            @FormatHelpers.ToCurrencyString( Product.SalePrice)
-                        </span>
-                        <span class="price__amount--regular-strike">@FormatHelpers.ToCurrencyString(Product.Price)</span>
-                    }
-                </p>
-                <p class="product-details__unit-price">
+                <ProductPrice
+                    ClassNames="product-details__price"
+                    RegularPrice="@Product.Price" 
+                    DiscountPercent="@Product.DiscountPercent" />
+                <p class="unit-price product-details__unit-price">
                     @FormatHelpers.ToUnitPriceString(Product.UnitPrice, Product.UnitOfMeasure)
                 </p>
                 <p class="product-details__description">@Product.Description</p>

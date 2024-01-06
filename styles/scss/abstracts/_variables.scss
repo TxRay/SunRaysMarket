@@ -18,6 +18,8 @@ $color-grey-light-2: #d6d6d6;
 $color-grey-dark-1: #8c8c8c;
 $color-grey-dark-2: #545454;
 
+$color-background: lighten($color-primary-pale, 50%);
+
 $color-danger: #cc3300;
 $color-warning: #ff9966;
 $color-info: #ffcc00;
@@ -49,6 +51,8 @@ $fs-7xl: 7.2rem;
 $fs-8xl: 9.6rem;
 
 // Spacing
+$spacing-3xs: .2rem;
+$spacing-2xs: .4rem;
 $spacing-xs: .8rem;
 $spacing-s: 1.6rem;
 $spacing-m: 2.4rem;

@@ -9,10 +9,12 @@ public class ProductListModel
     public string Slug { get; init; } = default!;
     public string PhotoUrl { get; init; } = default!;
     public float Price { get; init; }
+    
+    public float Measure { get; init; }
+    
+    public float UnitOfMeasure { get; init; }
     public float DiscountPercent { get; init; }
-
-    //public int ProductTypeId { get; init; } = default!;
-    //public string ProductTypeName { get; init; } = default!;
+    
     public int ProductTypeSlug { get; init; } = default!;
     public int DepartmentId { get; init; }
     public string DepartmentName { get; init; } = default!;
@@ -21,4 +23,6 @@ public class ProductListModel
 
     public float Discount => Price * DiscountPercent;
     public float SalePrice => Price - Discount;
+
+    public float UnitPrice => Price / Measure;
 }

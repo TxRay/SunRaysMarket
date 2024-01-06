@@ -11,10 +11,12 @@
 
     @if (ShowAddToCartButton)
     {
-        <button class="btn btn--primary btn--md"
+        <button class="btn btn--primary btn--round"
                 id="addToCartBtn-@_uniqueIdSuffix"
                 @onclick="OnAddToCartClick">
-            Add to Cart
+            <svg class="cart-controls__add-icon">
+                <use href="img/icons/solid.svg#plus"></use>
+            </svg>
         </button>
     }
     else

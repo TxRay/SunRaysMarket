@@ -9,7 +9,12 @@
   &--visible {
     display: flex;
   }
-  
+
+  &__add-icon {
+    width: var.$fs-l;
+    aspect-ratio:  1 / 1;
+    fill: #fff;
+  }
 
   &__remove-btn {
     border: none;
@@ -35,9 +40,10 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: .15rem 1rem;
-  border: 2px solid var.$color-primary-light;
-
+  border-radius: 2rem;
+  background-color: var.$color-primary-dark;
+  padding: var.$spacing-xs var.$spacing-s;
+  
   &__btn {
     border: none;
     background-color: transparent;
@@ -61,18 +67,19 @@
   &__icon {
     width: var.$fs-m;
     aspect-ratio: 1 / 1;
-    fill: var.$color-grey-dark-2;
+    fill: var.$color-grey-light-1;
   }
-
+  
   &__input {
     font-size: var.$fs-m;
     font-weight: 300;
-    color: var.$color-grey-dark-2;
+    color: var.$color-grey-light-1;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0 1rem;
     width: 4rem;
     text-align: center;
     appearance: textfield;
+    background-color: transparent;
 
     &:focus {
       outline: none;

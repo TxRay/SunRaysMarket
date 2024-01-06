@@ -44,6 +44,16 @@
       font-size: var.$fs-l;
     }
   }
+  
+  &--round {
+    &,
+    &:link,
+    &:visited {
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      padding: var.$spacing-xs;
+    }
+  }
 
   &--primary {
     background-color: var.$color-primary-dark;

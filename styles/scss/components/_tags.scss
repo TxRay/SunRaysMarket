@@ -1,9 +1,10 @@
 @use "../abstracts/variables" as var;
 
 .tag {
-  font-size: var.$fs-s;
-  font-weight: var.$weight-light;
+  font-size: var.$fs-xs;
+  font-weight: var.$weight-medium;
   color: #fff;
+  border-radius: 2rem;
   background-color: blue;
-  padding: 0.2rem 0.75rem;
+  padding: var.$spacing-2xs var.$spacing-s;
 }
