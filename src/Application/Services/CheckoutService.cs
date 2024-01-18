@@ -6,11 +6,13 @@ using Application.DomainModels.Checkout;
 using Application.DomainModels.Payment;
 using Application.Enums;
 using Application.UnitOfWork;
+using Microsoft.AspNetCore.Http;
 using WebClient.Models;
 
 namespace Application.Services;
 
 internal class CheckoutService(
+    IHttpContextAccessor httpContextAccessor,
     IUnitOfWork unitOfWork,
     ICustomerService customerService,
     IOrderService orderService,
@@ -22,6 +24,46 @@ internal class CheckoutService(
         int storeId,
         OrderType orderType
     ) => await unitOfWork.TimeSlotRepository.GetAllTimeSlotsAsync(storeId, orderType);
+
+    public async Task CheckoutAsync(CheckoutSubmitModel model)
+    {
+        var user = httpContextAccessor.HttpContext?.User;
+        
+        if (user is null)
+            return;
+
+        var (orderId, orderAmount) = await orderService.CreateOrderAsync(
+            user,
+            model.TimeSlotId,
+            model.OrderType,
+            model.DeliveryAddressId
+        );
+        
+        if (orderId is null)
+            return;
+
+        var customerPaymentId = await customerService.GetCustomerPaymentIdAsync(user);
+
+        if (orderAmount is null || customerPaymentId is null)
+            return;
+
+        var chargeInfo = new CreateChargeModel
+        {
+            Amount = (long)(100 * orderAmount.Value),
+            Currency = "usd",
+            CustomerPaymentId = customerPaymentId,
+            Source = model.PaymentMethodId
+        };
+
+        var chargeResponse = await paymentService.CreateCharge(chargeInfo);
+
+        await transactionService.CreateTransactionAsync(
+            orderId.Value,
+            orderAmount.Value,
+            model.BillingAddressId,
+            chargeResponse.Id
+        );
+    }
 
     public Task CheckoutAsync(
         int timeSlotId,

@@ -21,5 +21,25 @@ internal class CustomerConfiguration : BaseConfiguration<Customer>
             .HasOne(customer => customer.Cart)
             .WithOne(cart => cart.Customer)
             .HasForeignKey<Customer>(customer => customer.CartId);
+
+        builder
+            .HasMany(customer => customer.Addresses)
+            .WithMany()
+            .UsingEntity<CustomerAddress>(
+                caBuilder =>
+                {
+                    caBuilder.HasIndex(customerAddress => new { customerAddress.CustomerId, customerAddress.AddressId })
+                        .IsUnique();
+
+                    caBuilder.HasOne(customerAddress => customerAddress.Customer)
+                        .WithMany()
+                        .HasForeignKey(ca => ca.CustomerId);
+
+                    caBuilder
+                        .HasOne(customerAddress => customerAddress.Address)
+                        .WithMany()
+                        .HasForeignKey(customerAddress => customerAddress.AddressId);
+                }
+            );
     }
 }

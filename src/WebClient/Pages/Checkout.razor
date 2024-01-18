@@ -1,74 +1,162 @@
 @using Application.Services
 @using WebClient.Models
-@using Application.DomainModels
-@using Application.DomainModels.Payment
+@using Application.Enums
 @using Application.Payment
+@using Application.Utilities
+@using Application.DomainModels.Checkout
 @inherits OwningComponentBase<ICheckoutService>
 @inject IStoreFactory StoreFactory
-@rendermode InteractiveAuto
-@page "/checkout/{step?}"
+@inject ILogger<Checkout> Logger
+@rendermode InteractiveWebAssembly
+@page "/checkout"
 
-<div class="layout__content ">
-    <CascadingValue Value="@Store">
-        <Wizard BaseRoute="/checkout" ActiveStepName="@Step" OnSubmit="@OnSubmitAsync">
-            <TimeSlotsStep/>
-            <DeliveryInfo/>
-            <BillingInfoStep/>
-            <PaymentInfoStep/>
-        </Wizard>
-    </CascadingValue>
-</div>
+<main class="layout__content checkout">
+    <h1 class="">Checkout</h1>
+
+    @if (ShouldLoadContent)
+    {
+        <div class="checkout__content">
+            <CheckoutSection
+                ShowSection="true"
+                OnActionButtonClicked="OnFulfillmentActionBtnClicked">
+                <Heading>
+                    @if (Model.FulfillmentInfo is null)
+                    {
+                        @: Delivery or Pickup
+                    }
+                    else
+                    {
+                        switch (Model.FulfillmentInfo.OrderType)
+                        {
+                            case OrderType.Delivery:
+                                @: Delivery
+                                break;
+                            case OrderType.Pickup:
+                                @: Pickup
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    }
+                </Heading>
+                <ActionButton>
+                    @if (Model.FulfillmentInfo is null)
+                    {
+                        @: Select time
+                    }
+                    else
+                    {
+                        @: Change time
+                    }
+                </ActionButton>
+            </CheckoutSection>
+
+            <CheckoutSection ShowSection="@(Model.FulfillmentInfo is not null)">
+                <Heading> Payment method</Heading>
+                <ChildContent>
+                    <EditForm EditContext="@PaymentMethodEditContext" FormName="PaymentMethodForm">
+                        <div>
+                            <InputRadioGroup TValue="string" @bind-Value="PaymentModel.PaymentMethodId">
+                                @foreach (var (card, id) in TestCards.CardMap)
+                                {
+                                    <div>
+                                        <InputRadio Value="@id"/>
+                                        <label>@FormatHelpers.ShortenCardNumber(card.Number)</label>
+                                    </div>
+                                }
+                            </InputRadioGroup>
+                        </div>
+                    </EditForm>
+                </ChildContent>
+            </CheckoutSection>
+            <button class="btn btn--md btn--primary" @onclick="OnSubmitAsync">Submit</button>
+        </div>
+    }
+</main>
 
 @code {
     private IStore? Store { get; set; }
-
-    [Parameter] public string? Step { get; set; }
+    private bool ShouldLoadContent { get; set; }
+    private CheckoutModel Model { get; set; } = new();
+    private PaymentMethodModel PaymentModel { get; set; } = null!;
+    private EditContext PaymentMethodEditContext { get; set; } = null!;
+    private IModalController? ModalController { get; set; }
+    private FulfillmentModel? FulfilmentModel { get; set; }
 
     protected override void OnInitialized()
     {
-        Store = StoreFactory.Create<BrowserSessionStore>("checkout");
+        ModalController = ScopedServices.GetService<IModalController>();
+        Store = ScopedServices.GetService<IStore>();
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        if (Store is not null)
+        {
+            FulfilmentModel = await Store.TryGetValueAsync<FulfillmentModel>("FulfillmentData")
+                              ?? new FulfillmentModel();
+            PaymentModel = await Store.TryGetValueAsync<PaymentMethodModel>("PaymentInfo")
+                           ?? new PaymentMethodModel();
+            PaymentMethodEditContext = new EditContext(PaymentModel);
+            PaymentMethodEditContext.OnFieldChanged += PaymentMethodEditContext_OnFieldChanged;
+            ShouldLoadContent = true;
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (!disposing) return;
+        
+        PaymentMethodEditContext.OnFieldChanged -= PaymentMethodEditContext_OnFieldChanged;
+    }
+    
     private async Task OnSubmitAsync()
     {
-        var timeSlotsStepInfo = await Store!.TryGetValueAsync<TimeSlotStepModel>("time-slots") ?? new TimeSlotStepModel();
-        var deliveryAddress = await Store!.TryGetValueAsync<CreateAddressModel>("delivery-address");
-        var billingAddress = await Store!.TryGetValueAsync<CreateAddressModel>("billing-address") ?? new CreateAddressModel();
-        var paymentInfo = await Store!.TryGetValueAsync<PaymentInfoModel>("payment-info-step") ?? new PaymentInfoModel();
-
-        var (expiryMonth, expiryYear) = paymentInfo.ParseExpiry();
-        
-        var cardModel = new CreateCardModel
+        var submitModel = new CheckoutSubmitModel
         {
-            Name = paymentInfo.Name,
-            Number = paymentInfo.CardNumber,
-            ExpiryMonth = expiryMonth,
-            ExpiryYear = expiryYear,
-            Cvv = paymentInfo.Cvv
+            OrderType = FulfilmentModel?.OrderType 
+                        ?? throw new InvalidOperationException("No 'OrderType' was set."),
+            TimeSlotId = FulfilmentModel?.TimeSlotId 
+                ?? throw new InvalidOperationException("No 'TimeSlotId' was set"),
+            DeliveryAddressId = FulfilmentModel?.DeliveryAddressId,
+            PaymentMethodId = PaymentModel.PaymentMethodId 
+                              ?? throw new InvalidOperationException("No 'PaymentMethodId' set.")
+            
         };
         
-        await Service.CheckoutAsync(
-            timeSlotsStepInfo.SelectedTimeSlotId,
-            timeSlotsStepInfo.SelectedOrderType,
-            builder =>
-            {
-                Console.WriteLine("Invoking add billing address.");
-                builder.WithNewAddress(billingAddress);
-            },
-            builder => builder.WithCreditCard(
-                new CardDefinition(
-                    Name: paymentInfo.Name,
-                    Number: paymentInfo.CardNumber,
-                    Expiry: paymentInfo.Expiry,
-                    Cvc: paymentInfo.Cvv
-                    )
-                ),
-            builder =>
-            {
-                if(deliveryAddress is not null)
-                    builder.WithNewAddress(deliveryAddress);
-            }
-        );
+        try
+        {
+            await Service.CheckoutAsync(Model.ToSubmitModel());
+        }
+        catch
+        {
+            Logger.LogError("An error occured while the user was trying to checkout.");
+        }
+    }
 
+    private async Task OnFulfillmentActionBtnClicked()
+    {
+        var options = new ModalOptions
+        {
+            Title = "Select time",
+            Width = "75%",
+            Height = "75%"
+        };
+
+        var context = await ModalController!.DispatchAsync<FulfilmentModal, FulfillmentModel>(options);
+
+        Logger.LogInformation($"{context.IsVisible}");
+    }
+
+    private async void PaymentMethodEditContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        Logger.LogInformation($"Calling 'Checkout.PaymentMethodEditContext_OnFieldChanged'.");
+        PaymentModel = PaymentMethodEditContext.Model as PaymentMethodModel ?? new PaymentMethodModel();
+        await Store!.SetValueAsync("PaymentInfo", PaymentModel);
+    }
+
+    private class PaymentMethodModel
+    {
+        public string? PaymentMethodId { get; set; }
     }
 }

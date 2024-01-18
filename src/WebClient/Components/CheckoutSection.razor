@@ -1,0 +1,34 @@
+@rendermode InteractiveAuto
+
+
+
+<div class="checkout-section">
+    <h3 class="checkout-section__heading">@Heading</h3>
+    @if (ActionButton is not null)
+    {
+        <button class="checkout-section__action-btn" @onclick="HandleActionBtnClick">@ActionButton</button>
+    }
+    <div class="checkout-section-content">
+        @ChildContent
+    </div>
+</div>
+
+
+@code {
+    [Parameter] public RenderFragment? Heading { get; set; }
+    [Parameter] public RenderFragment? ActionButton { get; set; }
+    [Parameter] public bool ShowSection { get; set; }
+    [Parameter] public EventCallback OnActionButtonClicked { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private async Task HandleActionBtnClick()
+    {
+        if (ActionButton is not null && OnActionButtonClicked.HasDelegate)
+            await OnActionButtonClicked.InvokeAsync();
+    }
+
+    protected override void OnInitialized()
+    {
+    }
+
+}

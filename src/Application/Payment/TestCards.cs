@@ -2,7 +2,7 @@ namespace Application.Payment;
 
 public static class TestCards
 {
-    private static readonly Dictionary<CardDefinition, string> CardMap =
+    public static readonly Dictionary<CardDefinition, string> CardMap =
         new()
         {
             {
@@ -36,4 +36,5 @@ public static class TestCards
 
     public static string? GetCardPmTokenOrDefault(CardDefinition card) =>
         TestCards.CardMap.GetValueOrDefault(card);
+  
 }

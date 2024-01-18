@@ -19,5 +19,11 @@ public interface ICustomerRepository
 
     Task<string?> GetCustomerPaymentIdAsync(int customerId);
 
+    Task AddCustomerAddressAsync(int customerId, int addressId);
+
+    Task RemoveCustomerAddressAsync(int customerId, int addressId);
+
+    Task<IEnumerable<AddressModel>> GetCustomerAddresses(int customerId);
+
     int? GetPersistedCustomerId();
 }

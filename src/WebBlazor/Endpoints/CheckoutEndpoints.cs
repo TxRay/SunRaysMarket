@@ -29,7 +29,7 @@ public static class CheckoutEndpoints
                 [FromBody] CheckoutSubmitModel checkoutSubmission,
                 HttpContext context,
                 ICheckoutService checkoutService
-            ) => checkoutService.CheckoutAsync(context.User, checkoutSubmission)
+            ) => checkoutService.CheckoutAsync(checkoutSubmission)
         );
 
         return endpoints;

@@ -1,4 +1,5 @@
 using Application.Auth;
+using Application.Repositories;
 using Application.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,7 @@ public static class ServiceExtensions
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<ITransactionService, TransactionService>();
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<ICustomerAddressService, CustomerAddressService>();
 
         return services;
     }

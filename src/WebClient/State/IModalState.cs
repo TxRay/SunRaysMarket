@@ -5,3 +5,4 @@ public interface IModalState
     bool ShowModal { get; }
     event Action? OnChange;
 }
+

@@ -15,13 +15,6 @@ public interface ICheckoutService
         OrderType orderType
     );
 
-    Task CheckoutAsync(
-        int timeSlotId,
-        OrderType orderType,
-        Action<IAddressBuilder> billingAddressBuilder,
-        Action<IPaymentMethodBuilder> paymentMethodBuilder,
-        Action<IAddressBuilder>? deliveryAddressBuilder
-    );
-
-    Task CheckoutAsync(ClaimsPrincipal user, CheckoutSubmitModel checkoutSubmitModel);
+    Task CheckoutAsync(CheckoutSubmitModel model);
+    
 }

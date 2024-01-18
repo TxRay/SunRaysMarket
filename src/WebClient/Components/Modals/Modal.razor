@@ -1,0 +1,24 @@
+@rendermode @(new InteractiveAutoRenderMode(prerender: false))
+
+@if (ModalContext.IsVisible)
+{
+    <CascadingValue Value="ModalContext" Name="ModalContext">
+        <div id="modal" class="modal">
+            <div 
+                id="modalBody" 
+                class="modal__body" 
+                style="--width: @ModalContext.Options.Width; --height: @ModalContext.Options.Height;">
+                <h3 class="modal__title">@ModalContext.Options.Title</h3>
+                <button id="modalCloseBtn" class="modal__close" @onclick="OnCloseBtnClicked">
+                    &times;
+                </button>
+                <div id="modalContent" class="modal__content">
+                    <DynamicComponent 
+                        Type="ModalContext.ContentComponent" 
+                        Parameters="ModalContext.Options.ModalParameters"
+                    />
+                </div>
+            </div>
+        </div>
+    </CascadingValue>
+}

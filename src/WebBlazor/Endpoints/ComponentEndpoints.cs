@@ -13,8 +13,8 @@ public static class ComponentEndpoints
             .WithName("Components")
             .WithDescription("Api endpoints to server Blazor components for AJAX requests.");
         
-        componentsGroup.MapGet("/modal-outlet", () => new RazorComponentResult<ModalOutlet>())
-            .WithName("ModalOutlet");
+        //componentsGroup.MapGet("/modal-outlet", () => new RazorComponentResult<ModalOutlet>())
+         //   .WithName("ModalOutlet");
 
         componentsGroup.MapGet("/product-details/{id:int}",
             (int id) => new RazorComponentResult<ProductDetails>(new {ProductId = id}))

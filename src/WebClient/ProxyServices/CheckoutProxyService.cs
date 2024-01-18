@@ -24,47 +24,9 @@ internal class CheckoutProxyService(
         var result = await httpClient.GetAsync($"api/checkout/timeslots/{storeId}/{orderType}");
 
         return await result.Content.ReadFromJsonAsync<IEnumerable<TimeSlotListModel>>()
-            ?? new List<TimeSlotListModel>();
+               ?? new List<TimeSlotListModel>();
     }
 
-    public Task CheckoutAsync(ClaimsPrincipal user, CheckoutSubmitModel checkoutSubmitModel) =>
-        Task.CompletedTask;
-
-    public async Task CheckoutAsync(
-        int timeSlotId,
-        OrderType orderType,
-        Action<IAddressBuilder> billingAddressBuilder,
-        Action<IPaymentMethodBuilder> paymentMethodBuilder,
-        Action<IAddressBuilder>? deliveryAddressBuilder
-    )
-    {
-        var billingAddressBuilderInstance = new AddressBuilder(addressService);
-        var paymentMethodBuilderInstance = new PaymentMethodBuilder(paymentService);
-        var deliveryAddressBuilderInstance = deliveryAddressBuilder is null
-            ? null
-            : new AddressBuilder(addressService);
-
-        billingAddressBuilder.Invoke(billingAddressBuilderInstance);
-        paymentMethodBuilder.Invoke(paymentMethodBuilderInstance);
-        deliveryAddressBuilder?.Invoke(deliveryAddressBuilderInstance!);
-
-        await billingAddressBuilderInstance.BuildAsync();
-        paymentMethodBuilderInstance.Build();
-        await deliveryAddressBuilderInstance?.BuildAsync();
-
-        var checkoutSubmitModel = new CheckoutSubmitModel
-        {
-            BillingAddressId =
-                billingAddressBuilderInstance.AddressId
-                ?? throw new NullReferenceException("The billing address must be set."),
-            PaymentMethodId =
-                paymentMethodBuilderInstance.PaymentMethodId
-                ?? throw new NullReferenceException("Invalid payment method."),
-            TimeSlotId = timeSlotId,
-            OrderType = orderType,
-            DeliveryAddressId = deliveryAddressBuilderInstance?.AddressId
-        };
-
-        await httpClient.PostAsJsonAsync("api/checkout", checkoutSubmitModel);
-    }
+    public async Task CheckoutAsync(CheckoutSubmitModel model)
+        => await httpClient.PostAsJsonAsync("api/checkout", model);
 }

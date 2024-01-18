@@ -79,20 +79,18 @@ public static class CartEndpoints
             async (
                 [FromBody] AddItemToCartCommand command,
                 HttpContext context,
-                ICartService cartControlsService
+                ICartService cartService
             ) =>
             {
-                var cartId = context.Request.Cookies.GetCartIdCookie();
-
-                if (cartId is null)
-                    return Results.BadRequest("Cart not found.");
-
+                var cartId = context.Request.Cookies.GetCartIdCookie()
+                    ?? (await cartService.CreateCartAsync()).CartId;
+                
                 try
                 {
                     return Results.Json(
-                        await cartControlsService.AddItemToCartAsync(builder =>
+                        await cartService.AddItemToCartAsync(builder =>
                         {
-                            builder.WithCartId(cartId.Value);
+                            builder.WithCartId(cartId);
                             builder.WithCommand(command);
                         })
                     );

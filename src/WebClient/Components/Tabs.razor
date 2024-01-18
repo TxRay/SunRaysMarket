@@ -1,26 +1,27 @@
-@rendermode InteractiveAuto
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
-@if(TabsLoaded)
+@if (TabsLoaded)
 {
-<div class="tabs">
-    <div class="tabs__controls">
-        @if (TabIndex.Any())
-        {
-            @foreach (var (index, tab) in TabIndex)
+    <div class="tabs">
+        <div class="tabs__controls">
+            @if (TabIndex.Any())
             {
-                <button class="tabs__control-btn@(CurrentIndex == index ? "tabs__control-btn--active" : string.Empty)"
-                        @onclick="() => ChangeTab(index)">
-                    @tab.Label
-                </button>
+                @foreach (var (index, tab) in TabIndex)
+                {
+                    <button class="tabs__control-btn @(CurrentIndex == index ? "tabs__control-btn--active" : string.Empty)"
+                            @onclick="() => ChangeTab(index)">
+                        @tab.Label
+                    </button>
+                }
             }
-        }
+        </div>
+
+        <div class="tab-content">
+            <CascadingValue Value="@this">
+                @ChildContent
+            </CascadingValue>
+        </div>
     </div>
-    <div class="tab-content">
-        <CascadingValue Value="@this">
-            @ChildContent
-        </CascadingValue>
-    </div>
-</div>
 }
 else
 {
@@ -39,27 +40,48 @@ else
 }
 
 @code {
+    [Inject] ILogger<Tabs>? Logger { get; set; }
 
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? InitialIndex { get; set; }
 
-    [Parameter]
-    public EventCallback<string> OnTabLoaded { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public EventCallback<string> OnTabLoaded { get; set; }
+
+    [Parameter] public EventCallback<string> OnTabUnloaded { get; set; }
     
-    [Parameter]
-    public EventCallback<string> OnTabUnloaded { get; set; }
-
     private Dictionary<string, Tab> TabIndex { get; set; } = new();
 
-    private string? CurrentIndex { get; set; } 
-    
+    private string? CurrentIndex { get; set; }
+
     internal bool TabsLoaded { get; private set; }
+
+    private int RenderCount { get; set; } = 0;
+
+    protected override void OnParametersSet()
+    {
+        RenderCount += 1;
+        Logger?.LogInformation($"RenderCount = {RenderCount}");
+
+    }
 
     protected override void OnAfterRender(bool firstRender)
     {
-        if(!firstRender) return;
-        
-        CurrentIndex = TabIndex.Keys.FirstOrDefault();
+        if (!firstRender) return;
+
+
+        if (InitialIndex is null)
+            CurrentIndex = TabIndex.Keys.FirstOrDefault();
+        else
+        {
+            CurrentIndex = TabIndex.Keys.Any(k => k == InitialIndex)
+                ? InitialIndex
+                : throw new InvalidOperationException(
+                    $"There are no registered tabs with the index {InitialIndex}."
+                );
+        }
+
+        Logger?.LogInformation("First tab loaded: {Index}", CurrentIndex);
         TabsLoaded = TabIndex.Any();
         OnTabLoaded.InvokeAsync(CurrentIndex);
         StateHasChanged();
@@ -67,20 +89,19 @@ else
 
     protected internal void AddTab(Tab tab)
     {
-        TabIndex.Add(tab.Label, tab);
+        TabIndex.TryAdd(tab.Label, tab);
     }
-    
+
     protected internal bool IsCurrentTab(string index) => CurrentIndex == index;
 
-    private void ChangeTab(string index)
+    private async Task ChangeTab(string index)
     {
         if (index == CurrentIndex) return;
-        
-        OnTabUnloaded.InvokeAsync(CurrentIndex);
-        OnTabLoaded.InvokeAsync(index);
-        
+
+        await OnTabUnloaded.InvokeAsync(CurrentIndex);
+        await OnTabLoaded.InvokeAsync(index);
+
         CurrentIndex = index;
         StateHasChanged();
     }
-
 }

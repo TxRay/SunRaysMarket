@@ -21,4 +21,6 @@ public static class FormatHelpers
 
     public static string ToMeasureString(this float measure, string unitOfMeasure) =>
         $"{measure} {unitOfMeasure}";
+
+    public static string ShortenCardNumber(string cardNumber) => $"*{cardNumber[^4..]}";
 }

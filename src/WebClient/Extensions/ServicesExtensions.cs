@@ -1,4 +1,5 @@
 using Application.Services;
+using WebClient.Components.Modals;
 using WebClient.ProxyServices;
 using WebClient.State;
 using WebClient.Stores;
@@ -22,8 +23,11 @@ public static class ServicesExtensions
         services.AddScoped<ICheckoutService, CheckoutProxyService>();
         services.AddScoped<IPaymentService, PaymentProxyService>();
         services.AddScoped<IProductService, ProductProxyService>();
+        services.AddScoped<ICustomerAddressService, CustomerAddressProxyService>();
 
         services.AddSingleton<ProductModalState>();
+        services.AddSingleton<IModalController, ModalController>();
+        services.AddSingleton<IStore, BrowserSessionStore>();
 
         return services;
     }

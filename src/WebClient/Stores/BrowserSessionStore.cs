@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 
 namespace WebClient.Stores;
 
-public class BrowserSessionStore(IJSRuntime jsRuntime, string? keyPrefix) : IStore
+public class BrowserSessionStore(IJSRuntime jsRuntime) : IStore
 {
     private Lazy<IJSObjectReference> _accessor = new();
 
@@ -83,5 +83,5 @@ public class BrowserSessionStore(IJSRuntime jsRuntime, string? keyPrefix) : ISto
         }
     }
 
-    public string? KeyPrefix { get; } = keyPrefix;
+    public string? KeyPrefix { get; } = "SunRaysMarket.SessionStore";
 }

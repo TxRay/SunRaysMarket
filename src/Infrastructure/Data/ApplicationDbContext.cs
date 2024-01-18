@@ -17,6 +17,7 @@ internal class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>,
     public DbSet<Cart> Carts { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Customer> Customers { get; set; }
+    public DbSet<CustomerAddress> CustomerAddresses { get; set; }
     public DbSet<Department> Departments { get; set; }
     public DbSet<Image> Images { get; set; }
     public DbSet<List> Lists { get; set; }
