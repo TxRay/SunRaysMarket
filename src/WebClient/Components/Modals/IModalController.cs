@@ -20,7 +20,10 @@ public interface IModalController
     /// An object containing the current modal context.
     /// </returns>
     Task<ModalContext<TState>> DispatchAsync<TComponent, TState>(
-        ModalOptions? options, TState? initialState = default, Dictionary<string, object?>? tempData = default)
+        ModalOptions? options,
+        TState? initialState = default,
+        Dictionary<string, object?>? tempData = default
+    )
         where TComponent : IComponent, IDisposable
         where TState : class, new();
 

@@ -24,9 +24,9 @@ internal class CheckoutProxyService(
         var result = await httpClient.GetAsync($"api/checkout/timeslots/{storeId}/{orderType}");
 
         return await result.Content.ReadFromJsonAsync<IEnumerable<TimeSlotListModel>>()
-               ?? new List<TimeSlotListModel>();
+            ?? new List<TimeSlotListModel>();
     }
 
-    public async Task CheckoutAsync(CheckoutSubmitModel model)
-        => await httpClient.PostAsJsonAsync("api/checkout", model);
+    public async Task CheckoutAsync(CheckoutSubmitModel model) =>
+        await httpClient.PostAsJsonAsync("api/checkout", model);
 }

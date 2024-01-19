@@ -12,7 +12,7 @@ public static class FormatHelpers
             ? currencyDecimal.ToString("C")
             : $"{(currencyDecimal * 100):G2} \u00A2";
     }
-    
+
     public static string ToUnitPriceString(
         float dollarsDecimal,
         string unitOfMeasure,

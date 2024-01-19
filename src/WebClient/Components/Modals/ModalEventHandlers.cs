@@ -1,4 +1,3 @@
-
 namespace WebClient.Components.Modals;
 
 /// <summary>
@@ -19,9 +18,8 @@ public class ModalEventHandlers
     public event Func<Task>? OnBeforeSwitchAsync;
     public event Func<Task>? OnCloseAsync;
 
-
-    private Action? GetHandlerAction(ModalEventType eventType)
-        => eventType switch
+    private Action? GetHandlerAction(ModalEventType eventType) =>
+        eventType switch
         {
             ModalEventType.Close => OnClose,
             ModalEventType.Open => OnOpen,
@@ -32,8 +30,8 @@ public class ModalEventHandlers
             _ => throw new ArgumentOutOfRangeException(nameof(eventType), eventType, null)
         };
 
-    private Func<Task>? GetHandlerAsyncFunc(ModalEventType eventType)
-        => eventType switch
+    private Func<Task>? GetHandlerAsyncFunc(ModalEventType eventType) =>
+        eventType switch
         {
             ModalEventType.Close => OnCloseAsync,
             ModalEventType.Open => OnOpenAsync,

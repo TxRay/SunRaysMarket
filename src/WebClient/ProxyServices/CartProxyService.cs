@@ -19,27 +19,27 @@ internal class CartProxyService(HttpClient client) : ICartService
             })
             .Unwrap() ?? throw new InvalidOperationException("CreateCartResponse was null");
 
-    public async Task<CartItemControlModel?> GetCartItemInfoAsync(int cartItemId)
-        => await client.GetAsync($"api/cart/item-info/{cartItemId}")
+    public async Task<CartItemControlModel?> GetCartItemInfoAsync(int cartItemId) =>
+        await client
+            .GetAsync($"api/cart/item-info/{cartItemId}")
             .ContinueWith(messageTask =>
-                {
-                    var message = messageTask.Result;
-                    message.EnsureSuccessStatusCode();
-                    return message.Content.ReadFromJsonAsync<CartItemControlModel>();
-                }
-            )
+            {
+                var message = messageTask.Result;
+                message.EnsureSuccessStatusCode();
+                return message.Content.ReadFromJsonAsync<CartItemControlModel>();
+            })
             .Unwrap();
 
     public async Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync()
     {
-        var cartItemInfoListModel =  await client.GetAsync("/api/cart/cart-info")
+        var cartItemInfoListModel = await client
+            .GetAsync("/api/cart/cart-info")
             .ContinueWith(messageTask =>
-                {
-                    var message = messageTask.Result;
-                    message.EnsureSuccessStatusCode();
-                    return message.Content.ReadFromJsonAsync<GetCartItemInfoListResponse>();
-                }
-                )
+            {
+                var message = messageTask.Result;
+                message.EnsureSuccessStatusCode();
+                return message.Content.ReadFromJsonAsync<GetCartItemInfoListResponse>();
+            })
             .Unwrap();
 
         return cartItemInfoListModel?.CartItemInfoList ?? [];

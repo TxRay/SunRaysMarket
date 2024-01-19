@@ -21,6 +21,7 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
             .ThenInclude(pt => pt!.Department)
             .Include(p => p.InventoryItems)
             .ToProductListAsync();
+
     public async Task<IEnumerable<ProductListModel>> GetAllAsync(string listTitle, int? storeId) =>
         await context
             .Lists
@@ -64,18 +65,24 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
             .SelectMany(d => d.ProductTypes)
             .SelectMany(pt => pt.Products)
             .ToProductListAsync();
+
     public async Task<IEnumerable<ProductListModel>> GetAllSearchAsync(string? queryString)
     {
-        if (queryString is null) return [];
+        if (queryString is null)
+            return [];
 
         var queryStringLowered = queryString.ToLower();
-        
-        var query = context.Products
+
+        var query = context
+            .Products
             .Include(p => p.ProductType)
             .ThenInclude(pt => pt!.Department)
-            .Where(p => p.Description.ToLower().Contains(queryStringLowered)
-                        || p.Name.ToLower().Contains(queryStringLowered)
-                        || p.ProductType!.Department!.Name.ToLower().Contains(queryStringLowered));
+            .Where(
+                p =>
+                    p.Description.ToLower().Contains(queryStringLowered)
+                    || p.Name.ToLower().Contains(queryStringLowered)
+                    || p.ProductType!.Department!.Name.ToLower().Contains(queryStringLowered)
+            );
 
         return await query.ToProductListAsync();
     }

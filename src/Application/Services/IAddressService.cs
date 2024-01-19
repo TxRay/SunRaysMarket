@@ -3,7 +3,7 @@ using Application.DomainModels;
 namespace Application.Services;
 
 /// <summary>
-/// Handles 
+/// Handles
 /// </summary>
 public interface IAddressService
 {

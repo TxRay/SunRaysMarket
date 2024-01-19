@@ -82,9 +82,10 @@ public static class CartEndpoints
                 ICartService cartService
             ) =>
             {
-                var cartId = context.Request.Cookies.GetCartIdCookie()
+                var cartId =
+                    context.Request.Cookies.GetCartIdCookie()
                     ?? (await cartService.CreateCartAsync()).CartId;
-                
+
                 try
                 {
                     return Results.Json(
@@ -123,16 +124,16 @@ public static class CartEndpoints
     {
         var itemInfoGroup = endpoints.MapGroup("/item-info");
 
-        itemInfoGroup.MapGet("/{itemId:int}",
-            async (int itemId, ICartService cartService)
-                => Results.Json(
-                    await cartService.GetCartItemInfoAsync(itemId)
-                )
+        itemInfoGroup.MapGet(
+            "/{itemId:int}",
+            async (int itemId, ICartService cartService) =>
+                Results.Json(await cartService.GetCartItemInfoAsync(itemId))
         );
 
-        itemInfoGroup.MapGet("/",
-            async (ICartService cartService)
-                => Results.Json(
+        itemInfoGroup.MapGet(
+            "/",
+            async (ICartService cartService) =>
+                Results.Json(
                     new GetCartItemInfoListResponse
                     {
                         CartItemInfoList = await cartService.GetAllCartItemInfoAsync()

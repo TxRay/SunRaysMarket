@@ -4,8 +4,9 @@ using Application.EndpointViewModels;
 using Application.Options;
 
 namespace Application.Services;
+
 /// <summary>
-/// 
+///
 /// </summary>
 public interface ICartService
 {
@@ -14,7 +15,7 @@ public interface ICartService
     /// </summary>
     /// <returns></returns>
     Task<CreateCartResponse> CreateCartAsync();
-    
+
     /// <summary>
     /// Fetches the initial state for the cart controls.
     /// </summary>
@@ -24,7 +25,7 @@ public interface ICartService
     ///  otherwise: null.
     /// </returns>
     Task<CartItemControlModel?> GetCartItemInfoAsync(int cartItemId);
-    
+
     /// <summary>
     /// Fetches a the initial state of all cart controls.
     /// </summary>
@@ -32,12 +33,12 @@ public interface ICartService
     ///A list of object containing the initial state of all cart controls.
     /// </returns>
     Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync();
-    
+
     /// <summary>
-    /// Add an item to the current shopping cart.  
+    /// Add an item to the current shopping cart.
     /// </summary>
     /// <param name="buildOptions">
-    /// 
+    ///
     /// </param>
     /// <returns>
     ///
@@ -45,7 +46,7 @@ public interface ICartService
     Task<AddItemToCartResponse> AddItemToCartAsync(
         Action<IAddItemToCartOptionsBuilder> buildOptions
     );
-    
+
     /// <summary>
     /// Update the quantity of for item already contained in the carry.
     /// </summary>
@@ -58,7 +59,7 @@ public interface ICartService
     /// update the request to update the cart item quantity.
     /// </returns>
     Task<UpdateCartItemQuantityResponse> UpdateQuantityAsync(UpdateCartItemQuantityCommand command);
-    
+
     /// <summary>
     /// Remove a cart item from the current cart.
     /// </summary>

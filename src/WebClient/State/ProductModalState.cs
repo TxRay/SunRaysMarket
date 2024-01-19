@@ -2,7 +2,7 @@ namespace WebClient.State;
 
 public class ProductModalState : IModalState
 {
-    public int? ProductId { get;  private set; }
+    public int? ProductId { get; private set; }
     public bool ShowModal { get; private set; }
 
     public void SetState(int? productId, bool? isOpen)

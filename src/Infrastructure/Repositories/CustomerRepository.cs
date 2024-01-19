@@ -109,26 +109,30 @@ internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRep
 
     public async Task RemoveCustomerAddressAsync(int customerId, int addressId)
     {
-        var customerAddress =
-            await dbContext.CustomerAddresses
-                .FirstOrDefaultAsync(ca => ca.CustomerId == customerId && ca.AddressId == addressId);
+        var customerAddress = await dbContext
+            .CustomerAddresses
+            .FirstOrDefaultAsync(ca => ca.CustomerId == customerId && ca.AddressId == addressId);
 
-        if(customerAddress is not null)
+        if (customerAddress is not null)
             dbContext.Remove(customerAddress);
     }
 
-    public async Task<IEnumerable<AddressModel>> GetCustomerAddresses(int customerId)
-        => await dbContext.CustomerAddresses
+    public async Task<IEnumerable<AddressModel>> GetCustomerAddresses(int customerId) =>
+        await dbContext
+            .CustomerAddresses
             .Include(ca => ca.Address)
             .Where(ca => ca.CustomerId == customerId)
-            .Select(ca => new AddressModel
-            {
-                Id = ca.Address.Id,
-                Street = ca.Address.Street,
-                City = ca.Address.City,
-                PostalCode = ca.Address.PostalCode,
-                Country = ca.Address.Country
-            })
+            .Select(
+                ca =>
+                    new AddressModel
+                    {
+                        Id = ca.Address.Id,
+                        Street = ca.Address.Street,
+                        City = ca.Address.City,
+                        PostalCode = ca.Address.PostalCode,
+                        Country = ca.Address.Country
+                    }
+            )
             .ToArrayAsync();
 
     public int? GetPersistedCustomerId()

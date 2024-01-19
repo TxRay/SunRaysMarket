@@ -1,7 +1,7 @@
 namespace Application.EndpointViewModels;
 
 /// <summary>
-/// Holds the data for an API request to update the cart quantity. 
+/// Holds the data for an API request to update the cart quantity.
 /// </summary>
 public class UpdateCartItemQuantityResponse
 {

@@ -1,6 +1,3 @@
 namespace WebClient.Components.Modals;
 
-public interface IModalResult
-{
-    
-}
+public interface IModalResult { }

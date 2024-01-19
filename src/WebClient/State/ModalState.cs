@@ -31,9 +31,9 @@ public class ModalState<TState> : IModalState
         ShowModal = false;
         NotifyStateChanged();
     }
-    
+
     public event Action? OnChange;
-    
+
     private void NotifyStateChanged() => OnChange?.Invoke();
 
     protected virtual void AfterStateUpdated() { }

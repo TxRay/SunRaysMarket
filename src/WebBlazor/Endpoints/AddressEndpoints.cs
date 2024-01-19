@@ -40,13 +40,17 @@ public static class AddressEndpoints
         return endpoints;
     }
 
-    private static IEndpointRouteBuilder MapCustomerAddressEndpoints(this IEndpointRouteBuilder endpoints)
+    private static IEndpointRouteBuilder MapCustomerAddressEndpoints(
+        this IEndpointRouteBuilder endpoints
+    )
     {
-        var customerAddressGroup = endpoints.MapGroup("/customer")
+        var customerAddressGroup = endpoints
+            .MapGroup("/customer")
             .WithGroupName("CustomerAddress")
             .WithDescription("Handles customer address requests");
 
-        customerAddressGroup.MapGet("/",
+        customerAddressGroup.MapGet(
+            "/",
             async (ICustomerAddressService customerAddressService) =>
                 Results.Json(
                     new GetAddressesResponse
@@ -56,16 +60,22 @@ public static class AddressEndpoints
                 )
         );
 
-        customerAddressGroup.MapPost("/",
-            async ([FromBody] CreateAddressModel model, ICustomerAddressService customerAddressService) =>
-            Results.Json(
-                new CreateAddressResponse
-                {
-                    AddressId = await customerAddressService.AddAddress(model)
-                })
+        customerAddressGroup.MapPost(
+            "/",
+            async (
+                [FromBody] CreateAddressModel model,
+                ICustomerAddressService customerAddressService
+            ) =>
+                Results.Json(
+                    new CreateAddressResponse
+                    {
+                        AddressId = await customerAddressService.AddAddress(model)
+                    }
+                )
         );
 
-        customerAddressGroup.MapDelete("/{addressId:int}",
+        customerAddressGroup.MapDelete(
+            "/{addressId:int}",
             async (int addressId, ICustomerAddressService customerAddressService) =>
             {
                 await customerAddressService.RemoveAddress(addressId);

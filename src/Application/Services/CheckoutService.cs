@@ -28,7 +28,7 @@ internal class CheckoutService(
     public async Task CheckoutAsync(CheckoutSubmitModel model)
     {
         var user = httpContextAccessor.HttpContext?.User;
-        
+
         if (user is null)
             return;
 
@@ -38,7 +38,7 @@ internal class CheckoutService(
             model.OrderType,
             model.DeliveryAddressId
         );
-        
+
         if (orderId is null)
             return;
 

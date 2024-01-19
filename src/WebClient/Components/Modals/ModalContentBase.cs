@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace WebClient.Components.Modals;
 
-public abstract class ModalContentBase<TState> : ComponentBase, IDisposable where TState : class, new()
+public abstract class ModalContentBase<TState> : ComponentBase, IDisposable
+    where TState : class, new()
 {
-    [Inject] private IServiceProvider ServiceProvider { get; set; } = default!;
+    [Inject]
+    private IServiceProvider ServiceProvider { get; set; } = default!;
 
     private IModalController? _modalController;
     private ModalContext<TState>? _modalContext;
@@ -20,9 +22,11 @@ public abstract class ModalContentBase<TState> : ComponentBase, IDisposable wher
 
             ObjectDisposedException.ThrowIf(IsDisposed, this);
 
-            _modalController ??= ServiceProvider.GetRequiredService<IModalController>()
-                                 ?? throw new InvalidOperationException(
-                                     "No implementation of IModalController was found");
+            _modalController ??=
+                ServiceProvider.GetRequiredService<IModalController>()
+                ?? throw new InvalidOperationException(
+                    "No implementation of IModalController was found"
+                );
             return _modalController;
         }
     }
@@ -43,21 +47,20 @@ public abstract class ModalContentBase<TState> : ComponentBase, IDisposable wher
         ModalContext.EventHandlers.OnUnloadedAsync += OnUnloadedAsync;
     }
 
-    protected virtual void OnUnloaded()
-    {
-    }
-
+    protected virtual void OnUnloaded() { }
 
     protected virtual Task OnUnloadedAsync() => Task.CompletedTask;
 
-    protected Task ChangeModalContent<TComponent, TNewState>(ModalOptions? options = default, 
-        TNewState? initialState = default, Dictionary<string, object?>? tempData = default)
-        where TComponent : IComponent, IDisposable where TNewState : class, new() =>
+    protected Task ChangeModalContent<TComponent, TNewState>(
+        ModalOptions? options = default,
+        TNewState? initialState = default,
+        Dictionary<string, object?>? tempData = default
+    )
+        where TComponent : IComponent, IDisposable
+        where TNewState : class, new() =>
         ModalController.DispatchAsync<TComponent, TNewState>(options, initialState, tempData);
 
-    protected Task CloseModal()
-        => ModalController.Close();
-
+    protected Task CloseModal() => ModalController.Close();
 
     void IDisposable.Dispose()
     {
@@ -67,7 +70,5 @@ public abstract class ModalContentBase<TState> : ComponentBase, IDisposable wher
         IsDisposed = true;
     }
 
-    protected virtual void Dispose(bool disposing)
-    {
-    }
+    protected virtual void Dispose(bool disposing) { }
 }

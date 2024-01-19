@@ -9,7 +9,8 @@ public class CustomerAddressService(
     ICustomerService customerService,
     ILogger<CustomerAddressService> logger,
     IHttpContextAccessor contextAccessor,
-    IUnitOfWork unitOfWork) : ICustomerAddressService
+    IUnitOfWork unitOfWork
+) : ICustomerAddressService
 {
     public async Task<IEnumerable<AddressModel>> GetAddressesAsync()
     {
@@ -20,7 +21,7 @@ public class CustomerAddressService(
             logger.LogWarning("There is no currently authenticated customer.");
             return [];
         }
-        
+
         return await unitOfWork.CustomerRepository.GetCustomerAddresses(customerId.Value);
     }
 
@@ -32,7 +33,6 @@ public class CustomerAddressService(
         {
             logger.LogWarning("There is no currently authenticated customer.");
             return null;
-
         }
 
         if (!(await unitOfWork.AddressRepository.CreateAddressAsync(model)))
@@ -40,7 +40,7 @@ public class CustomerAddressService(
             logger.LogWarning("The requested address could not be added to the database.");
             return null;
         }
-        
+
         await unitOfWork.SaveChangesAsync();
         var addressId = unitOfWork.AddressRepository.GetPersistedId();
 
@@ -50,7 +50,9 @@ public class CustomerAddressService(
             return null;
         }
 
-        await unitOfWork.CustomerRepository.AddCustomerAddressAsync(customerId.Value, addressId.Value);
+        await unitOfWork
+            .CustomerRepository
+            .AddCustomerAddressAsync(customerId.Value, addressId.Value);
         await unitOfWork.SaveChangesAsync();
 
         return addressId;
@@ -69,7 +71,7 @@ public class CustomerAddressService(
         await unitOfWork.CustomerRepository.RemoveCustomerAddressAsync(customerId.Value, addressId);
     }
 
-    private HttpContext Context => contextAccessor.HttpContext
-    ?? throw new InvalidOperationException("No HttpContext is available.");
-    
+    private HttpContext Context =>
+        contextAccessor.HttpContext
+        ?? throw new InvalidOperationException("No HttpContext is available.");
 }

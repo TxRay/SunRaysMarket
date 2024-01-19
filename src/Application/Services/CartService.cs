@@ -36,7 +36,6 @@ internal class CartService(
         return new CreateCartResponse { CartId = cartId };
     }
 
-    
     public async Task<CartItemControlModel?> GetCartItemInfoAsync(int cartItemId)
     {
         var context = httpContextAccessor.HttpContext;
@@ -44,8 +43,9 @@ internal class CartService(
 
         return cartId is null
             ? null
-            : (await unitOfWork.CartRepository.GetAllCartItemInfoAsync(cartItemId))
-            .FirstOrDefault(ci => ci.Id == cartItemId);
+            : (await unitOfWork.CartRepository.GetAllCartItemInfoAsync(cartItemId)).FirstOrDefault(
+                ci => ci.Id == cartItemId
+            );
     }
 
     public async Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync()
@@ -53,7 +53,8 @@ internal class CartService(
         var context = httpContextAccessor.HttpContext;
         var cartId = context?.Request.Cookies.GetCartIdCookie();
 
-        if (cartId is null) return [];
+        if (cartId is null)
+            return [];
 
         return await unitOfWork.CartRepository.GetAllCartItemInfoAsync(cartId.Value);
     }

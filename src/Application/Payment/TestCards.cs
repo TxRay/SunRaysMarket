@@ -36,5 +36,4 @@ public static class TestCards
 
     public static string? GetCardPmTokenOrDefault(CardDefinition card) =>
         TestCards.CardMap.GetValueOrDefault(card);
-  
 }

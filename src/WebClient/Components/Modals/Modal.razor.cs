@@ -7,9 +7,11 @@ public partial class Modal : ComponentBase
 {
     //[Inject] private IServiceProvider ServiceProvider { get; set; } = null!;
 
-    [Inject] private ILogger<Modal>? Logger { get; set; }
-    
-    [Inject] protected IModalController ModalController { get; set; } = null!;
+    [Inject]
+    private ILogger<Modal>? Logger { get; set; }
+
+    [Inject]
+    protected IModalController ModalController { get; set; } = null!;
     protected ModalContext ModalContext { get; set; } = null!;
 
     protected override void OnInitialized()
@@ -18,15 +20,11 @@ public partial class Modal : ComponentBase
         ModalContext = ModalController.GetActiveContext();
         ModalController.OnChange += OnStateChanged;
     }
-    
-    protected override void OnParametersSet()
-    {
 
-    }
-    
-    private Task OnCloseBtnClicked()
-        => ModalController!.Close();
-    
+    protected override void OnParametersSet() { }
+
+    private Task OnCloseBtnClicked() => ModalController!.Close();
+
     private void OnStateChanged()
     {
         Logger?.LogInformation("The method 'Modal.OnStateChanged' was called.");

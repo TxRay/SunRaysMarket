@@ -9,12 +9,12 @@ public class ProductListModel
     public string Slug { get; init; } = default!;
     public string PhotoUrl { get; init; } = default!;
     public float Price { get; init; }
-    
+
     public float Measure { get; init; }
 
     public string UnitOfMeasure { get; init; } = default!;
     public float DiscountPercent { get; init; }
-    
+
     public int ProductTypeSlug { get; init; } = default!;
     public int DepartmentId { get; init; }
     public string DepartmentName { get; init; } = default!;

@@ -16,5 +16,4 @@ public interface ICheckoutService
     );
 
     Task CheckoutAsync(CheckoutSubmitModel model);
-    
 }
