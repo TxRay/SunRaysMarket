@@ -1,0 +1,18 @@
+<p> Redirecting </p>
+
+@code {
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+    [Parameter, EditorRequired] public string Route { get; set; } = default!;
+    [Parameter] public bool ForceLoad { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var options = new NavigationOptions
+        {
+            ForceLoad = ForceLoad,
+        };
+
+        Navigation.NavigateTo(Route, options);
+    }
+
+}

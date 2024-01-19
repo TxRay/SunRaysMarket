@@ -3,8 +3,8 @@ using Infrastructure.Extensions;
 using WebBlazor.Components;
 using WebBlazor.Endpoints;
 using WebBlazor.Middleware;
+using WebClient.Components;
 using WebClient.Extensions;
-using WebClient.Pages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +45,6 @@ app.MapApiEndpoints();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(Checkout).Assembly);
+    .AddAdditionalAssemblies(typeof(CartControls).Assembly);
 
 app.Run();

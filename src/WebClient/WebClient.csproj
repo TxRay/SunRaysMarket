@@ -26,6 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Pages\" />
       <Folder Include="ProxyRepositories\" />
       <Folder Include="wwwroot\js\" />
     </ItemGroup>

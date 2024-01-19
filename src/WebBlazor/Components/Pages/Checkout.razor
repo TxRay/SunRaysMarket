@@ -1,0 +1,18 @@
+@page "/checkout"
+
+<AuthorizeView Roles="Customer">
+    <Authorized>
+        <main class="layout__content checkout">
+            <h1 class="">Checkout</h1>
+            <CheckoutContent/>
+        </main>
+    </Authorized>
+    <NotAuthorized>
+        <AutoNavigator Route="login" />
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+
+}

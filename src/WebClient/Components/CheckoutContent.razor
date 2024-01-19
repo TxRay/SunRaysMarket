@@ -6,12 +6,10 @@
 @using Application.DomainModels.Checkout
 @inherits OwningComponentBase<ICheckoutService>
 @inject IStoreFactory StoreFactory
-@inject ILogger<Checkout> Logger
+@inject ILogger<CheckoutContent> Logger
 @rendermode InteractiveWebAssembly
-@page "/checkout"
 
-<main class="layout__content checkout">
-    <h1 class="">Checkout</h1>
+
 
     @if (ShouldLoadContent)
     {
@@ -72,7 +70,6 @@
             <button class="btn btn--md btn--primary" @onclick="OnSubmitAsync">Submit</button>
         </div>
     }
-</main>
 
 @code {
     private IStore? Store { get; set; }
