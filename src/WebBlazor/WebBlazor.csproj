@@ -31,7 +31,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Components\Product\" />
       <Folder Include="Components\Static\" />
       <Folder Include="wwwroot\css\dev\" />
     </ItemGroup>

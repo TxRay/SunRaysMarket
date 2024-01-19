@@ -1,9 +1,7 @@
 @using Application.DomainModels
 @using Application.Services
-@using Application.UnitOfWork
-@using Application.Utilities
-@using Application.Cookies
 @inherits OwningComponentBase<ICartService> 
+@attribute [StreamRendering]
 
 <section class="section">
     <h3 class="section-heading">@Heading</h3>

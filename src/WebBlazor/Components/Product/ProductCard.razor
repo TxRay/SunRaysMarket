@@ -2,13 +2,9 @@
 @using Application.Utilities
 @using WebClient.Enums
 @using WebClient.State
-@inject IServiceProvider ServiceProvider
 
-@rendermode InteractiveAuto
-
-
-<a class="product-card">
-    <CardScreen OnClick="@OnCardScreenClicked"/>
+<div class="product-card">
+    <NavLink href="@ProductDetailsUri" class="product-card__screen"></NavLink>
     <img class="product-card__img"
          src="@Product.PhotoUrl"
          alt=""
@@ -29,28 +25,26 @@
     <CartControls CssClasses="product-card__cart-controls"
                   ProductId="@Product.Id"
                   CartItemInfo="@CartItemInfo"/>
-</a>
+</div>
 
 @code {
-    [Parameter] public ProductListModel Product { get; set; } = null!;
-
-    [Parameter] public IEnumerable<CartItemControlModel> CartItemInfoList { get; set; } 
-        = new List<CartItemControlModel>();
+    [Inject] ILogger<ProductCard> Logger { get; set; } = default!;
     
-    private ProductModalState? ModalState { get; set; }
+    [Parameter] public ProductListModel Product { get; set; } = default!;
+    [Parameter] public IEnumerable<CartItemControlModel> CartItemInfoList { get; set; } = [];
 
-    protected override void OnParametersSet()
+    private string ProductDetailsUri => $"product/details/{Product.Id}"
+                                        + (
+                                            CartItemInfo?.ProductId is not null
+                                                ? $"?item={CartItemInfo}"
+                                                : string.Empty
+                                        );
+
+    private CartItemControlModel? CartItemInfo { get; set; }
+
+    protected override void OnInitialized()
     {
-        ModalState ??= ServiceProvider.GetService<ProductModalState>();
+        CartItemInfo = CartItemInfoList.FirstOrDefault(cartItemInfo => cartItemInfo.ProductId == Product.Id);
     }
-
-    private void OnCardScreenClicked()
-    {
-        Console.WriteLine("OnCardScreenClicked");
-        ModalState?.SetState(Product.Id, true);
-    }
-
-    private CartItemControlModel? CartItemInfo 
-        => CartItemInfoList.FirstOrDefault(cartItemInfo => cartItemInfo.ProductId == Product.Id);
 
 }

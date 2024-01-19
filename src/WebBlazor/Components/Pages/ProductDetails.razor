@@ -1,9 +1,10 @@
-@page "/product/details{id:int}"
 @using Application.DomainModels
 @using Application.Services
 @using Application.Utilities
+@using System.Web
 @inherits OwningComponentBase
 @attribute [StreamRendering]
+@page "/product/details/{id:int}"
 
 @if (ShouldLoad)
 {
@@ -43,6 +44,7 @@ else
     [Parameter] public int Id { get; set; }
     [SupplyParameterFromQuery(Name = "item")] public int? CartItemId { get; set; }
 
+    
     private IProductService ProductService { get; set; } = default!;
     private ICartService CartService { get; set; } = default!;
 
