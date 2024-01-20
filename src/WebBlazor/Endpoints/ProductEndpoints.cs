@@ -17,27 +17,8 @@ public static class ProductEndpoints
                 Results.Json(await productService.GetProductDetailsAsync(id))
         );
 
-        allProductsGroup.MapGet(
-            "/",
-            async (IProductService productService) =>
-                Results.Json(
-                    new GetProductListResponse
-                    {
-                        Products = await productService.GetAllProductsAsync()
-                    }
-                )
-        );
-
-        allProductsGroup.MapGet(
-            "/{departmentId:int}",
-            async (int departmentId, IProductService productService) =>
-                Results.Json(
-                    new GetProductListResponse
-                    {
-                        Products = await productService.GetAllProductsAsync(departmentId)
-                    }
-                )
-        );
+        allProductsGroup.MapGet("/", GetFeatureProductsAsync);
+        allProductsGroup.MapGet("/{departmentId:int}", GetDepartmentFeaturedProductsAsync);
 
         allProductsGroup.MapPost(
             "/search",
@@ -51,5 +32,21 @@ public static class ProductEndpoints
         );
 
         return endpoints;
+    }
+
+    private static async IAsyncEnumerable<IResult> GetFeatureProductsAsync(IProductService productService)
+    {
+        await foreach(var product in productService.GetAllProductsAsync())
+        {
+            yield return Results.Json(product);
+        }
+    }
+
+    private static async IAsyncEnumerable<IResult> GetDepartmentFeaturedProductsAsync(int departmentId, IProductService productService)
+    {
+        await foreach (var product in productService.GetAllProductsAsync(departmentId))
+        {
+            yield return Results.Json(product);
+        }
     }
 }
