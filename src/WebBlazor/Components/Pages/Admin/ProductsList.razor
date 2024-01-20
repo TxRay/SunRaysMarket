@@ -2,6 +2,7 @@
 @using Application.DomainModels
 @using Application.Utilities
 @inherits OwningComponentBase<IUnitOfWork>
+@attribute [StreamRendering]
 @page "/admin/products"
 
 <SectionContent SectionName="page-title">@PageTitle</SectionContent>
@@ -45,12 +46,16 @@
 </div>
 
 @code {
-    private IEnumerable<ProductListModel> Products { get; set; } = new List<ProductListModel>();
+    private List<ProductListModel> Products { get; set; } = [];
 
     private const string PageTitle = "Products List";
 
     protected override async Task OnInitializedAsync()
     {
-       Products = await Service.ProductRepository.GetAllAsync();
+        await foreach (var product in Service.ProductRepository.GetAllAsync())
+        {
+            Products.Add(product);
+            StateHasChanged();
+        }
     }
 }

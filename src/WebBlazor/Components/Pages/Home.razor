@@ -7,7 +7,7 @@
 <AppPageTitle>Home</AppPageTitle>
 
 <MainHeader>
-    <HeroHome />
+    <HeroHome/>
 </MainHeader>
 
 <main class="layout layout__full main-home">
@@ -15,12 +15,13 @@
 </main>
 
 @code {
-    
-    private List<ProductListModel> Products { get; set; } = new();
+    private IAsyncEnumerable<ProductListModel> Products { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync()
+
+    protected override void OnInitialized()
     {
-        Products = (await Service.ProductRepository.GetAllAsync()).ToList();
+        base.OnInitialized();
+        Products = Service.ProductRepository.GetAllAsync();
     }
 
 }

@@ -12,11 +12,11 @@
     [Parameter] public int Id { get; set; }
     [Parameter] public string Slug { get; set; } = string.Empty;
 
-    private IEnumerable<ProductListModel> Products { get; set; } = [];
+    private IAsyncEnumerable<ProductListModel> Products { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        Products = await Service.GetAllProductsAsync(Id);
+        Products = Service.GetAllProductsAsync(Id);
     }
 
 }
