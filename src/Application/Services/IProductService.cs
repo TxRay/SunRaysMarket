@@ -5,9 +5,10 @@ namespace Application.Services;
 public interface IProductService
 {
     Task<ProductDetailsModel?> GetProductDetailsAsync(int productId);
-    Task<IEnumerable<ProductListModel>> GetAllProductsAsync();
-
-    Task<IEnumerable<ProductListModel>> GetAllProductsAsync(int departmentId);
+    IAsyncEnumerable<ProductListModel?> GetAllProductsAsync();
+    
+    
+    IAsyncEnumerable<ProductListModel?> GetAllProductsAsync(int departmentId);
 
     Task<IEnumerable<ProductListModel>> SearchForProductsAsync(string? queryString);
 }

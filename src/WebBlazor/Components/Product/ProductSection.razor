@@ -5,10 +5,11 @@
 
 <section class="section">
     <h3 class="section-heading">@Heading</h3>
-    @if (FeaturedProducts.Any())
+
+    @if (DisplayProducts.Any())
     {
         <div class="card-grid">
-            @foreach (var product in FeaturedProducts)
+            @foreach (var product in DisplayProducts)
             {
                 <ProductCard Product="@product" CartItemInfoList="@CartItemInfo"/>
             }
@@ -18,23 +19,25 @@
     {
         <p> @FailureMessage </p>
     }
-
 </section>
 
 @code {
-    [Parameter] public string Heading { get; set; } = string.Empty;
-
-    [Parameter] public IEnumerable<ProductListModel> FeaturedProducts { get; set; } = [];
-
+    [Parameter, EditorRequired] public string Heading { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public IAsyncEnumerable<ProductListModel> FeaturedProducts { get; set; } = default!;
     [Parameter] public string FailureMessage { get; set; } = "No products found";
 
-    private int? CartId { get; set; }
-
     private IEnumerable<CartItemControlModel> CartItemInfo { get; set; } = [];
+    private List<ProductListModel> DisplayProducts { get; set; } = [];
 
     protected override async Task OnInitializedAsync()
     {
         CartItemInfo = await Service.GetAllCartItemInfoAsync();
+
+        await foreach (var product in FeaturedProducts)
+        {
+            DisplayProducts.Add(product);
+            StateHasChanged();
+        }
     }
 
 }

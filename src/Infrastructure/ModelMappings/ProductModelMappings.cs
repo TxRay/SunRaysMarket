@@ -56,4 +56,25 @@ internal static class ProductModelMappings
                     }
             )
             .ToListAsync();
+    
+    public static IAsyncEnumerable<ProductListModel> AsProductAsyncEnumerable(this IQueryable<Product> set) =>
+        set.Select(
+                p =>
+                    new ProductListModel
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Slug = p.Slug,
+                        PhotoUrl = p.PhotoUrl,
+                        Measure = p.Measure,
+                        UnitOfMeasure = p.UnitOfMeasure!.Symbol,
+                        Price = p.Price,
+                        DiscountPercent = p.DiscountPercent,
+                        DepartmentId = p.ProductType!.DepartmentId,
+                        DepartmentName = p.ProductType!.Department!.Name,
+                        DepartmentSlug = p.ProductType!.Department!.Slug,
+                        InStock = p.InventoryItems.Any(i => i.Quantity > 0)
+                    }
+            )
+            .AsAsyncEnumerable();
 }

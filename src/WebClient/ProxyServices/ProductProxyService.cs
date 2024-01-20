@@ -18,36 +18,14 @@ public class ProductProxyService(HttpClient httpClient) : IProductService
             })
             .Unwrap();
 
-    public async Task<IEnumerable<ProductListModel>> GetAllProductsAsync()
-    {
-        var productListModel = await httpClient
-            .GetAsync($"/api/products")
-            .ContinueWith(messageTask =>
-            {
-                var message = messageTask.Result;
-                message.EnsureSuccessStatusCode();
-                return message.Content.ReadFromJsonAsync<GetProductListResponse>();
-            })
-            .Unwrap();
+    public IAsyncEnumerable<ProductListModel?> GetAllProductsAsync()
+     => httpClient
+         .GetFromJsonAsAsyncEnumerable<ProductListModel>("/api/products");
 
-        return productListModel?.Products ?? [];
-    }
 
-    public async Task<IEnumerable<ProductListModel>> GetAllProductsAsync(int departmentId)
-    {
-        var productListModel = await httpClient
-            .GetAsync($"/api/products/{departmentId}")
-            .ContinueWith(messageTask =>
-            {
-                var message = messageTask.Result;
-                message.EnsureSuccessStatusCode();
-                return message.Content.ReadFromJsonAsync<GetProductListResponse>();
-            })
-            .Unwrap();
-
-        return productListModel?.Products ?? [];
-    }
-
+    public IAsyncEnumerable<ProductListModel?> GetAllProductsAsync(int departmentId)
+        => httpClient
+            .GetFromJsonAsAsyncEnumerable<ProductListModel>($"/api/products/{departmentId}");
     public async Task<IEnumerable<ProductListModel>> SearchForProductsAsync(string? queryString)
     {
         var command = new ProductSearchCommand { Query = queryString };

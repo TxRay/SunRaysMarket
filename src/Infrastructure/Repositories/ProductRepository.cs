@@ -14,16 +14,16 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
 {
     private readonly ILogger<ProductRepository> _logger = logger;
 
-    public async Task<IEnumerable<ProductListModel>> GetAllAsync() =>
-        await context
+    public IAsyncEnumerable<ProductListModel> GetAllAsync() =>
+        context
             .Products
             .Include(p => p.ProductType)
             .ThenInclude(pt => pt!.Department)
             .Include(p => p.InventoryItems)
-            .ToProductListAsync();
+            .AsProductAsyncEnumerable();
 
-    public async Task<IEnumerable<ProductListModel>> GetAllAsync(string listTitle, int? storeId) =>
-        await context
+    public IAsyncEnumerable<ProductListModel> GetAllAsync(string listTitle, int? storeId) =>
+        context
             .Lists
             .Include(l => l.Products)
             .ThenInclude(p => p.ProductType)
@@ -32,31 +32,15 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
             .ThenInclude(p => p.InventoryItems)
             .Where(l => l.Title == listTitle)
             .SelectMany(l => l.Products)
-            .Select(
-                p =>
-                    new ProductListModel
-                    {
-                        Id = p.Id,
-                        Name = p.Name,
-                        Slug = p.Slug,
-                        PhotoUrl = p.PhotoUrl,
-                        Price = p.Price,
-                        DiscountPercent = p.DiscountPercent,
-                        DepartmentId = p.ProductType!.DepartmentId,
-                        DepartmentName = p.ProductType!.Department!.Name,
-                        DepartmentSlug = p.ProductType!.Department!.Slug,
-                        InStock = p.InventoryItems.Any(i => i.StoreId == storeId && i.Quantity > 0)
-                    }
-            )
-            .ToListAsync();
+            .AsProductAsyncEnumerable();
 
-    public Task<IEnumerable<ProductListModel>> GetAllAsync(string listType, int departmentId)
+    public IAsyncEnumerable<ProductListModel> GetAllAsync(string listType, int departmentId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<ProductListModel>> GetAllAsync(int departmentId) =>
-        await context
+    public IAsyncEnumerable<ProductListModel> GetAllAsync(int departmentId) =>
+        context
             .Departments
             .Include(d => d.ProductTypes)
             .ThenInclude(pt => pt.Products)
@@ -64,7 +48,7 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
             .Where(d => d.Id == departmentId)
             .SelectMany(d => d.ProductTypes)
             .SelectMany(pt => pt.Products)
-            .ToProductListAsync();
+            .AsProductAsyncEnumerable();
 
     public async Task<IEnumerable<ProductListModel>> GetAllSearchAsync(string? queryString)
     {
