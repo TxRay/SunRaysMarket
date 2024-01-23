@@ -8,10 +8,11 @@
   &__img {
     grid-column: left;
     grid-row: y-full;
+    align-self: center;
+    justify-self: center;
 
     display: block;
-    width: 100%;
-    //margin: var.$spacing-xl;
+    width: 80%;
   }
 
 
@@ -24,9 +25,7 @@
     grid-auto-rows: min-content;
     align-items: center;
     column-gap: 2rem;
-    //row-gap: 1.6rem;
-
-
+    
     margin: 4rem;
   }
 
