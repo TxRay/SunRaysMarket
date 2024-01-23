@@ -1,0 +1,51 @@
+@inherits OwningComponentBase<IUnitOfWork>
+@page "/admin/product-types"
+
+<SectionContent SectionName="page-title">@PageTitle</SectionContent>
+
+<div class="layout__content">
+    <a href="/admin/product-types/create" class="btn btn--primary">
+        Add Product Type
+    </a>
+</div>
+
+<div class="layout__content">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Department</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var productType in ProductTypes)
+        {
+            <tr>
+                <td>@productType.Id</td>
+                <td>@productType.Name</td>
+                <td></td>
+                <td>@productType.DepartmentName</td>
+                <td>
+                    <NavLink href=@($"/admin/product-types/edit/{productType.Id}")>Edit</NavLink> |
+                    <NavLink href=@($"/admin/product-types/delete/{productType.Id}")>Delete</NavLink>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private IEnumerable<ProductTypeDetailsModel> ProductTypes { get; set; } = new ProductTypeDetailsModel[] { };
+
+    private const string PageTitle = "Product Types List";
+    
+    protected override async Task OnInitializedAsync()
+    {
+        ProductTypes = await Service.ProductTypeRepository.GetAllAsync();
+    }
+
+}

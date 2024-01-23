@@ -1,0 +1,185 @@
+@inherits OwningComponentBase<SunRaysMarket.Shared.Services.Interfaces.ICartService>
+@namespace SunRaysMarket.Client.Components
+@rendermode InteractiveAuto
+
+<div class="@CssClasses"
+     id="cartControls-@_uniqueIdSuffix">
+
+    @if (ShowAddToCartButton)
+    {
+        <button class="btn btn--primary btn--round"
+                id="addToCartBtn-@_uniqueIdSuffix"
+                @onclick="OnAddToCartClick">
+            <svg class="cart-controls__add-icon">
+                <use href="img/icons/solid.svg#plus"></use>
+            </svg>
+        </button>
+    }
+    else
+    {
+        <div class="cart-controls cart-controls--visible"
+             id="quantityControls-@_uniqueIdSuffix">
+            <div class="quantity">
+                @if (ShowDecrementQuantityButton)
+                {
+                    <button class="quantity__btn"
+                            id="decrementQuantityBtn-@_uniqueIdSuffix"
+                            @onclick="OnDecrementQuantityClick">
+                        <svg class="quantity__icon">
+                            <use href="/img/icons/solid.svg#minus"></use>
+                        </svg>
+                    </button>
+                }
+                else
+                {
+                    <button class="quantity__btn"
+                            id="removeFromCartBtn-@_uniqueIdSuffix"
+                            @onclick="OnRemoveFromCartClick">
+                        <svg class="quantity__icon">
+                            <use href="/img/icons/solid.svg#trash"></use>
+                        </svg>
+                    </button>
+                }
+
+                <input type="number"
+                       class="quantity__input"
+                       value="@CartItemInfo?.Quantity"
+                       id="cartControlQuantity-@_uniqueIdSuffix">
+                <button class="quantity__btn"
+                        id="incrementQuantityBtn-@_uniqueIdSuffix"
+                        @onclick="OnIncrementQuantityClick">
+                    <svg class="quantity__icon">
+                        <use href="/img/icons/solid.svg#plus"></use>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+
+@code {
+
+    [CascadingParameter] private int? CartId { get; set; }
+
+    //[CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    [Parameter] public CartItemControlModel? CartItemInfo { get; set; }
+
+    [Parameter] public string CssClasses { get; set; } = string.Empty;
+
+    [Parameter] public int ProductId { get; set; }
+
+
+    private readonly string _uniqueIdSuffix = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+
+    private bool ShowAddToCartButton => CartItemInfo is null;
+
+    private bool ShowDecrementQuantityButton => CartItemInfo?.Quantity > 1;
+
+    private async Task OnAddToCartClick()
+    {
+        Console.WriteLine("Current cart id: " + CartId);
+        //var createCartResponse = await Service.CreateCartAsync();
+        //CartId = createCartResponse.CartId; 
+
+        var response = await Service.AddItemToCartAsync(
+            builder =>
+            {
+                builder.WithCommand(
+                    new AddItemToCartCommand
+                    {
+                        ProductId = ProductId,
+                        Quantity = 1
+                    }
+                );
+
+                /*if (HttpContext is null) return;
+
+                var cartId = HttpContext.Request.Cookies.GetCartIdCookie()
+                             ?? throw new Exception("CartId cookie not found");
+                builder.WithCartId(cartId);*/
+            }
+        );
+
+        if (response is not null)
+        {
+            CartItemInfo = new CartItemControlModel
+            {
+                Id = response.ItemId,
+                Quantity = 1
+            };
+        }
+    }
+
+    private async Task OnRemoveFromCartClick()
+    {
+        Console.WriteLine("OnRemoveFromCartClick called for cart item id: " + CartItemInfo?.Id ?? "null");
+        await Service.RemoveItemAsync(
+            new RemoveCartItemCommand
+            {
+                ItemId = CartItemInfo?.Id ?? 0
+            });
+
+        CartItemInfo = null;
+    }
+
+    private async Task OnQuantityChange(ChangeEventArgs eventArgs)
+    {
+        if (CartItemInfo is null || !int.TryParse(eventArgs.Value?.ToString(), out var quantity))
+            return;
+
+        if (quantity < 1) return;
+
+        var result = await Service.UpdateQuantityAsync(new UpdateCartItemQuantityCommand
+        {
+            CartItemId = CartItemInfo.Id,
+            OldQuantity = CartItemInfo.Quantity,
+            NewQuantity = quantity
+        });
+
+        CartItemInfo.Quantity = result.UpdatedQuantity;
+    }
+
+    private async Task OnDecrementQuantityClick()
+    {
+        if (CartItemInfo is null || CartItemInfo.Quantity == 1) return;
+
+        var oldQuantity = CartItemInfo.Quantity;
+        CartItemInfo.Quantity = CartItemInfo.Quantity > 1 ? CartItemInfo.Quantity - 1 : 1;
+
+        var result = await UpdateQuantityAsync(
+            CartItemInfo.Id,
+            oldQuantity,
+            CartItemInfo.Quantity
+        );
+    }
+
+    private async Task<UpdateCartItemQuantityResponse> UpdateQuantityAsync(
+        int cartItemId,
+        int oldQuantity,
+        int newQuantity
+    ) => await Service.UpdateQuantityAsync(
+        new UpdateCartItemQuantityCommand
+        {
+            CartItemId = cartItemId,
+            OldQuantity = oldQuantity,
+            NewQuantity = newQuantity
+        }
+    );
+
+    private async Task OnIncrementQuantityClick()
+    {
+        if (CartItemInfo is null) return;
+
+        var oldQuantity = CartItemInfo.Quantity;
+        CartItemInfo.Quantity++;
+
+        var result = await UpdateQuantityAsync(
+            CartItemInfo.Id,
+            oldQuantity,
+            CartItemInfo.Quantity
+        );
+    }
+
+}

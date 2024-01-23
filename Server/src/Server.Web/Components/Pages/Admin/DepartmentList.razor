@@ -1,0 +1,49 @@
+@inherits OwningComponentBase<IUnitOfWork>
+@page "/admin/departments"
+
+<SectionContent SectionName="page-title">
+    @PageTitle
+</SectionContent>
+
+<div class="layout__content">
+    <NavLink href="/admin/department/create" class="btn btn--primary">
+        Add Department
+    </NavLink>
+</div>
+
+<div class="layout__content">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var department in Departments)
+        {
+            <tr>
+                <td>@department.Id</td>
+                <td>@department.Name</td>
+                <td>
+                    <NavLink href=@($"/admin/department/edit/{department.Id}")>Edit</NavLink> |
+                    <NavLink href=@($"/admin/department/edit/{department.Id}")>Delete</NavLink>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+
+@code {
+    private const string PageTitle = "Department Details";
+    private IEnumerable<DepartmentListModel> Departments { get; set; } = new List<DepartmentListModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Departments = await Service.DepartmentRepository.GetAllAsync();
+    }
+
+}

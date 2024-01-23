@@ -1,0 +1,50 @@
+using SunRaysMarket.Server.Infrastructure.Data;
+
+namespace SunRaysMarket.Server.Infrastructure.Seeding;
+
+internal interface IUserRolesSeeder : ISeeder { }
+
+internal class UserRolesSeeder : IUserRolesSeeder
+{
+    private readonly ApplicationDbContext _dbContext;
+    private readonly RoleManager<IdentityRole<int>> _roleManager;
+
+    public UserRolesSeeder(
+        ApplicationDbContext dbContext,
+        RoleManager<IdentityRole<int>> roleManager
+    )
+    {
+        _dbContext = dbContext;
+        _roleManager = roleManager;
+    }
+
+    public async Task SeedAsync()
+    {
+        if (_dbContext.Roles.Any())
+            return;
+
+        var roleNames = new List<string>
+        {
+            "SuperAdmin",
+            "Admin",
+            "Customer",
+            "Employee",
+            "Manager"
+        };
+
+        foreach (
+            var role in roleNames.Select(
+                roleName =>
+                    new IdentityRole<int>
+                    {
+                        Name = roleName,
+                        NormalizedName = roleName.ToUpper(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString()
+                    }
+            )
+        )
+        {
+            await _roleManager.CreateAsync(role);
+        }
+    }
+}

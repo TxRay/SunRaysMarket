@@ -1,0 +1,156 @@
+
+@using SunRaysMarket.Shared.Core.DomainModels.Checkout
+@using SunRaysMarket.Shared.Core.Payment
+@inherits OwningComponentBase<ICheckoutService>
+@inject ILogger<CheckoutContent> Logger
+@namespace SunRaysMarket.Client.Components
+@rendermode InteractiveWebAssembly
+
+
+
+    @if (ShouldLoadContent)
+    {
+        <div class="checkout__content">
+            <CheckoutSection
+                ShowSection="true"
+                OnActionButtonClicked="OnFulfillmentActionBtnClicked">
+                <Heading>
+                    @if (Model.FulfillmentInfo is null)
+                    {
+                        @: Delivery or Pickup
+                    }
+                    else
+                    {
+                        switch (Model.FulfillmentInfo.OrderType)
+                        {
+                            case OrderType.Delivery:
+                                @: Delivery
+                                break;
+                            case OrderType.Pickup:
+                                @: Pickup
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    }
+                </Heading>
+                <ActionButton>
+                    @if (Model.FulfillmentInfo is null)
+                    {
+                        @: Select time
+                    }
+                    else
+                    {
+                        @: Change time
+                    }
+                </ActionButton>
+            </CheckoutSection>
+
+            <CheckoutSection ShowSection="@(Model.FulfillmentInfo is not null)">
+                <Heading> Payment method</Heading>
+                <ChildContent>
+                    <EditForm EditContext="@PaymentMethodEditContext" FormName="PaymentMethodForm">
+                        <div>
+                            <InputRadioGroup TValue="string" @bind-Value="PaymentModel.PaymentMethodId">
+                                @foreach (var (card, id) in TestCards.CardMap)
+                                {
+                                    <div>
+                                        <InputRadio Value="@id"/>
+                                        <label>@FormatHelpers.ShortenCardNumber(card.Number)</label>
+                                    </div>
+                                }
+                            </InputRadioGroup>
+                        </div>
+                    </EditForm>
+                </ChildContent>
+            </CheckoutSection>
+            <button class="btn btn--md btn--primary" @onclick="OnSubmitAsync">Submit</button>
+        </div>
+    }
+
+@code {
+    private IStore? Store { get; set; }
+    private bool ShouldLoadContent { get; set; }
+    private CheckoutModel Model { get; set; } = new();
+    private PaymentMethodModel PaymentModel { get; set; } = null!;
+    private EditContext PaymentMethodEditContext { get; set; } = null!;
+    private IModalController? ModalController { get; set; }
+    private FulfillmentModel? FulfilmentModel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ModalController = ScopedServices.GetService<IModalController>();
+        Store = ScopedServices.GetService<IStore>();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Store is not null)
+        {
+            FulfilmentModel = await Store.TryGetValueAsync<FulfillmentModel>("FulfillmentData")
+                              ?? new FulfillmentModel();
+            PaymentModel = await Store.TryGetValueAsync<PaymentMethodModel>("PaymentInfo")
+                           ?? new PaymentMethodModel();
+            PaymentMethodEditContext = new EditContext(PaymentModel);
+            PaymentMethodEditContext.OnFieldChanged += PaymentMethodEditContext_OnFieldChanged;
+            ShouldLoadContent = true;
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (!disposing) return;
+        
+        PaymentMethodEditContext.OnFieldChanged -= PaymentMethodEditContext_OnFieldChanged;
+    }
+    
+    private async Task OnSubmitAsync()
+    {
+        var submitModel = new CheckoutSubmitModel
+        {
+            OrderType = FulfilmentModel?.OrderType 
+                        ?? throw new InvalidOperationException("No 'OrderType' was set."),
+            TimeSlotId = FulfilmentModel?.TimeSlotId 
+                ?? throw new InvalidOperationException("No 'TimeSlotId' was set"),
+            DeliveryAddressId = FulfilmentModel?.DeliveryAddressId,
+            PaymentMethodId = PaymentModel.PaymentMethodId 
+                              ?? throw new InvalidOperationException("No 'PaymentMethodId' set.")
+            
+        };
+        
+        try
+        {
+            await Service.CheckoutAsync(Model.ToSubmitModel());
+        }
+        catch
+        {
+            Logger.LogError("An error occured while the user was trying to checkout.");
+        }
+    }
+
+    private async Task OnFulfillmentActionBtnClicked()
+    {
+        var options = new ModalOptions
+        {
+            Title = "Select time",
+            Width = "75%",
+            Height = "75%"
+        };
+
+        var context = await ModalController!.DispatchAsync<FulfilmentModal, FulfillmentModel>(options);
+
+        Logger.LogInformation($"{context.IsVisible}");
+    }
+
+    private async void PaymentMethodEditContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        Logger.LogInformation($"Calling 'Checkout.PaymentMethodEditContext_OnFieldChanged'.");
+        PaymentModel = PaymentMethodEditContext.Model as PaymentMethodModel ?? new PaymentMethodModel();
+        await Store!.SetValueAsync("PaymentInfo", PaymentModel);
+    }
+
+    private class PaymentMethodModel
+    {
+        public string? PaymentMethodId { get; set; }
+    }
+}

@@ -1,0 +1,49 @@
+@using Microsoft.Extensions.Logging
+@namespace SunRaysMarket.Server.Components
+
+
+<div class="product-card">
+    <NavLink href="@ProductDetailsUri" class="product-card__screen"></NavLink>
+    <img class="product-card__img"
+         src="@Product.PhotoUrl"
+         alt=""
+         id="@($"productCardImage{Product.Id}")"/>
+    <h5 class="product-card__product-name "
+        id="@($"productCardHeading{Product.Id}")">
+        @Product.Name
+    </h5>
+    <ProductPrice
+        ClassNames="product-card__price"
+        RegularPrice="@Product.Price"
+        DiscountPercent="Product.DiscountPercent"
+        SalePriceOrientation="SalePriceDisplayOrientation.Column"/>
+    <span class="unit-price product-card__unit-price">
+        @FormatHelpers.ToUnitPriceString(Product.UnitPrice, Product.UnitOfMeasure)
+    </span>
+    <span class="tag product-card__tag">@Product.DepartmentName</span>
+    <CartControls CssClasses="product-card__cart-controls"
+                  ProductId="@Product.Id"
+                  CartItemInfo="@CartItemInfo"/>
+</div>
+
+@code {
+    [Inject] ILogger<ProductCard> Logger { get; set; } = default!;
+    
+    [Parameter] public ProductListModel Product { get; set; } = default!;
+    [Parameter] public IEnumerable<CartItemControlModel> CartItemInfoList { get; set; } = [];
+
+    private string ProductDetailsUri => $"product/details/{Product.Id}"
+                                        + (
+                                            CartItemInfo?.ProductId is not null
+                                                ? $"?item={CartItemInfo.Id}"
+                                                : string.Empty
+                                        );
+
+    private CartItemControlModel? CartItemInfo { get; set; }
+
+    protected override void OnInitialized()
+    {
+        CartItemInfo = CartItemInfoList.FirstOrDefault(cartItemInfo => cartItemInfo.ProductId == Product.Id);
+    }
+
+}

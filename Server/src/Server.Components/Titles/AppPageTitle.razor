@@ -1,0 +1,15 @@
+@namespace SunRaysMarket.Server.Components
+
+@if (ChildContent is null)
+    {
+        <PageTitle>Sun Rays Market</PageTitle>
+    }
+    else
+    {
+        <PageTitle>Sun Rays Market | @ChildContent</PageTitle>
+    }
+    
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

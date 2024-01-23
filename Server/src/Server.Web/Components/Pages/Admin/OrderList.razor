@@ -1,0 +1,50 @@
+@inherits OwningComponentBase<IUnitOfWork>
+@page "/admin/orders"
+
+<SectionContent SectionName="page-title">@PageTitle</SectionContent>
+
+<div class="layout__content">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Customer</th>
+            <th>Store</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Created</th>
+            <th>Updated</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in Orders)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.CustomerName</td>
+                <td>@order.StoreName</td>
+                <td>@order.Status</td>
+                <td>@FormatHelpers.ToCurrencyString(order.Total)</td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a href=@($"/admin/order/details/{order.Id}")>Details</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private IEnumerable<OrderListModel> Orders { get; set; } = new List<OrderListModel>();
+
+    private const string PageTitle = "Orders List";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Service.OrderRepository.GetOrdersAsync();
+    }
+
+}
