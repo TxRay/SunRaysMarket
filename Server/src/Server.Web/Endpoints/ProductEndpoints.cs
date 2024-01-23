@@ -33,15 +33,20 @@ public static class ProductEndpoints
         return endpoints;
     }
 
-    private static async IAsyncEnumerable<IResult> GetFeatureProductsAsync(IProductService productService)
+    private static async IAsyncEnumerable<IResult> GetFeatureProductsAsync(
+        IProductService productService
+    )
     {
-        await foreach(var product in productService.GetAllProductsAsync())
+        await foreach (var product in productService.GetAllProductsAsync())
         {
             yield return Results.Json(product);
         }
     }
 
-    private static async IAsyncEnumerable<IResult> GetDepartmentFeaturedProductsAsync(int departmentId, IProductService productService)
+    private static async IAsyncEnumerable<IResult> GetDepartmentFeaturedProductsAsync(
+        int departmentId,
+        IProductService productService
+    )
     {
         await foreach (var product in productService.GetAllProductsAsync(departmentId))
         {

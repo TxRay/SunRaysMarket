@@ -4,6 +4,7 @@ namespace SunRaysMarket.Server.Web.Endpoints;
 
 
 
+
 /*public static class ApplicationEndpoints
 {
     public static IEndpointRouteBuilder MapApplicationEndpoints(

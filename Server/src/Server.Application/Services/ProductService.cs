@@ -9,9 +9,9 @@ public class ProductService(IUnitOfWork unitOfWork) : IProductService
         await unitOfWork.ProductRepository.GetAsync(productId);
 
     public IAsyncEnumerable<ProductListModel?> GetAllProductsAsync() =>
-         unitOfWork.ProductRepository.GetAllAsync();
+        unitOfWork.ProductRepository.GetAllAsync();
 
-    public IAsyncEnumerable<ProductListModel?> GetAllProductsAsync(int departmentId) => 
+    public IAsyncEnumerable<ProductListModel?> GetAllProductsAsync(int departmentId) =>
         unitOfWork.ProductRepository.GetAllAsync(departmentId);
 
     public async Task<IEnumerable<ProductListModel>> SearchForProductsAsync(string? queryString) =>

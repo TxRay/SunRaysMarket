@@ -55,8 +55,10 @@ internal static class ProductModelMappings
                     }
             )
             .ToListAsync();
-    
-    public static IAsyncEnumerable<ProductListModel> AsProductAsyncEnumerable(this IQueryable<Product> set) =>
+
+    public static IAsyncEnumerable<ProductListModel> AsProductAsyncEnumerable(
+        this IQueryable<Product> set
+    ) =>
         set.Select(
                 p =>
                     new ProductListModel

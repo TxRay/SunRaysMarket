@@ -1,5 +1,3 @@
 namespace SunRaysMarket.Shared.Core.DomainModels;
 
-public class UpdateTransactionModel
-{
-}
+public class UpdateTransactionModel { }

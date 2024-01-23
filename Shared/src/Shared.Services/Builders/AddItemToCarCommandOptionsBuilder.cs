@@ -11,12 +11,12 @@ public class AddItemToCarCommandOptionsBuilder : IAddItemToCartOptionsBuilder
     {
         Options.CartId = cartId;
     }
-    
+
     public void WithCommand(AddItemToCartCommand command)
     {
         Options.Command = command;
     }
-    
+
     public void Build(bool requireCartId = false)
     {
         if (requireCartId && Options.CartId is null)

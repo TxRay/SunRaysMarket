@@ -18,14 +18,12 @@ public class ProductProxyService(HttpClient httpClient) : IProductService
             })
             .Unwrap();
 
-    public IAsyncEnumerable<ProductListModel?> GetAllProductsAsync()
-     => httpClient
-         .GetFromJsonAsAsyncEnumerable<ProductListModel>("/api/products");
+    public IAsyncEnumerable<ProductListModel?> GetAllProductsAsync() =>
+        httpClient.GetFromJsonAsAsyncEnumerable<ProductListModel>("/api/products");
 
+    public IAsyncEnumerable<ProductListModel?> GetAllProductsAsync(int departmentId) =>
+        httpClient.GetFromJsonAsAsyncEnumerable<ProductListModel>($"/api/products/{departmentId}");
 
-    public IAsyncEnumerable<ProductListModel?> GetAllProductsAsync(int departmentId)
-        => httpClient
-            .GetFromJsonAsAsyncEnumerable<ProductListModel>($"/api/products/{departmentId}");
     public async Task<IEnumerable<ProductListModel>> SearchForProductsAsync(string? queryString)
     {
         var command = new ProductSearchCommand { Query = queryString };

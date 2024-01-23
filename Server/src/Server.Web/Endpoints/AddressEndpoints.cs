@@ -59,14 +59,17 @@ public static class AddressEndpoints
         customerAddressGroup.MapPost(
             "/",
             async (
-                    [FromBody] CreateAddressModel model,
-                    ICustomerAddressService customerAddressService
-                ) =>
+                [FromBody] CreateAddressModel model,
+                ICustomerAddressService customerAddressService
+            ) =>
                 Results.Json(
-                    new CreateAddressResponse((await customerAddressService.AddAddress(model)).Value))
-    );
+                    new CreateAddressResponse(
+                        (await customerAddressService.AddAddress(model)).Value
+                    )
+                )
+        );
 
-    customerAddressGroup.MapDelete(
+        customerAddressGroup.MapDelete(
             "/{addressId:int}",
             async (int addressId, ICustomerAddressService customerAddressService) =>
             {

@@ -7,8 +7,9 @@ namespace SunRaysMarket.Client.Application.Extensions;
 
 public static class ServicesExtensions
 {
-
-    public static IServiceCollection AddClientOnlyApplicationServices(this IServiceCollection services)
+    public static IServiceCollection AddClientOnlyApplicationServices(
+        this IServiceCollection services
+    )
     {
         services.AddScoped<IAddressService, AddressProxyService>();
         services.AddScoped<ICartService, CartProxyService>();
@@ -17,7 +18,7 @@ public static class ServicesExtensions
         services.AddScoped<IProductService, ProductProxyService>();
         services.AddScoped<ICustomerAddressService, CustomerAddressProxyService>();
         services.AddSingleton<ProductModalState>();
-        
+
         return services;
     }
 }
