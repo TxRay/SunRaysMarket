@@ -3,8 +3,8 @@
 .product-details {
   display: grid;
   grid-template-columns: [x-full-start left-start] 2fr [left-end right-start] 3fr [right-end x-full-end];
-  
-  
+
+
   &__img {
     grid-column: left;
     grid-row: y-full;
