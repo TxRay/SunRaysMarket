@@ -2,6 +2,7 @@
 @attribute [StreamRendering]
 @page "/product/details/{id:int}"
 
+<main class="layout__content">
 @if (ShouldLoad)
 {
     <div class="product-details">
@@ -35,6 +36,7 @@ else
 {
     <p>Loading...</p>
 }
+</main>
 
 @code {
     [Parameter] public int Id { get; set; }
