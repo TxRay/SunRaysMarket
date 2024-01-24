@@ -1,6 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@using SunRaysMarket.Server.Components.Enums
+@inherits LayoutComponentBase
 
-<div class="layout layout--application" xmlns="http://www.w3.org/1999/html">
+<PageLayout LayoutType="LayoutType.Application" Element="div" xmlns="http://www.w3.org/1999/html">
     <div class="topbar">
         <div class="topbar__content">
             <a href="#" class="topbar__brand">
@@ -17,11 +18,10 @@
             <NavAccount />
         </div>
     </nav>
-    <div class="layout layout--page ">
+    <PageLayout LayoutType="LayoutType.Page">
         @Body
-        
         <MainFooter />
-    </div>
-</div>
+    </PageLayout>
+</PageLayout>
 
 <Modal />

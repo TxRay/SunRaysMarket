@@ -1,9 +1,10 @@
 @page "/shopping-cart"
 @using Application.UnitOfWork
 @using Application.Cookies
+@using SunRaysMarket.Server.Components.Enums
 @inherits OwningComponentBase<IUnitOfWork>
 
-<main class="layout__content shopping-cart">
+<PageLayout CssClasses="shopping-cart" ContentWidth="ContentWidth.PageContent">
     <h3 class="cart-title">Shopping Cart</h3>
 
     @if (CartItems.Any())
@@ -35,7 +36,7 @@
     }
 
 
-</main>
+</PageLayout>
 
 @code {
 

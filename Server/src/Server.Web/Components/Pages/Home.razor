@@ -1,4 +1,5 @@
 ﻿@using Application.UnitOfWork
+@using SunRaysMarket.Server.Components.Enums
 @inherits OwningComponentBase<IUnitOfWork>
 
 @page "/"
@@ -9,9 +10,9 @@
     <HeroHome/>
 </MainHeader>
 
-<main class="layout layout__full main-home">
+<PageLayout CssClasses="main-home" ContentWidth="ContentWidth.PageFull" >
     <ProductSection Heading="Featured Products" FeaturedProducts="@Products"/>
-</main>
+</PageLayout>
 
 @code {
     private IAsyncEnumerable<ProductListModel> Products { get; set; } = default!;

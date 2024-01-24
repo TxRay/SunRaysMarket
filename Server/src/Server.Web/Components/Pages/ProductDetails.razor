@@ -1,8 +1,9 @@
+@using SunRaysMarket.Server.Components.Enums
 @inherits OwningComponentBase
 @attribute [StreamRendering]
 @page "/product/details/{id:int}"
 
-<main class="layout__content">
+<PageLayout ContentWidth="ContentWidth.PageFull">
 @if (ShouldLoad)
 {
     <div class="product-details">
@@ -36,7 +37,7 @@ else
 {
     <p>Loading...</p>
 }
-</main>
+</PageLayout>
 
 @code {
     [Parameter] public int Id { get; set; }

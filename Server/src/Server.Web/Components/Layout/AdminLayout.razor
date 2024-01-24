@@ -1,9 +1,10 @@
 @using Microsoft.AspNetCore.Components.Sections
+@using SunRaysMarket.Server.Components.Enums
 @inherits LayoutComponentBase
 
 <AuthorizeView Roles="Admin, SuperAdmin">
     <Authorized>
-        <div class="layout layout--admin">
+        <PageLayout LayoutType="LayoutType.Admin" Element="div">
             <header class="layout layout__full admin-header">
                 <h1 class="admin-header__heading">
                     <SectionOutlet SectionName="page-title"/>
@@ -38,7 +39,7 @@
             <div class="admin-content">
                 @Body
             </div>
-        </div>
+        </PageLayout>
     </Authorized>
     <NotAuthorized>
         <p>Not authorized</p>

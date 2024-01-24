@@ -1,11 +1,12 @@
 @page "/checkout"
+@using SunRaysMarket.Server.Components.Enums
 
 <AuthorizeView Roles="Customer">
     <Authorized>
-        <main class="layout__content checkout">
+        <PageLayout CssClasses="checkout" ContentWidth="ContentWidth.PageContent">
             <h1 class="">Checkout</h1>
             <CheckoutContent/>
-        </main>
+        </PageLayout>
     </Authorized>
     <NotAuthorized>
         <AutoNavigator Route="login" />

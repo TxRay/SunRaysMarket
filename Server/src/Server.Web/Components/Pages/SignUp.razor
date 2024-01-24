@@ -1,11 +1,12 @@
 @using Application.Auth
+@using SunRaysMarket.Server.Components.Enums
 @inherits OwningComponentBase<IUserService>
 
 @page "/signup"
 
 <AppPageTitle> Sign Up </AppPageTitle>
 
-<main class="layout layout__full">
+<PageLayout ContentWidth="ContentWidth.PageContent">
     <h2 class="auth__title">Sign Up</h2>
     
     @if (!ShowConfirmation)
@@ -69,7 +70,7 @@
     }
     
 
-</main>
+</PageLayout>
 
 @code {
     [SupplyParameterFromForm]

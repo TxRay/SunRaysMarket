@@ -1,11 +1,12 @@
 @inherits OwningComponentBase
 @using Application.Auth
+@using SunRaysMarket.Server.Components.Enums
 @inject IUserService UserService
 @page "/login"
 
 <AppPageTitle>Login</AppPageTitle>
 
-<main class="layout layout__full">
+<PageLayout ContentWidth="ContentWidth.PageFull">
     <h2 class="auth__title">Login</h2>
     @if (!ShowLoginConfirmation)
     {
@@ -47,7 +48,7 @@
         </div>
     }
 
-</main>
+</PageLayout>
 
 
 @code {
