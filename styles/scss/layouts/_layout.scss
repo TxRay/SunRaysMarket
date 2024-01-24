@@ -14,14 +14,13 @@
   &--application, &--admin {
     height: 100vh;
   }
-  
+
   &--application {
-    grid-template-rows: [navigation-start topbar-start] 8.5rem 
-  [topbar-end nav-start] 6.5rem 
+    grid-template-rows: [navigation-start topbar-start] var.$topbar-height
+  [topbar-end nav-start] var.$navbar-height
   [navigation-end nav-end content-start] 1fr [content-end];
-    
   }
-  
+
   &--admin {
     grid-template-rows: [header-start] min-content [header-end content-start] 1fr [content-end];
     //column-gap: var.$spacing-3xl;
@@ -29,14 +28,11 @@
     //padding-bottom: var.$spacing-3xl;
   }
 
-  &--page {
+  &--page, &__full {
     grid-column: page;
-    overflow-y: scroll;
   }
-
+  
   &__full {
-    grid-column: page;
-
     & > * {
       grid-column: layout;
     }
@@ -44,5 +40,9 @@
 
   &__content {
     grid-column: layout;
+  }
+  
+  &__content-vertical {
+    min-height: var.$vertical-content-height;
   }
 }

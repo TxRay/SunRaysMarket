@@ -67,3 +67,11 @@ $spacing-7xl: 16rem;
 $spacing-8xl: 20rem;
 $spacing-9xl: 25rem;
 $spacing-10xl: 40rem;
+
+// topbar, navbar, & footer heights
+$topbar-height: 8.5rem;
+$navbar-height: 6.5rem;
+$footer-height: 25rem;
+
+// vertical content span
+$vertical-content-height: calc(100vh - ($topbar-height + $navbar-height + $footer-height));
