@@ -1,4 +1,3 @@
-
 @using SunRaysMarket.Shared.Core.DomainModels.Checkout
 @using SunRaysMarket.Shared.Core.Payment
 @inherits OwningComponentBase<ICheckoutService>
@@ -7,10 +6,10 @@
 @rendermode InteractiveWebAssembly
 
 
-
-    @if (ShouldLoadContent)
-    {
-        <div class="checkout__content">
+@if (ShouldLoadContent)
+{
+    <div class="checkout__content">
+        <div class="checkout__column">
             <CheckoutSection
                 ShowSection="true"
                 OnActionButtonClicked="OnFulfillmentActionBtnClicked">
@@ -64,9 +63,11 @@
                     </EditForm>
                 </ChildContent>
             </CheckoutSection>
-            <button class="btn btn--md btn--primary" @onclick="OnSubmitAsync">Submit</button>
         </div>
-    }
+        <CheckoutSummary />
+        <button class="btn btn--md btn--primary checkout__submit-btn" @onclick="OnSubmitAsync">Submit</button>
+    </div>
+}
 
 @code {
     private IStore? Store { get; set; }
@@ -100,24 +101,23 @@
     protected override void Dispose(bool disposing)
     {
         if (!disposing) return;
-        
+
         PaymentMethodEditContext.OnFieldChanged -= PaymentMethodEditContext_OnFieldChanged;
     }
-    
+
     private async Task OnSubmitAsync()
     {
         var submitModel = new CheckoutSubmitModel
         {
-            OrderType = FulfilmentModel?.OrderType 
+            OrderType = FulfilmentModel?.OrderType
                         ?? throw new InvalidOperationException("No 'OrderType' was set."),
-            TimeSlotId = FulfilmentModel?.TimeSlotId 
-                ?? throw new InvalidOperationException("No 'TimeSlotId' was set"),
+            TimeSlotId = FulfilmentModel?.TimeSlotId
+                         ?? throw new InvalidOperationException("No 'TimeSlotId' was set"),
             DeliveryAddressId = FulfilmentModel?.DeliveryAddressId,
-            PaymentMethodId = PaymentModel.PaymentMethodId 
+            PaymentMethodId = PaymentModel.PaymentMethodId
                               ?? throw new InvalidOperationException("No 'PaymentMethodId' set.")
-            
         };
-        
+
         try
         {
             await Service.CheckoutAsync(Model.ToSubmitModel());
@@ -153,4 +153,5 @@
     {
         public string? PaymentMethodId { get; set; }
     }
+
 }

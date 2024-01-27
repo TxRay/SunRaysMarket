@@ -5,9 +5,14 @@
     <h3 class="checkout-section__heading">@Heading</h3>
     @if (ActionButton is not null)
     {
-        <button class="checkout-section__action-btn" @onclick="HandleActionBtnClick">@ActionButton</button>
+        <button class="checkout-section__action-btn" @onclick="HandleActionBtnClick">
+            <span>@ActionButton</span>
+            <svg>
+                <use href="/img/icons/solid.svg#chevron-right"></use>
+            </svg>
+        </button>
     }
-    <div class="checkout-section-content">
+    <div class="checkout-section__content">
         @ChildContent
     </div>
 </div>

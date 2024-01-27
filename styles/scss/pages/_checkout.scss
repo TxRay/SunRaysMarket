@@ -1,0 +1,98 @@
+@use "../abstracts/mixins" as mxn;
+@use "../abstracts/variables" as var;
+
+.checkout {
+  row-gap: var.$spacing-l;
+  &__content {
+    display: grid;
+    grid-template-columns: [left-start] 1fr [left-end right-start] min-content [right-end];
+    grid-template-rows: [content-start upper-start] min-content [upper-end lower-start] 1fr [lower-end content-end];
+    column-gap: var.$spacing-4xl;
+  }
+  
+  
+  &__column {
+    grid-column: left;
+    grid-row: content;
+    align-self: start;
+
+    display: flex;
+    flex-direction: column;
+    gap: var.$spacing-xl;
+  }
+
+  &__summary {
+    grid-column: right;
+    grid-row: upper;
+    
+    background-color: rebeccapurple;
+    width: 25rem;
+    height: 50rem;
+  }
+  
+  &__submit-btn {
+    grid-column: right;
+    grid-row: lower;
+    align-self: start;
+    justify-self: start;
+  }
+}
+
+
+.checkout-section {
+  display: grid;
+  grid-template-columns: [content-start left-start] 1fr [left-end right-start] max-content [right-end content-end];
+  grid-template-rows: [content-start upper-start] min-content [upper-end lower-start] 1fr [lower-end content-end];
+  
+  padding: var.$spacing-l;
+  border: 2px solid var.$color-grey-dark-2;
+  border-radius: 2rem;
+  
+  &__heading {
+    grid-column: left;
+    grid-row: upper;
+  }
+  
+  &__action-btn {
+    grid-column: right;
+    grid-row: upper;
+
+    display: flex;
+    gap: var.$spacing-xs;
+    align-items: center;
+    
+    @include mxn.btn-base;
+    border: none;
+    background: none;
+    
+    span {
+      font-weight: var.$weight-medium;
+      color: var.$color-primary-medium;
+    }
+    
+    svg {
+      height: var.$fs-s;
+      aspect-ratio: 1 / 1;
+      fill: var.$color-primary-medium;
+    }
+    
+    &:hover {
+      transform: translateY(-3px) scale(1.01);
+      
+      span {
+        color: var.$color-primary-light;
+      }
+      
+      svg {
+        fill: var.$color-primary-light;
+      }
+      
+    }
+    
+  }
+  
+  &__content {
+    grid-column: content;
+    grid-row: lower;
+  }
+}
