@@ -416,6 +416,8 @@ body {
   --width: 0;
   --height: 0;
   display: grid;
+  padding: 2.4rem;
+  grid-template-columns: [content-start left-start] 1fr [left-end right-start] max-content [right-end content-end];
   grid-template-rows: [y-full-start header-start] min-content [header-end top-start body-start] 1fr [top-end bottom-start] 1fr [bottom-end body-end y-full-end];
   width: var(--width);
   height: var(--height);
@@ -426,12 +428,14 @@ body {
   animation: ModalContentTransform 400ms ease-in-out;
 }
 .modal__title {
+  grid-column: left;
   grid-row: header;
   align-self: center;
-  justify-self: center;
+  justify-self: start;
   font-size: 1.8rem;
 }
 .modal__close, .modal__close:link, .modal__close:visited {
+  grid-column: right;
   grid-row: header;
   align-self: center;
   justify-self: end;
@@ -451,6 +455,13 @@ body {
 }
 .modal__close:hover, .modal__close:link:hover, .modal__close:visited:hover {
   color: #545454;
+}
+.modal__content {
+  grid-column: content;
+  grid-row: body;
+  padding: 3.2rem;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .price {
@@ -970,13 +981,10 @@ body {
   grid-template-rows: [content-start upper-start] min-content [upper-end lower-start] 1fr [lower-end content-end];
   column-gap: 8rem;
 }
-.checkout__column {
+.checkout__sections {
   grid-column: left;
   grid-row: content;
   align-self: start;
-  display: flex;
-  flex-direction: column;
-  gap: 4rem;
 }
 .checkout__summary {
   grid-column: right;
@@ -1041,6 +1049,12 @@ body {
 .checkout-section__content {
   grid-column: content;
   grid-row: lower;
+}
+
+.checkout-column {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
 }
 
 .main-home {

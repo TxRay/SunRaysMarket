@@ -11,14 +11,10 @@
   }
   
   
-  &__column {
+  &__sections {
     grid-column: left;
     grid-row: content;
     align-self: start;
-
-    display: flex;
-    flex-direction: column;
-    gap: var.$spacing-xl;
   }
 
   &__summary {
@@ -95,4 +91,10 @@
     grid-column: content;
     grid-row: lower;
   }
+}
+
+.checkout-column {
+  display: flex;
+  flex-direction: column;
+  gap: var.$spacing-xl;
 }
