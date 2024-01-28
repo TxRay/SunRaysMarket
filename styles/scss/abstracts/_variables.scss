@@ -24,6 +24,7 @@ $color-danger: #cc3300;
 $color-warning: #ff9966;
 $color-info: #ffcc00;
 $color-success: #339900;
+$color-success-light: lighten($color-success, 65%);
 
 // Font families 
 $typeface-primary: "Open Sans", sans-serif;

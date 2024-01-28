@@ -43,6 +43,10 @@ body {
   color: #2d4059;
 }
 
+.d-none {
+  display: none !important;
+}
+
 .auth__close-btn {
   grid-column: 1/-1;
   grid-row: header;
@@ -1037,6 +1041,7 @@ body {
   display: grid;
   grid-template-columns: [content-start left-start] 1fr [left-end right-start] max-content [right-end content-end];
   grid-template-rows: [content-start upper-start] min-content [upper-end lower-start] 1fr [lower-end content-end];
+  row-gap: 2.4rem;
   padding: 3.2rem;
   border: 2px solid #545454;
   border-radius: 2rem;
@@ -1088,6 +1093,38 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4rem;
+}
+
+.timeslots-display {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.timeslot__label {
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s;
+  position: relative;
+  border: none;
+  cursor: pointer;
+  display: block;
+  padding: calc(1.6rem + 1px);
+  border: 1.5px solid #8c8c8c;
+  border-radius: 2rem;
+  background-color: #f5f5f5;
+  transition: transform 200ms ease-in-out, border-color 150ms ease-out;
+}
+.timeslot__label:hover {
+  transform: translateY(-2px) scale(1.005);
+}
+.timeslot__radio:checked ~ .timeslot__label {
+  padding: 1.6rem;
+  border: 2.5px solid #339900;
+  background-color: #eeffe6;
 }
 
 .main-home {
