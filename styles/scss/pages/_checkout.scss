@@ -38,7 +38,7 @@
   display: grid;
   grid-template-columns: [content-start left-start] 1fr [left-end right-start] max-content [right-end content-end];
   grid-template-rows: [content-start upper-start] min-content [upper-end lower-start] 1fr [lower-end content-end];
-  row-gap: var.$spacing-m;
+  row-gap: var.$spacing-l;
   
   padding: var.$spacing-l;
   border: 2px solid var.$color-grey-dark-2;
@@ -47,6 +47,8 @@
   &__heading {
     grid-column: left;
     grid-row: upper;
+    
+    font-size: var.$fs-2xl;
   }
   
   &__action-btn {
