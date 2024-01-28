@@ -3,7 +3,9 @@
 
 @if (Tabs!.IsCurrentTab(Label) && Tabs.TabsLoaded)
 {
-    @ChildContent
+    <div class="tab-content">
+        @ChildContent
+    </div>
 }
 
 @code {
@@ -26,4 +28,3 @@
     }
 
 }
-

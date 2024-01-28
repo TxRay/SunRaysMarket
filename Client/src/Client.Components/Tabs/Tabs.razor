@@ -16,11 +16,9 @@
             }
         </div>
 
-        <div class="tab-content">
-            <CascadingValue Value="@this">
-                @ChildContent
-            </CascadingValue>
-        </div>
+        <CascadingValue Value="@this">
+            @ChildContent
+        </CascadingValue>
     </div>
 }
 else
@@ -49,7 +47,7 @@ else
     [Parameter] public EventCallback<string> OnTabLoaded { get; set; }
 
     [Parameter] public EventCallback<string> OnTabUnloaded { get; set; }
-    
+
     private Dictionary<string, Tab> TabIndex { get; set; } = new();
 
     private string? CurrentIndex { get; set; }
@@ -62,7 +60,6 @@ else
     {
         RenderCount += 1;
         Logger?.LogInformation($"RenderCount = {RenderCount}");
-
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -104,4 +101,5 @@ else
         CurrentIndex = index;
         StateHasChanged();
     }
+
 }

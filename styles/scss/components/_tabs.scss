@@ -1,0 +1,37 @@
+@use "../abstracts/mixins" as mxn;
+@use "../abstracts/variables" as var;
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: var.$spacing-l;
+  
+  &__controls {
+    flex: 0;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+  }
+  
+  &__control-btn {
+    @include mxn.btn-base;
+    padding: var.$spacing-s;
+    font-weight: var.$weight-medium;
+    color: var.$color-grey-dark-2;
+    background-color: var.$color-grey-light-1;
+    
+    &--active {
+      color: var.$color-primary-pale;
+      background-color: var.$color-primary-dark;
+    }
+  }
+  
+}
+
+.tab-content {
+  flex: 1;
+  
+  
+}
