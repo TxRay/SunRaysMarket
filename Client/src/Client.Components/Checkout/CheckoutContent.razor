@@ -5,7 +5,6 @@
 @namespace SunRaysMarket.Client.Components
 @rendermode InteractiveWebAssembly
 
-
 @if (ShouldLoadContent)
 {
     <div class="checkout__content">
@@ -50,15 +49,14 @@
                 <ChildContent>
                     <EditForm EditContext="@PaymentMethodEditContext" FormName="PaymentMethodForm">
                         <div>
-                            <InputRadioGroup TValue="string" @bind-Value="PaymentModel.PaymentMethodId">
+                            <InputCheckoutOptionGroup TValue="string" @bind-Value="PaymentModel.PaymentMethodId">
                                 @foreach (var (card, id) in TestCards.CardMap)
                                 {
-                                    <div>
-                                        <InputRadio Value="@id"/>
-                                        <label>@FormatHelpers.ShortenCardNumber(card.Number)</label>
-                                    </div>
+                                    <InputCheckoutOption Value="id" IdBase="payment">
+                                        @FormatHelpers.ShortenCardNumber(card.Number)
+                                    </InputCheckoutOption>
                                 }
-                            </InputRadioGroup>
+                            </InputCheckoutOptionGroup>
                         </div>
                     </EditForm>
                 </ChildContent>

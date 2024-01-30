@@ -15,22 +15,14 @@
                     <Heading>Select pickup time</Heading>
                     <ChildContent>
                         <EditForm EditContext="@PickupContext" FormName="PickupTimeSlotsForm">
-                            <InputRadioGroup @bind-Value="PickupModel!.SelectedTimeSlotId">
-                                <div class="timeslots-display">
-                                    @foreach (var timeSlot in PickupTimeSlots)
-                                    {
-                                        <div class="timeslot">
-                                            <InputRadio
-                                                id="@($"timeslot-{timeSlot.Id}")"
-                                                class="d-none timeslot__radio"
-                                                Value="timeSlot.Id"/>
-                                            <label for="timeslot-@timeSlot.Id" class=timeslot__label>
-                                                @timeSlot.TimeSlotDefinition.TimeSlotRange.ToString()
-                                            </label>
-                                        </div>
-                                    }
-                                </div>
-                            </InputRadioGroup>
+                            <InputCheckoutOptionGroup @bind-Value="PickupModel!.SelectedTimeSlotId">
+                                @foreach (var timeSlot in PickupTimeSlots)
+                                {
+                                    <InputCheckoutOption Value="timeSlot.Id" IdBase="pickup-timeslot">
+                                        @timeSlot.TimeSlotDefinition.TimeSlotRange.ToString()
+                                    </InputCheckoutOption>
+                                }
+                            </InputCheckoutOptionGroup>
                         </EditForm>
                     </ChildContent>
                 </CheckoutSection>
@@ -44,22 +36,14 @@
                         <Heading>Select delivery time </Heading>
                         <ChildContent>
                             <EditForm EditContext="@DeliveryContext" FormName="DeliveryTimeSlotsForm">
-                                <InputRadioGroup @bind-Value="DeliveryModel!.SelectedTimeSlotId">
-                                    <div class="timeslots-display">
-                                        @foreach (var timeSlot in DeliveryTimeSlots)
-                                        {
-                                            <div class="timeslot">
-                                                <InputRadio
-                                                    id="@($"timeslot-{timeSlot.Id}")"
-                                                    class="d-none timeslot__radio"
-                                                    Value="timeSlot.Id"/>
-                                                <label for="timeslot-@timeSlot.Id" class=timeslot__label>
-                                                    @timeSlot.TimeSlotDefinition.TimeSlotRange.ToString()
-                                                </label>
-                                            </div>
-                                        }
-                                    </div>
-                                </InputRadioGroup>
+                                <InputCheckoutOptionGroup @bind-Value="DeliveryModel!.SelectedTimeSlotId">
+                                    @foreach (var timeSlot in DeliveryTimeSlots)
+                                    {
+                                        <InputCheckoutOption Value="timeSlot.Id" IdBase="delivery-timeslot">
+                                            @timeSlot.TimeSlotDefinition.TimeSlotRange.ToString()
+                                        </InputCheckoutOption>
+                                    }
+                                </InputCheckoutOptionGroup>
                             </EditForm>
                         </ChildContent>
                     </CheckoutSection>
@@ -71,15 +55,14 @@
                             @if (CustomerAddresses.Any())
                             {
                                 <EditForm EditContext="@CustomerAddressContext" FormName="DeliveryAddressForm">
-                                    <InputRadioGroup @bind-Value="CustomerAddressModel!.SelectedAddressId">
+                                    <InputCheckoutOptionGroup @bind-Value="CustomerAddressModel!.SelectedAddressId">
                                         @foreach (var address in CustomerAddresses)
                                         {
-                                            <div>
-                                                <InputRadio Value="@address.Id"/>
-                                                <label>@address.Street</label>
-                                            </div>
+                                            <InputCheckoutOption Value="address.Id" IdBase="address">
+                                                @address.Street
+                                            </InputCheckoutOption>
                                         }
-                                    </InputRadioGroup>
+                                    </InputCheckoutOptionGroup>
                                 </EditForm>
                             }
                             else
@@ -242,6 +225,7 @@
 
     private async void PickupContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
     {
+        Logger?.LogInformation("Running 'PickupContext_OnFieldChanged'.");
         PickupModel = PickupContext.Model as TimeSlotModel;
         Model = new FulfillmentModel
         {

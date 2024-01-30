@@ -5,9 +5,9 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>SunRaysMarket.Client.Components</RootNamespace>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     </PropertyGroup>
-
-
+    
     <ItemGroup>
         <SupportedPlatform Include="browser"/>
     </ItemGroup>
