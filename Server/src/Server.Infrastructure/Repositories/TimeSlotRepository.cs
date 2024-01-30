@@ -61,10 +61,37 @@ internal class TimeSlotRepository(ApplicationDbContext dbContext) : ITimeSlotRep
             )
             .ToListAsync();
 
-    public Task<TimeSlotModel?> GetTimeSlotAsync(int timeSlotId, OrderType orderType)
-    {
-        throw new NotImplementedException();
-    }
+    public Task<TimeSlotModel?> GetTimeSlotAsync(int timeSlotId)
+        => dbContext.TimeSlots
+            .Include(ts => ts.TimeSlotDefinition)
+            .Include(ts => ts.Store)
+            .Where(ts => ts.Id == timeSlotId)
+            .Select(
+                ts =>
+                    new TimeSlotModel
+                    {
+                        Id = ts.Id,
+                        StoreId = ts.StoreId,
+                        StoreName = ts.Store!.LocationName,
+                        Availability = new TimeSlotAvailability
+                        {
+                            Capacity = ts.Capacity,
+                            Filled = ts.Filled
+                        },
+                        TimeSlotDefinition = TimeSlotStruct.Create(
+                            ts.Date,
+                            new TimeSlotRange
+                            {
+                                Start = new Time
+                                {
+                                    Minutes = ts.TimeSlotDefinition!.StartTimeMinutes
+                                },
+                                End = new Time { Minutes = ts.TimeSlotDefinition.EndTimeMinutes }
+                            }
+                        )
+                    }
+            )
+            .FirstOrDefaultAsync();
 
     public Task<bool> CreateTimeSlotAsync(CreatTimeSlotModel model)
     {

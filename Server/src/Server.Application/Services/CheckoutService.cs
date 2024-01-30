@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using SunRaysMarket.Server.Application.UnitOfWork;
 using SunRaysMarket.Shared.Core.DomainModels.Checkout;
 using SunRaysMarket.Shared.Core.DomainModels.Payment;
-using SunRaysMarket.Shared.Core.Enums;
 using SunRaysMarket.Shared.Services.Builders;
 using SunRaysMarket.Shared.Services.Interfaces;
 
@@ -22,6 +21,9 @@ internal class CheckoutService(
         int storeId,
         OrderType orderType
     ) => await unitOfWork.TimeSlotRepository.GetAllTimeSlotsAsync(storeId, orderType);
+
+    public Task<TimeSlotModel?> GetCheckoutTimeSlotAsync(int id)
+        => unitOfWork.TimeSlotRepository.GetTimeSlotAsync(id);
 
     public async Task CheckoutAsync(CheckoutSubmitModel model)
     {

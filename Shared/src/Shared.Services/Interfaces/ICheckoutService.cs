@@ -10,5 +10,7 @@ public interface ICheckoutService
         OrderType orderType
     );
 
+    Task<TimeSlotModel?> GetCheckoutTimeSlotAsync(int id);
+
     Task CheckoutAsync(CheckoutSubmitModel model);
 }

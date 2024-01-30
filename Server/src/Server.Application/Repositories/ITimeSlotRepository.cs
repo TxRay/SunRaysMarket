@@ -8,6 +8,6 @@ public interface ITimeSlotRepository
         OrderType orderType
     );
     Task<IEnumerable<TimeSlotListModel>> GetAllTimeSlotsAsync(int storeId, OrderType orderType);
-    Task<TimeSlotModel?> GetTimeSlotAsync(int timeSlotId, OrderType orderType);
+    Task<TimeSlotModel?> GetTimeSlotAsync(int timeSlotId);
     Task<bool> CreateTimeSlotAsync(CreatTimeSlotModel model);
 }

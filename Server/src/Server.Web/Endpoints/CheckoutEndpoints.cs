@@ -21,6 +21,14 @@ public static class CheckoutEndpoints
             }
         );
 
+        checkoutGroup.MapGet(
+            "/timeslot/{checkoutId:int}",
+            async (int checkoutId, ICheckoutService checkoutService) =>
+                Results.Json(
+                    await checkoutService.GetCheckoutTimeSlotAsync(checkoutId)
+                )
+        );
+
         checkoutGroup.MapPost(
             "/",
             (
