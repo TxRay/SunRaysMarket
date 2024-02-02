@@ -14,6 +14,7 @@ internal class UnitOfWork(
     IOrderRepository orderRepository,
     IProductRepository productRepository,
     IProductTypeRepository productTypeRepository,
+    IStoreRepository storeRepository,
     ITimeSlotRepository timeSlotRepository,
     ITransactionRepository transactionRepository,
     IUnitOfMeasureRepository unitOfMeasureRepository
@@ -29,6 +30,7 @@ internal class UnitOfWork(
     public IOrderRepository OrderRepository { get; } = orderRepository;
     public IProductRepository ProductRepository { get; } = productRepository;
     public IProductTypeRepository ProductTypeRepository { get; } = productTypeRepository;
+    public IStoreRepository StoreRepository { get; } = storeRepository;
     public ITimeSlotRepository TimeSlotRepository { get; } = timeSlotRepository;
     public ITransactionRepository TransactionRepository { get; } = transactionRepository;
     public IUnitOfMeasureRepository UnitOfMeasureRepository { get; } = unitOfMeasureRepository;

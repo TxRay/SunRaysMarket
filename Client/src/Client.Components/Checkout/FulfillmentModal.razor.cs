@@ -1,0 +1,274 @@
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Logging;
+using SunRaysMarket.Client.Application.Models;
+using SunRaysMarket.Client.Components.Modals;
+using SunRaysMarket.Client.Components.Stores;
+using SunRaysMarket.Shared.Core.DomainModels;
+using SunRaysMarket.Shared.Core.Enums;
+using SunRaysMarket.Shared.Services.Interfaces;
+
+namespace SunRaysMarket.Client.Components;
+
+public partial class FulfillmentModal : ModalContentBase<AddressModel>
+{
+    [Inject] private ILogger<FulfillmentModal>? Logger { get; set; }
+    [Inject] private ICheckoutService Service { get; set; } = default!;
+    [Inject] private IStore Store { get; set; } = default!;
+    [Inject] private ICustomerAddressService CustomerAddressService { get; set; } = null!;
+
+    [Parameter] public EventCallback<FulfillmentModel> OnStateChanged { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private bool TabsComponentShouldLoad { get; set; } = false;
+    private string? InitialTabIndex { get; set; }
+    private FulfillmentModel Model { get; set; } = new FulfillmentModel.EmptyModel();
+    private IEnumerable<TimeSlotListModel> DeliveryTimeSlots { get; set; } = [];
+    private IEnumerable<TimeSlotListModel> PickupTimeSlots { get; set; } = [];
+    private IEnumerable<AddressModel> CustomerAddresses { get; set; } = [];
+    private IEnumerable<StoreListModel> StoreLocationInfoList { get; set; } = [];
+    private TimeSlotModel? DeliveryModel { get; set; }
+    private TimeSlotModel? PickupModel { get; set; }
+    private SelectAddressModel? CustomerAddressModel { get; set; }
+    private SelectStoreModel? StoreSelectionModel { get; set; }
+    private EditContext DeliveryContext { get; set; } = default!;
+    private EditContext PickupContext { get; set; } = default!;
+    private EditContext CustomerAddressContext { get; set; } = default!;
+    private EditContext StoreSelectionContext { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await RetrieveModelFromStore();
+
+        InitialTabIndex = Model switch
+        {
+            FulfillmentModel.NonEmptyModel nonEmptyModel => Enum.GetName(typeof(OrderType), nonEmptyModel.OrderType),
+            _ => null
+        };
+        
+        Logger?.LogInformation("InitialTabIndex = {initTabIndex}", InitialTabIndex);
+
+        TabsComponentShouldLoad = true;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender) return;
+        StateHasChanged();
+    }
+
+   
+    private async Task OnAddAddressBtnClicked()
+    {
+        var options = new ModalOptions
+        {
+            Width = "75%",
+            Height = "75%"
+        };
+
+        await ChangeModalContent<AddressEntryModalContent, CreateAddressModel>(options);
+    }
+
+    private const string StoreKey = "FulfillmentData";
+
+    private async Task StoreModel<TModel>() where TModel : FulfillmentModel
+    {
+        try
+        {
+            await Store.SetValueAsync(StoreKey, (TModel)Model);
+        }
+        catch (InvalidCastException e)
+        {
+            Logger?.LogDebug("{Message}", e.Message);
+        }
+
+    }
+
+    private async Task RetrieveModelFromStore()
+    {
+        Model = await Store.TryGetValueAsync<FulfillmentModel.DeliveryModel>(StoreKey) 
+                ?? await Store.TryGetValueAsync<FulfillmentModel.PickupModel>(StoreKey)
+                ?? Model;
+        
+        Logger?.LogInformation("Type of model = {Type}", Model.GetType());
+    }
+
+    private async Task OnTabLoaded(string label)
+    {
+        await RetrieveModelFromStore();
+
+        switch (label)
+        {
+            case "Delivery":
+                await OnTabLoaded_Delivery();
+                break;
+            case "Pickup":
+                await OnTabLoaded_Pickup();
+                break;
+        }
+    }
+
+    private async Task OnTabLoaded_Delivery()
+    {
+        DeliveryTimeSlots = await Service.GetCheckoutTimeSlotsAsync(2, OrderType.Delivery);
+
+        if (Model is not FulfillmentModel.DeliveryModel deliveryFulfillmentModel)
+        {
+            DeliveryModel = new TimeSlotModel();
+            CustomerAddressModel = new SelectAddressModel();
+            DeliveryContext = new EditContext(DeliveryModel);
+            CustomerAddressContext = new EditContext(CustomerAddressModel);
+        }
+        else
+        {
+            DeliveryModel = DeliveryTimeSlots.Any(dts => dts.Id == deliveryFulfillmentModel.TimeSlotId)
+                ? new TimeSlotModel
+                {
+                    SelectedTimeSlotId = deliveryFulfillmentModel.TimeSlotId
+                }
+                : new TimeSlotModel();
+
+            if (ModalContext.TempData.TryGetValue("AddressId", out var aId) && aId is int newAddressId)
+            {
+                Model = deliveryFulfillmentModel with { DeliveryAddressId = newAddressId };
+                ModalContext.TempData.Remove("AddressId");
+                await StoreModel<FulfillmentModel.DeliveryModel>();
+            }
+
+            CustomerAddressModel = deliveryFulfillmentModel.DeliveryAddressId > 0
+                ? new SelectAddressModel
+                {
+                    SelectedAddressId = deliveryFulfillmentModel.DeliveryAddressId.Value
+                }
+                : new SelectAddressModel();
+        }
+
+        DeliveryContext = new EditContext(DeliveryModel);
+        DeliveryContext.OnFieldChanged += DeliveryContext_OnFieldChanged;
+        CustomerAddressContext = new EditContext(CustomerAddressModel);
+        CustomerAddressContext.OnFieldChanged += CustomerAddressContext_OnFieldChanged;
+
+        CustomerAddresses = await CustomerAddressService.GetAddressesAsync();
+    }
+
+    private async Task OnTabLoaded_Pickup()
+    {
+        StoreLocationInfoList = await Service.GetStoreLocationsAsync();
+
+        Logger?.LogInformation("StoreLocationInfoList not empty = {isNotEmpty}",
+            await Store!.TryGetValueAsync<FulfillmentModel.DeliveryModel>("FulfillmentData"));
+
+        if (Model is not FulfillmentModel.PickupModel pickupFulfillmentModel)
+        {
+            PickupModel = new TimeSlotModel();
+            StoreSelectionModel = new SelectStoreModel();
+            PickupContext = new EditContext(PickupModel);
+            StoreSelectionContext = new EditContext(StoreSelectionModel);
+        }
+        else
+        {
+            StoreSelectionModel =
+                StoreLocationInfoList.Any(sil => sil.Id == pickupFulfillmentModel.StoreId)
+                    ? new SelectStoreModel { SelectedStoreId = pickupFulfillmentModel.StoreId!.Value }
+                    : new SelectStoreModel();
+
+            PickupTimeSlots = await Service.GetCheckoutTimeSlotsAsync(
+                StoreSelectionModel.SelectedStoreId,
+                OrderType.Pickup
+            );
+
+            PickupModel = PickupTimeSlots.Any(pts => pts.Id == pickupFulfillmentModel.TimeSlotId)
+                ? new TimeSlotModel { SelectedTimeSlotId = pickupFulfillmentModel.TimeSlotId }
+                : new TimeSlotModel();
+        }
+
+        PickupContext = new EditContext(PickupModel);
+        PickupContext.OnFieldChanged += PickupContext_OnFieldChanged;
+        StoreSelectionContext = new EditContext(StoreSelectionModel);
+        StoreSelectionContext.OnFieldChanged += StoreSelectionContext_OnFieldChanged;
+    }
+
+    private async Task OnTabUnloaded(string label)
+    {
+        switch (label)
+        {
+            case "Delivery":
+                CustomerAddressContext.OnFieldChanged -= CustomerAddressContext_OnFieldChanged;
+                DeliveryContext.OnFieldChanged -= DeliveryContext_OnFieldChanged;
+                await StoreModel<FulfillmentModel.DeliveryModel>();
+                break;
+            case "Pickup":
+                PickupContext.OnFieldChanged -= PickupContext_OnFieldChanged;
+                StoreSelectionContext.OnFieldChanged -= StoreSelectionContext_OnFieldChanged;
+                await StoreModel<FulfillmentModel.PickupModel>();
+                break;
+        }
+
+    }
+
+    private async void PickupContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        if (Model is not FulfillmentModel.PickupModel pickupFulfillmentModel) return;
+        
+        PickupModel = PickupContext.Model as TimeSlotModel;
+
+        Model = pickupFulfillmentModel with {TimeSlotId = PickupModel.SelectedTimeSlotId};
+        await StoreModel<FulfillmentModel.PickupModel>();
+    }
+
+    private async void DeliveryContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        DeliveryModel = DeliveryContext.Model as TimeSlotModel;
+        Model = new FulfillmentModel.DeliveryModel(DeliveryModel.SelectedTimeSlotId);
+
+        await StoreModel<FulfillmentModel.DeliveryModel>();
+    }
+
+    private async void CustomerAddressContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        if (Model is not FulfillmentModel.DeliveryModel deliveryFulfillmentModel)
+            return;
+
+        CustomerAddressModel = CustomerAddressContext.Model as SelectAddressModel;
+        Model = deliveryFulfillmentModel with { DeliveryAddressId = CustomerAddressModel?.SelectedAddressId };
+        await StoreModel<FulfillmentModel.DeliveryModel>();
+    }
+
+    private async void StoreSelectionContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        PickupTimeSlots = await Service.GetCheckoutTimeSlotsAsync(StoreSelectionModel.SelectedStoreId, OrderType.Pickup);
+        StoreSelectionModel = StoreSelectionContext.Model as SelectStoreModel;
+        
+        Model = Model is not FulfillmentModel.PickupModel pickupFulfillmentModel
+            ?  new FulfillmentModel.PickupModel(default, StoreSelectionModel.SelectedStoreId)
+            : pickupFulfillmentModel with { StoreId = StoreSelectionModel.SelectedStoreId };
+        
+        await StoreModel<FulfillmentModel.PickupModel>();
+        StateHasChanged();
+    }
+
+    /*private async void HandleStateChange()
+    {
+        if (OnStateChanged.HasDelegate)
+            await OnStateChanged.InvokeAsync(ModalContext.State);
+
+        StateHasChanged();
+    }*/
+
+    private record TimeSlotModel
+    {
+        public int SelectedTimeSlotId { get; set; }
+    }
+
+    private record SelectAddressModel
+    {
+        public int SelectedAddressId { get; set; }
+    }
+
+    private record SelectStoreModel
+    {
+        public int SelectedStoreId { get; set; }
+    }
+}

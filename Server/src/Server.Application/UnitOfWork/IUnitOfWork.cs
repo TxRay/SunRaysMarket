@@ -13,6 +13,7 @@ public interface IUnitOfWork
     public IOrderRepository OrderRepository { get; }
     public IProductRepository ProductRepository { get; }
     public IProductTypeRepository ProductTypeRepository { get; }
+    public IStoreRepository StoreRepository { get; }
     public ITimeSlotRepository TimeSlotRepository { get; }
     public ITransactionRepository TransactionRepository { get; }
 

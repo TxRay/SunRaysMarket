@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SunRaysMarket.Shared.Core.DomainModels.Checkout;
+using SunRaysMarket.Shared.Core.DomainModels.Responses;
 
 namespace SunRaysMarket.Server.Web.Endpoints;
 
@@ -26,6 +27,16 @@ public static class CheckoutEndpoints
             async (int checkoutId, ICheckoutService checkoutService) =>
                 Results.Json(
                     await checkoutService.GetCheckoutTimeSlotAsync(checkoutId)
+                )
+        );
+
+        checkoutGroup.MapGet(
+            "/locations",
+            async (ICheckoutService checkoutService) =>
+                Results.Json(
+                    new StoreLocationsResponse(
+                        await checkoutService.GetStoreLocationsAsync()
+                    )
                 )
         );
 

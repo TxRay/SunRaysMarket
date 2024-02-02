@@ -4,21 +4,35 @@ namespace SunRaysMarket.Client.Application.Models;
 
 public class CheckoutModel
 {
-    public FulfillmentModel? FulfillmentInfo { get; set; }
+    public FulfillmentModel FulfillmentInfo { get; set; } = new FulfillmentModel.EmptyModel();
     public string? PaymentMethodId { get; set; }
 
     public CheckoutSubmitModel ToSubmitModel() =>
-        new CheckoutSubmitModel
+        FulfillmentInfo switch
         {
-            TimeSlotId =
-                FulfillmentInfo?.TimeSlotId
-                ?? throw new InvalidOperationException("No time slot was set."),
-            OrderType =
-                FulfillmentInfo?.OrderType
-                ?? throw new InvalidOperationException("No order type was set."),
-            PaymentMethodId =
-                PaymentMethodId
-                ?? throw new InvalidOperationException("No payment method was set."),
-            DeliveryAddressId = FulfillmentInfo?.DeliveryAddressId
+            null => throw new ArgumentNullException(nameof(FulfillmentInfo)),
+            FulfillmentModel.EmptyModel => throw new InvalidOperationException(
+                "The fulfillment model should not be empty."),
+            FulfillmentModel.DeliveryModel deliveryModel =>
+                new CheckoutSubmitModel
+                {
+                    TimeSlotId =
+                        deliveryModel.TimeSlotId,
+                    OrderType =
+                        deliveryModel.OrderType,
+                    PaymentMethodId =
+                        PaymentMethodId ?? throw new InvalidOperationException("No payment method was set."),
+                    DeliveryAddressId = deliveryModel.DeliveryAddressId
+                },
+            FulfillmentModel.PickupModel pickupModel =>
+                new CheckoutSubmitModel
+                {
+                    TimeSlotId =
+                        pickupModel.TimeSlotId,
+                    OrderType = pickupModel.OrderType,
+                    PaymentMethodId = PaymentMethodId
+                                      ?? throw new InvalidOperationException("No payment method was set."),
+                },
+            _ => throw new ArgumentOutOfRangeException(nameof(FulfillmentInfo))
         };
 }

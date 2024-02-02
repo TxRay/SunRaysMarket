@@ -1,0 +1,105 @@
+@using SunRaysMarket.Client.Components.Tabs
+@namespace SunRaysMarket.Client.Components
+@inherits ModalContentBase<AddressModel>
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+@if (TabsComponentShouldLoad)
+{
+    <Tabs InitialIndex="@InitialTabIndex"
+          OnTabLoaded="OnTabLoaded"
+          OnTabUnloaded="OnTabUnloaded">
+        <Tab Label="Pickup">
+            <div class="checkout-column">
+                @if (StoreSelectionModel is not null && StoreLocationInfoList.Any())
+                {
+                    <CheckoutSection>
+                        <Heading>Select pickup location</Heading>
+                        <ChildContent>
+                            <EditForm EditContext="@StoreSelectionContext" FormName="StoreLocationForm">
+                                <InputCheckoutOptionGroup @bind-Value="StoreSelectionModel!.SelectedStoreId">
+                                    @foreach (var storeLocation in StoreLocationInfoList)
+                                    {
+                                        <InputCheckoutOption Value="storeLocation.Id" IdBase="store-location">
+                                            @storeLocation.LocationName
+                                        </InputCheckoutOption>
+                                    }
+                                </InputCheckoutOptionGroup>
+                            </EditForm>
+                        </ChildContent>
+                    </CheckoutSection>
+                }
+
+                @if (
+                    PickupModel is not null
+                    && PickupTimeSlots.Any()
+                    && Model is FulfillmentModel.PickupModel { StoreId: not null }
+                )
+                {
+                    <CheckoutSection>
+                        <Heading>Select pickup time</Heading>
+                        <ChildContent>
+                            <EditForm EditContext="@PickupContext" FormName="PickupTimeSlotsForm">
+                                <InputCheckoutOptionGroup @bind-Value="PickupModel!.SelectedTimeSlotId">
+                                    @foreach (var timeSlot in PickupTimeSlots)
+                                    {
+                                        <InputCheckoutOption Value="timeSlot.Id" IdBase="pickup-timeslot">
+                                            @timeSlot.TimeSlotDefinition.TimeSlotRange.ToString()
+                                        </InputCheckoutOption>
+                                    }
+                                </InputCheckoutOptionGroup>
+                            </EditForm>
+                        </ChildContent>
+                    </CheckoutSection>
+                }
+
+            </div>
+
+        </Tab>
+        <Tab Label="Delivery">
+            @if (DeliveryModel is not null && DeliveryTimeSlots.Any())
+            {
+                <div class="checkout-column">
+                    <CheckoutSection>
+                        <Heading>Select delivery time </Heading>
+                        <ChildContent>
+                            <EditForm EditContext="@DeliveryContext" FormName="DeliveryTimeSlotsForm">
+                                <InputCheckoutOptionGroup @bind-Value="DeliveryModel!.SelectedTimeSlotId">
+                                    @foreach (var timeSlot in DeliveryTimeSlots)
+                                    {
+                                        <InputCheckoutOption Value="timeSlot.Id" IdBase="delivery-timeslot">
+                                            @timeSlot.TimeSlotDefinition.TimeSlotRange.ToString()
+                                        </InputCheckoutOption>
+                                    }
+                                </InputCheckoutOptionGroup>
+                            </EditForm>
+                        </ChildContent>
+                    </CheckoutSection>
+
+                    <CheckoutSection OnActionButtonClicked="@OnAddAddressBtnClicked">
+                        <Heading>Select address</Heading>
+                        <ActionButton>Add new address</ActionButton>
+                        <ChildContent>
+                            @if (CustomerAddresses.Any())
+                            {
+                                <EditForm EditContext="@CustomerAddressContext" FormName="DeliveryAddressForm">
+                                    <InputCheckoutOptionGroup @bind-Value="CustomerAddressModel!.SelectedAddressId">
+                                        @foreach (var address in CustomerAddresses)
+                                        {
+                                            <InputCheckoutOption Value="address.Id" IdBase="address">
+                                                @address.Street
+                                            </InputCheckoutOption>
+                                        }
+                                    </InputCheckoutOptionGroup>
+                                </EditForm>
+                            }
+                            else
+                            {
+                                <p>No addresses available.</p>
+                            }
+                        </ChildContent>
+                    </CheckoutSection>
+                </div>
+            }
+        </Tab>
+    </Tabs>
+}

@@ -19,12 +19,12 @@
                     }
                     else
                     {
-                        switch (Model.FulfillmentInfo.OrderType)
+                        switch (Model.FulfillmentInfo)
                         {
-                            case OrderType.Delivery:
+                            case FulfillmentModel.DeliveryModel:
                                 @: Delivery
                                 break;
-                            case OrderType.Pickup:
+                            case FulfillmentModel.PickupModel:
                                 @: Pickup
                                 break;
                             default:
@@ -42,6 +42,18 @@
                         @: Change time
                     }
                 </ActionButton>
+                <ChildContent>
+                    @if (Model.FulfillmentInfo is null)
+                    {
+                        <span>Please select a pickup or delivery time.</span>
+                    }
+                    else
+                    {
+                        <div>
+                            <span>@TimeSlotModel!.TimeSlotDefinition.TimeSlotRange.ToString()</span>
+                        </div>
+                    }
+                </ChildContent>
             </CheckoutSection>
 
             <CheckoutSection ShowSection="@(Model.FulfillmentInfo is not null)">
@@ -62,7 +74,7 @@
                 </ChildContent>
             </CheckoutSection>
         </div>
-        <CheckoutSummary />
+        <CheckoutSummary/>
         <button class="btn btn--md btn--primary checkout__submit-btn" @onclick="OnSubmitAsync">Submit</button>
     </div>
 }
@@ -74,7 +86,7 @@
     private PaymentMethodModel PaymentModel { get; set; } = null!;
     private EditContext PaymentMethodEditContext { get; set; } = null!;
     private IModalController? ModalController { get; set; }
-    private FulfillmentModel? FulfilmentModel { get; set; }
+    private TimeSlotModel? TimeSlotModel { get; set; }
 
     protected override void OnInitialized()
     {
@@ -86,12 +98,18 @@
     {
         if (Store is not null)
         {
-            FulfilmentModel = await Store.TryGetValueAsync<FulfillmentModel>("FulfillmentData")
-                              ?? new FulfillmentModel();
+            if (ModalController is not null)
+                ModalController.OnChange += Modal_OnChange;
+
+            await RetrieveFulfillmentInfoFromStore();
             PaymentModel = await Store.TryGetValueAsync<PaymentMethodModel>("PaymentInfo")
                            ?? new PaymentMethodModel();
             PaymentMethodEditContext = new EditContext(PaymentModel);
             PaymentMethodEditContext.OnFieldChanged += PaymentMethodEditContext_OnFieldChanged;
+
+            if (Model.FulfillmentInfo is FulfillmentModel.NonEmptyModel nonEmptyModel)
+                TimeSlotModel = await Service.GetCheckoutTimeSlotAsync(nonEmptyModel.TimeSlotId);
+
             ShouldLoadContent = true;
         }
     }
@@ -100,22 +118,21 @@
     {
         if (!disposing) return;
 
+        if (ModalController is not null)
+            ModalController.OnChange -= Modal_OnChange;
+
         PaymentMethodEditContext.OnFieldChanged -= PaymentMethodEditContext_OnFieldChanged;
+    }
+
+    private async Task RetrieveFulfillmentInfoFromStore()
+    {
+        Model.FulfillmentInfo = await Store!.TryGetValueAsync<FulfillmentModel.DeliveryModel>("FulfillmentData")
+                                ?? await Store!.TryGetValueAsync<FulfillmentModel.PickupModel>("FulfillmentData")
+                                ?? Model.FulfillmentInfo;
     }
 
     private async Task OnSubmitAsync()
     {
-        var submitModel = new CheckoutSubmitModel
-        {
-            OrderType = FulfilmentModel?.OrderType
-                        ?? throw new InvalidOperationException("No 'OrderType' was set."),
-            TimeSlotId = FulfilmentModel?.TimeSlotId
-                         ?? throw new InvalidOperationException("No 'TimeSlotId' was set"),
-            DeliveryAddressId = FulfilmentModel?.DeliveryAddressId,
-            PaymentMethodId = PaymentModel.PaymentMethodId
-                              ?? throw new InvalidOperationException("No 'PaymentMethodId' set.")
-        };
-
         try
         {
             await Service.CheckoutAsync(Model.ToSubmitModel());
@@ -135,7 +152,7 @@
             Height = "75%"
         };
 
-        var context = await ModalController!.DispatchAsync<FulfilmentModal, FulfillmentModel>(options);
+        var context = await ModalController!.DispatchAsync<FulfillmentModal, AddressModel>(options);
 
         Logger.LogInformation($"{context.IsVisible}");
     }
@@ -144,7 +161,14 @@
     {
         Logger.LogInformation($"Calling 'Checkout.PaymentMethodEditContext_OnFieldChanged'.");
         PaymentModel = PaymentMethodEditContext.Model as PaymentMethodModel ?? new PaymentMethodModel();
+        Model.PaymentMethodId = PaymentModel.PaymentMethodId;
         await Store!.SetValueAsync("PaymentInfo", PaymentModel);
+    }
+
+    private async void Modal_OnChange()
+    {
+        await RetrieveFulfillmentInfoFromStore();
+        StateHasChanged();
     }
 
     private class PaymentMethodModel

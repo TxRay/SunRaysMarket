@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using SunRaysMarket.Shared.Core.DomainModels;
 using SunRaysMarket.Shared.Core.DomainModels.Checkout;
+using SunRaysMarket.Shared.Core.DomainModels.Responses;
 using SunRaysMarket.Shared.Core.Enums;
 using SunRaysMarket.Shared.Services.Interfaces;
 
@@ -22,6 +23,15 @@ internal class CheckoutProxyService(
         return await result.Content.ReadFromJsonAsync<IEnumerable<TimeSlotListModel>>()
             ?? new List<TimeSlotListModel>();
     }
+
+    public async Task<IEnumerable<StoreListModel>> GetStoreLocationsAsync()
+    => (await httpClient.GetFromJsonAsync<StoreLocationsResponse>("api/checkout/locations"))
+        ?.StoreLocations ?? [];
+    
+    public Task<TimeSlotModel?> GetCheckoutTimeSlotAsync(int id)
+        => httpClient.GetFromJsonAsync<TimeSlotModel>(
+            $"api/checkout/timeslot/{id}"
+        );
 
     public async Task CheckoutAsync(CheckoutSubmitModel model) =>
         await httpClient.PostAsJsonAsync("api/checkout", model);

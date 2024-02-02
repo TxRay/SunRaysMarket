@@ -22,6 +22,9 @@ internal class CheckoutService(
         OrderType orderType
     ) => await unitOfWork.TimeSlotRepository.GetAllTimeSlotsAsync(storeId, orderType);
 
+    public Task<IEnumerable<StoreListModel>> GetStoreLocationsAsync()
+        => unitOfWork.StoreRepository.GetAllStoresAsync();
+
     public Task<TimeSlotModel?> GetCheckoutTimeSlotAsync(int id)
         => unitOfWork.TimeSlotRepository.GetTimeSlotAsync(id);
 
