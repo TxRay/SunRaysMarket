@@ -1,0 +1,112 @@
+@use "../abstracts/mixins" as mxn;
+@use "../abstracts/variables" as var;
+@use "../layouts/layout";
+
+.search {
+  flex: 0 1 40rem;
+
+  display: flex;
+  align-items: center;
+
+  margin: 0 5rem;
+
+  @include mxn.media(phone-lg) {
+    @include mxn.layout;
+    @include mxn.layout-full;
+    align-content: center;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+    margin: 0;
+    height: var.$topbar-height;
+    background-color: var.$color-primary-dark;
+    transform: scaleX(0);
+    transition: transform 250ms ease-in-out;
+  }
+
+
+  &__form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 1;
+
+    @include mxn.media(phone-lg) {
+      margin-right: 4rem;
+    }
+  }
+
+  &__input {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background-color: var.$color-grey-light-2;
+    border: none;
+    padding: 0.7rem 2rem;
+    border-radius: 200px;
+    width: 90%;
+    margin-right: -3.5rem;
+    transition: all 200ms ease-in-out;
+
+    &:focus {
+      outline: none;
+      width: 100%;
+    }
+  }
+
+  &__button {
+    border: none;
+    background-color: transparent;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:active {
+      transform: translateY(2px);
+    }
+  }
+
+  &__icon {
+    height: var.$fs-xl;
+    aspect-ratio: 1 / 1;
+    fill: var.$color-grey-dark-1;
+
+    &--close {
+      fill: var.$color-danger;
+    }
+  }
+
+  &__checkbox {
+    display: none;
+  }
+
+  &__close, &__open {
+    display: none;
+  }
+
+  &__checkbox:not(:checked) ~ &__open, &__checkbox:checked ~ &__close {
+    @include mxn.media(phone-lg) {
+      display: block;
+    }
+  }
+
+  &__checkbox:checked ~ &__close {
+    @include mxn.media(phone-lg) {
+      position: absolute;
+      top: calc(50% - (var.$fs-xl / 2));
+      right: 7rem;
+      z-index: 3000;
+    }
+  }
+
+  &__checkbox:checked ~ & {
+    @include mxn.media(phone-lg) {
+      transform: scaleX(1);
+    }
+  }
+
+}

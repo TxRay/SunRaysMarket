@@ -1,13 +1,12 @@
 @use "../abstracts/variables" as var;
 
 body {
-    font-size: 1.6rem;
-    font-family: var.$typeface-primary;
+  font-size: 1.6rem;
+  font-family: var.$typeface-primary;
 }
-
 .section-heading {
-    font-size: var.$fs-2xl;
-    font-weight: var.$weight-light;
-    margin-bottom: var.$spacing-m;
-    color: var.$color-primary-medium;
+  font-size: var.$fs-2xl;
+  font-weight: var.$weight-light;
+  margin-bottom: var.$spacing-m;
+  color: var.$color-primary-medium;
 }

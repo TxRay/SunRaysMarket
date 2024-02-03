@@ -16,7 +16,8 @@
 
   display: grid;
   grid-template-columns: subgrid;
-
+  
+  position: relative;
   background-color: var.$color-primary-dark;
 
   &__content {
@@ -56,7 +57,6 @@
   column-gap: .8rem;
 
   @include mxn.reset-link;
-
   padding: .8rem;
   border-radius: 10px;
   transition: all 200ms ease-in-out;
@@ -64,6 +64,10 @@
   &:hover {
     background-color: var.$color-primary-light;
     cursor: pointer;
+  }
+  
+  @include mxn.media(phone-sm) {
+    grid-template-columns: repeat(2, max-content);
   }
 
   &__icon {
@@ -85,6 +89,7 @@
     font-size: 1.2rem;
     color: var.$color-secondary-light;
     transition: all 200ms ease-in-out;
+    
   }
 
   &__location {
@@ -95,6 +100,12 @@
     color: var.$color-grey-light-2;
     transition: all 200ms ease-in-out;
   }
+  
+  &__heading, &__location {
+    @include mxn.media(phone-sm) {
+      display: none;
+    }
+  }
 
   &__chevron {
     grid-column: 3 / -1;
@@ -103,6 +114,10 @@
     width: 1.3rem;
     aspect-ratio: 1 / 1;
     fill: var.$color-grey-light-2;
+
+    @include mxn.media(phone-sm) {
+      grid-column: 2 / -1;
+    }
   }
 
   &:hover &__icon {
@@ -147,52 +162,6 @@
   }
 }
 
-.search {
-  flex: 0 0 40rem;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &__input {
-    font-family: inherit;
-    font-size: inherit;
-    color: inherit;
-    background-color: var.$color-grey-light-2;
-    border: none;
-    padding: 0.7rem 2rem;
-    border-radius: 200px;
-    width: 90%;
-    margin-right: -3.5rem;
-    transition: all 200ms ease-in-out;
-
-    &:focus {
-      outline: none;
-      width: 100%;
-    }
-  }
-
-  &__button {
-    border: none;
-    background-color: transparent;
-
-    &:focus {
-      outline: none;
-    }
-
-    &:active {
-      transform: translateY(2px);
-    }
-  }
-
-  &__icon {
-    height: 2rem;
-    aspect-ratio: 1 / 1;
-    fill: var.$color-grey-dark-1;
-  }
-
-}
-
 .nav {
   grid-column: page-start / page-end;
   grid-row: nav-start / nav-end;
@@ -200,7 +169,25 @@
   display: grid;
   grid-template-columns: subgrid;
 
+  @include mxn.media(tab-port) {
+    position: relative;
+  }
+
   background-color: var.$color-primary-medium;
+
+  &__menu {
+    @include mxn.media(tab-port) {
+      position: absolute;
+      top: var.$navbar-height;
+      min-width: 30rem;
+      padding: var.$spacing-l;
+      border-top: 1.5px solid var.$color-primary-light;
+      background-color: var.$color-primary-medium;
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 350ms ease-in-out;
+    }
+  }
 
   &__content {
     grid-column: layout-start / layout-end;
@@ -215,6 +202,11 @@
     align-items: center;
     gap: 2rem;
     list-style: none;
+
+    @include mxn.media(tab-port) {
+      align-items: start;
+      flex-direction: column;
+    }
   }
 
   &__item {
@@ -285,5 +277,78 @@
     width: 2.8rem;
     aspect-ratio: 1 / 1;
     fill: var.$color-grey-light-2;
+  }
+}
+
+.nav-toggle {
+  display: none;
+
+  @include mxn.media(tab-port) {
+    display: block;
+  }
+
+  &__checkbox {
+    display: none;
+  }
+
+  &__btn {
+    display: none;
+    align-items: center;
+    height: 4rem;
+    padding: .5rem;
+    aspect-ratio: 1 / 1;
+    
+    @include mxn.media(tab-port) {
+      display: flex;
+    }
+  }
+
+  &__icon {
+    position: relative;
+
+    &,
+    &::before,
+    &::after {
+      display: inline-block;
+      height: 1px;
+      width: 3rem;
+      background-color: var.$color-background;
+    }
+
+    &::before,
+    &::after {
+      content: "";
+      left: 0;
+      position: absolute;
+      transition: transform 200ms;
+    }
+
+    &::before {
+      top: -.8rem;
+    }
+
+    &::after {
+      top: .8rem;
+    }
+  }
+
+  &__checkbox:checked + &__btn &__icon {
+    background-color: transparent;
+  }
+
+  &__checkbox:checked + &__btn &__icon::before {
+    top: 0;
+    transform: rotate(135deg);
+  }
+
+  &__checkbox:checked + &__btn &__icon::after {
+    top: 0;
+    transform: rotate(-135deg);
+  }
+}
+
+.nav-toggle__checkbox:checked ~ .nav__menu {
+  @include mxn.media(tab-port) {
+    transform: scaleY(1);
   }
 }

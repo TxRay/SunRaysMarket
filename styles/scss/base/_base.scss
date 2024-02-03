@@ -1,4 +1,6 @@
+@use "../abstracts/mixins" as mxn;
 @use "../abstracts/variables" as var;
+
 *,
 *::before,
 *::after {
@@ -10,6 +12,14 @@
 html {
   box-sizing: border-box;
   font-size: 62.5%; // set 1rem = 10px
+
+  @include mxn.media(tab-land) {
+    font-size: 56.25%; // set 1 rem = 9px
+  }
+  
+  @include mxn.media(tab-port) {
+    font-size: 50%; // set 1 rem = 8px
+  }
 }
 
 body {

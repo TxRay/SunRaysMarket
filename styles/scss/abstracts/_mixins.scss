@@ -1,3 +1,5 @@
+@use "sass:map";
+
 @mixin reset-link {
   text-decoration: none;
   color: inherit;
@@ -13,3 +15,65 @@
   border: none;
   cursor: pointer;
 }
+
+$_media-breakpoints: (
+                (phone-sm, 610px),
+                (phone-lg, 725px),
+                (tab-port, 925px),
+                (tab-land, 1200px)
+);
+
+@mixin media($breakpoint) {
+  @each $name, $bp in $_media-breakpoints {
+    @if $breakpoint == $name {
+      @media only screen and (max-width: $bp) {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin media-placeholder($ph-name) {
+  @each $bp-name, $bp in $_media-breakpoints {
+    %#{$ph-name} {
+      @include media($bp-name) {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin media-extend($ph-name, $breakpoint) {
+  @include media($breakpoint) {
+    @extend %#{$ph-name};
+  }
+}
+
+// layout mixins
+@mixin layout($columns: 12, $max-width: 144rem) {
+  display: grid;
+
+  grid-template-columns:
+    [page-start] minmax(5rem, 1fr) [layout-start] repeat(
+      $columns, [col-start] minmax(min-content, calc($max-width / $columns)) [col-end]
+    )
+    [layout-end] minmax(5rem, 1fr) [page-end];
+  grid-auto-rows: min-content;
+}
+
+@mixin layout-page {
+  grid-column: page;
+}
+
+@mixin layout-full {
+  @include layout-page;
+
+  & > * {
+    grid-column: layout;
+  }
+}
+
+@mixin layout-content {
+  grid-column: layout;
+}
+

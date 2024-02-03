@@ -1,3 +1,4 @@
+@use "../abstracts/mixins" as mxn;
 @use '../abstracts/variables' as var;
 
 .main-home {
@@ -5,44 +6,58 @@
 }
 
 .hero-home {
-  grid-column: layout-start / layout-end;
-
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  height: 50vh;
+  @include mxn.layout;
+  @include mxn.layout-full;
+  grid-template-rows: [hero-start] 1fr [hero-end];
+  
+  height: fit-content;
   overflow: hidden;
-
-
-  margin-top: 4rem;
+  
 
   &__img {
+    grid-column: page;
+    grid-row: hero;
     display: block;
-    grid-column: 1 / -1;
-    grid-row: 1 / -1;
+    max-height: var.$vertical-content-height;
     width: 100%;
     object-fit: cover;
     object-position: top;
     border-radius: 5px;
 
   }
+  
+  &__grid {
+    grid-row: hero;
+    align-self: start;
+    
+    height: 100%;
+    
+    display: grid;
+    grid-template-columns: [full-start left-start] 1fr [left-end right-start] 1fr [right-end full-end];
+    grid-template-rows: [full-start top-start] 1fr [top-end bottom-start] 1fr [bottom-end full-end];
+  }
 
   &__content {
-    grid-column: 1 / 2;
-    grid-row: 1 / -1;
+    grid-column: left;
+    grid-row: full;
+    align-self: center;
 
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: var.$spacing-4xl;
     align-items: center;
 
-    padding: 8rem;
   }
 
   &__heading {
-    font-size: 4.8rem;
-    font-weight: 300;
+    font-size: var.$fs-5xl;
+    font-weight: var.$weight-medium;
     text-align: center;
     color: var.$color-grey-dark-2;
+    max-width: 20ch;
+    
+    @include mxn.media(phone-sm) {
+      font-size: var.$fs-4xl;
+    }
   }
 }

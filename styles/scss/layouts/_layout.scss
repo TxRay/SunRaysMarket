@@ -1,15 +1,8 @@
+@use "../abstracts/mixins" as mxn;
 @use "../abstracts/variables" as var;
 
 .layout {
-  display: grid;
-
-  grid-template-columns:
-    [page-start] minmax(5rem, 1fr) [layout-start] repeat(
-      12,
-                    [col-start] minmax(min-content, 12rem) [col-end]
-    )
-    [layout-end] minmax(5rem, 1fr) [page-end];
-  grid-auto-rows: min-content;
+  @include mxn.layout;
 
   &--application, &--admin {
     height: 100vh;
@@ -28,18 +21,16 @@
     //padding-bottom: var.$spacing-3xl;
   }
 
-  &--page, &__full {
-    grid-column: page;
+  &--page{
+    @include mxn.layout-page;
   }
   
   &__full {
-    & > * {
-      grid-column: layout;
-    }
+    @include mxn.layout-full;
   }
 
   &__content {
-    grid-column: layout;
+    @include mxn.layout-content;
   }
   
   &__content-vertical {
