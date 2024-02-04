@@ -10,18 +10,16 @@
     <HeroHome/>
 </MainHeader>
 
-<PageLayout CssClasses="main-home" ContentWidth="ContentWidth.PageFull" >
-    <ProductSection Heading="Featured Products" FeaturedProducts="@Products"/>
+<PageLayout CssClasses="main-home" ContentWidth="ContentWidth.PageFull">
+    <ProductSection Heading="Featured Products" StreamedProducts="@StreamedProducts"/>
 </PageLayout>
 
 @code {
-    private IAsyncEnumerable<ProductListModel> Products { get; set; } = default!;
-
+    private IAsyncEnumerable<ProductListModel> StreamedProducts { get; set; } = default!;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Products = Service.ProductRepository.GetAllAsync();
+        StreamedProducts = Service.ProductRepository.GetAllAsync();
     }
-
 }

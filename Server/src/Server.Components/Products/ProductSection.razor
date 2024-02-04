@@ -1,15 +1,16 @@
 @namespace SunRaysMarket.Server.Components
 
+@using Microsoft.Extensions.Logging
 @inherits OwningComponentBase<ICartService> 
 @attribute [StreamRendering]
 
 <section class="section">
     <h3 class="section-heading">@Heading</h3>
 
-    @if (DisplayProducts.Any())
+    @if (Products.Any() || !DataLoadingComplete)
     {
         <div class="card-grid">
-            @foreach (var product in DisplayProducts)
+            @foreach (var product in Products)
             {
                 <ProductCard Product="@product" CartItemInfoList="@CartItemInfo"/>
             }
@@ -22,22 +23,28 @@
 </section>
 
 @code {
+    [Inject] private ILogger<ProductSection>? Logger { get; set; }
+    
     [Parameter, EditorRequired] public string Heading { get; set; } = string.Empty;
-    [Parameter, EditorRequired] public IAsyncEnumerable<ProductListModel> FeaturedProducts { get; set; } = default!;
+    [Parameter, EditorRequired] public IAsyncEnumerable<ProductListModel> StreamedProducts { get; set; } = default!;
     [Parameter] public string FailureMessage { get; set; } = "No products found";
 
+    private List<ProductListModel> Products { get; set; } = [];
     private IEnumerable<CartItemControlModel> CartItemInfo { get; set; } = [];
-    private List<ProductListModel> DisplayProducts { get; set; } = [];
+    private bool DataLoadingComplete { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         CartItemInfo = await Service.GetAllCartItemInfoAsync();
 
-        await foreach (var product in FeaturedProducts)
+        await foreach (var product in StreamedProducts)
         {
-            DisplayProducts.Add(product);
+            //await Task.Delay(2000);
+            Products.Add(product);
             StateHasChanged();
         }
+
+        DataLoadingComplete = true;
     }
 
 }
