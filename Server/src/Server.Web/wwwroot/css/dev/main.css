@@ -38,7 +38,7 @@ html {
 }
 
 body {
-  background-color: white;
+  background-color: #f6f9fc;
 }
 
 body {
@@ -1151,7 +1151,7 @@ body {
   display: inline-block;
   height: 1px;
   width: 3rem;
-  background-color: white;
+  background-color: #f6f9fc;
 }
 .nav-toggle__icon::before, .nav-toggle__icon::after {
   content: "";
