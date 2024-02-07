@@ -284,8 +284,8 @@ body {
   font-size: 1.4rem;
 }
 .btn--lg, .btn--lg:link, .btn--lg:visited {
-  padding: 2.4rem 4.8rem;
-  font-size: 1.8rem;
+  padding: 2.4rem 4rem;
+  font-size: 1.6rem;
 }
 .btn--round, .btn--round:link, .btn--round:visited {
   aspect-ratio: 1/1;
