@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using SunRaysMarket.Server.Application.Auth;
+using SunRaysMarket.Server.Application.Services.Auth;
 using SunRaysMarket.Server.Application.UnitOfWork;
 
 namespace SunRaysMarket.Server.Application.Services;

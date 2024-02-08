@@ -61,8 +61,9 @@ internal class TimeSlotRepository(ApplicationDbContext dbContext) : ITimeSlotRep
             )
             .ToListAsync();
 
-    public Task<TimeSlotModel?> GetTimeSlotAsync(int timeSlotId)
-        => dbContext.TimeSlots
+    public Task<TimeSlotModel?> GetTimeSlotAsync(int timeSlotId) =>
+        dbContext
+            .TimeSlots
             .Include(ts => ts.TimeSlotDefinition)
             .Include(ts => ts.Store)
             .Where(ts => ts.Id == timeSlotId)

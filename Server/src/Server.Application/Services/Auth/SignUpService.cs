@@ -1,10 +1,11 @@
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using SunRaysMarket.Server.Application.Enums;
 using SunRaysMarket.Server.Application.Repositories;
 using SunRaysMarket.Server.Application.Results;
 using SunRaysMarket.Server.Application.UnitOfWork;
 
-namespace SunRaysMarket.Server.Application.Auth;
+namespace SunRaysMarket.Server.Application.Services.Auth;
 
 internal class SignUpService(
     ILogger<SignUpService> logger,

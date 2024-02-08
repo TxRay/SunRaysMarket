@@ -1,7 +1,8 @@
 @using Blazored.FluentValidation
-@using Application.Auth
+@using SunRaysMarket.Server.Application.Enums
+@using SunRaysMarket.Server.Application.Services.Auth
 @using SunRaysMarket.Server.Components.Enums
-@inherits OwningComponentBase<IUserService>
+@inherits OwningComponentBase<SunRaysMarket.Server.Application.Services.Auth.IUserService>
 
 @page "/signup"
 

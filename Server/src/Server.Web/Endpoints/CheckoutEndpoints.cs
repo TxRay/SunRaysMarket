@@ -25,18 +25,14 @@ public static class CheckoutEndpoints
         checkoutGroup.MapGet(
             "/timeslot/{checkoutId:int}",
             async (int checkoutId, ICheckoutService checkoutService) =>
-                Results.Json(
-                    await checkoutService.GetCheckoutTimeSlotAsync(checkoutId)
-                )
+                Results.Json(await checkoutService.GetCheckoutTimeSlotAsync(checkoutId))
         );
 
         checkoutGroup.MapGet(
             "/locations",
             async (ICheckoutService checkoutService) =>
                 Results.Json(
-                    new StoreLocationsResponse(
-                        await checkoutService.GetStoreLocationsAsync()
-                    )
+                    new StoreLocationsResponse(await checkoutService.GetStoreLocationsAsync())
                 )
         );
 

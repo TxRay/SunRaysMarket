@@ -1,4 +1,5 @@
-using SunRaysMarket.Server.Application.Auth;
+using SunRaysMarket.Server.Application.Enums;
+using SunRaysMarket.Server.Application.Services.Auth;
 
 namespace SunRaysMarket.Server.Application.Repositories;
 

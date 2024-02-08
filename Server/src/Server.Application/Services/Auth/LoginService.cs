@@ -2,7 +2,7 @@ using FluentValidation;
 using SunRaysMarket.Server.Application.Repositories;
 using SunRaysMarket.Server.Application.Results;
 
-namespace SunRaysMarket.Server.Application.Auth;
+namespace SunRaysMarket.Server.Application.Services.Auth;
 
 internal class LoginService(
     IValidator<LoginModel> loginModelValidator,

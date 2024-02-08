@@ -45,4 +45,18 @@ app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(IClientIdentifier).Assembly);
 
+app.UseStatusCodePages(context =>
+{
+    var redirectRoute = context.HttpContext.Response.StatusCode switch
+    {
+        404 => "/error/404/not-found",
+        500 => "error/500/internal-server-error",
+        _ => $"error/{context.HttpContext.Response.StatusCode}"
+    };
+
+    context.HttpContext.Response.Redirect(redirectRoute);
+
+    return Task.CompletedTask;
+});
+
 app.Run();

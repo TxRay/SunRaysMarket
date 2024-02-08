@@ -1,4 +1,4 @@
-namespace SunRaysMarket.Server.Application.Auth;
+namespace SunRaysMarket.Server.Application.Enums;
 
 public enum Role
 {

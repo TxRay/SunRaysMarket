@@ -6,9 +6,14 @@ namespace SunRaysMarket.Client.Components;
 
 public class InputCheckoutOption<TValue> : ComponentBase
 {
-    [Parameter, EditorRequired] public string IdBase { get; set; } = default!;
-    [Parameter] public TValue? Value { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter, EditorRequired]
+    public string IdBase { get; set; } = default!;
+
+    [Parameter]
+    public TValue? Value { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
     protected string HtmlId => $"{IdBase}--{Value}";
 
@@ -19,7 +24,7 @@ public class InputCheckoutOption<TValue> : ComponentBase
         builder.OpenComponent<InputRadio<TValue>>(3);
         builder.AddAttribute(4, "id", HtmlId);
         builder.AddAttribute(5, "class", "d-none timeslot__radio");
-        builder.AddComponentParameter(6,"Value", Value);
+        builder.AddComponentParameter(6, "Value", Value);
         builder.CloseComponent();
         builder.OpenElement(7, "label");
         builder.AddAttribute(8, "class", "timeslot__label");

@@ -1,6 +1,6 @@
 using SunRaysMarket.Server.Application.Results;
 
-namespace SunRaysMarket.Server.Application.Auth;
+namespace SunRaysMarket.Server.Application.Services.Auth;
 
 public interface ILoginService
 {

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Extensions;
 using Stripe;
 using SunRaysMarket.Server.Application.Repositories;
 using SunRaysMarket.Server.Application.UnitOfWork;
@@ -67,19 +68,18 @@ public static class ServiceExtensions
 
     private static IServiceCollection AddRepositoryServices(this IServiceCollection services)
     {
-        services.AddScoped<IAddressRepository, AddressRepository>();
-        services.AddScoped<ICartRepository, CartRepository>();
-        services.AddScoped<ICustomerRepository, CustomerRepository>();
-        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-        services.AddScoped<IImageRepository, ImageRepository>();
-        services.AddScoped<IOrderRepository, OrderRepository>();
-        services.AddScoped<IProductRepository, ProductRepository>();
-        services.AddScoped<IProductTypeRepository, ProductTypeRepository>();
-        services.AddScoped<IStoreRepository, StoreRepository>();
-        services.AddScoped<ITimeSlotRepository, TimeSlotRepository>();
-        services.AddScoped<ITransactionRepository, TransactionRepository>();
-        services.AddScoped<IUnitOfMeasureRepository, UnitOfMeasureRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
+        var interfaceNamespaceDescriptors = new[]
+        {
+            new NamespaceDescriptor(
+                typeof(IUnitOfWork).Assembly,
+                "SunRaysMarket.Server.Application.Repositories"
+            )
+        };
+        services.AddSInterfacesWithImplementationsFromLocalNamespace(
+            interfaceNamespaceDescriptors,
+            "SunRaysMarket.Server.Infrastructure.Repositories",
+            ServiceLifetime.Scoped
+        );
 
         return services;
     }

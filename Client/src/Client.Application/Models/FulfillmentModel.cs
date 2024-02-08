@@ -7,9 +7,10 @@ namespace SunRaysMarket.Client.Application.Models;
 
 [JsonDerivedType(typeof(DeliveryModel), "deliveryModel")]
 [JsonDerivedType(typeof(PickupModel), "pickupModel")]
-public abstract record FulfillmentModel 
-{ 
+public abstract record FulfillmentModel
+{
     public record EmptyModel : FulfillmentModel;
+
     public abstract record NonEmptyModel(int TimeSlotId, OrderType OrderType) : FulfillmentModel;
 
     public record DeliveryModel(int TimeSlotId, int? DeliveryAddressId = default)
@@ -34,7 +35,6 @@ public abstract record FulfillmentModel
             if (orderType == OrderType.Delivery)
                 throw new SerializationException();
         }
-        
     }
 
     public static bool IsNullOrEmpty(FulfillmentModel? model) => model is null or EmptyModel;

@@ -1,7 +1,8 @@
 using System.Security.Claims;
+using SunRaysMarket.Server.Application.Enums;
 using SunRaysMarket.Server.Application.Results;
 
-namespace SunRaysMarket.Server.Application.Auth;
+namespace SunRaysMarket.Server.Application.Services.Auth;
 
 public interface IUserService
 {

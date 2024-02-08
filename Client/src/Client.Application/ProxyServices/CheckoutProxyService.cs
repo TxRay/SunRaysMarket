@@ -24,14 +24,13 @@ internal class CheckoutProxyService(
             ?? new List<TimeSlotListModel>();
     }
 
-    public async Task<IEnumerable<StoreListModel>> GetStoreLocationsAsync()
-    => (await httpClient.GetFromJsonAsync<StoreLocationsResponse>("api/checkout/locations"))
-        ?.StoreLocations ?? [];
-    
-    public Task<TimeSlotModel?> GetCheckoutTimeSlotAsync(int id)
-        => httpClient.GetFromJsonAsync<TimeSlotModel>(
-            $"api/checkout/timeslot/{id}"
-        );
+    public async Task<IEnumerable<StoreListModel>> GetStoreLocationsAsync() =>
+        (
+            await httpClient.GetFromJsonAsync<StoreLocationsResponse>("api/checkout/locations")
+        )?.StoreLocations ?? [];
+
+    public Task<TimeSlotModel?> GetCheckoutTimeSlotAsync(int id) =>
+        httpClient.GetFromJsonAsync<TimeSlotModel>($"api/checkout/timeslot/{id}");
 
     public async Task CheckoutAsync(CheckoutSubmitModel model) =>
         await httpClient.PostAsJsonAsync("api/checkout", model);

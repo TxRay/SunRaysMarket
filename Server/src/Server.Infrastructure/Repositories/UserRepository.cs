@@ -1,5 +1,6 @@
-using SunRaysMarket.Server.Application.Auth;
+using SunRaysMarket.Server.Application.Enums;
 using SunRaysMarket.Server.Application.Repositories;
+using SunRaysMarket.Server.Application.Services.Auth;
 using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 using SunRaysMarket.Shared.Core.DomainModels;
 
