@@ -161,7 +161,7 @@ public static class ServiceCollectionExtensions
         foreach (var implType in implementationTypes)
         {
             var interfaceType =
-                interfaceTypes.FirstOrDefault(type => type.Name == $"I{implType.Name}")
+                interfaceTypes.FirstOrDefault(type => type.IsAssignableFrom(implType))
                 ?? throw new InvalidOperationException(
                     $"The service '{implType.FullName}' does not implement an interface "
                         + $"from the given namespaces."
