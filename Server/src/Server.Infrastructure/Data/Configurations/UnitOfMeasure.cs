@@ -3,10 +3,10 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class UnitOfMeasureConfiguration : BaseConfiguration<UnitOfMeasure>
+internal class UnitOfMeasure : ConfigurationBase<PersistenceModels.UnitOfMeasure>
 {
     public override void Configure(
-        Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<UnitOfMeasure> builder
+        Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<PersistenceModels.UnitOfMeasure> builder
     )
     {
         base.Configure(builder);

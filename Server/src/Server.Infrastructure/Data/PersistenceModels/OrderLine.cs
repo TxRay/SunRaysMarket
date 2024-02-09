@@ -3,7 +3,7 @@ using SunRaysMarket.Shared.Core.Utilities.OrderCalculations;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class OrderLine : TimeStampBaseModel, IOrderItemAmounts
+internal class OrderLine : TimeStampModelBase, IOrderItemAmounts
 {
     public int OrderId { get; set; }
     public int ItemId { get; set; }

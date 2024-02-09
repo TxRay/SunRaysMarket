@@ -2,7 +2,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class Department : BaseModel
+internal class Department : ModelBase
 {
     public string Name { get; set; } = default!;
     public string Slug { get; set; } = default!;

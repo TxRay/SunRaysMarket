@@ -2,7 +2,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class Customer : BaseModel
+internal class Customer : ModelBase
 {
     public int UserId { get; set; }
     public int? CartId { get; set; }

@@ -2,8 +2,8 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations.Base;
 
-internal abstract class TimeStampBaseConfiguration<T> : IEntityTypeConfiguration<T>
-    where T : TimeStampBaseModel
+internal abstract class TimeStampConfigurationBase<T> : IEntityTypeConfiguration<T>
+    where T : TimeStampModelBase
 {
     public virtual void Configure(EntityTypeBuilder<T> builder)
     {

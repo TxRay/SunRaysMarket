@@ -2,8 +2,8 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations.Base;
 
-internal abstract class BaseConfiguration<T> : IEntityTypeConfiguration<T>
-    where T : BaseModel
+internal abstract class ConfigurationBase<T> : IEntityTypeConfiguration<T>
+    where T : ModelBase
 {
     public virtual void Configure(EntityTypeBuilder<T> builder)
     {

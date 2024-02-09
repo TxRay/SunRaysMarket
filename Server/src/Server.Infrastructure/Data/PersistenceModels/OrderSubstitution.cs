@@ -2,7 +2,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class OrderSubstitution : TimeStampBaseModel
+internal class OrderSubstitution : TimeStampModelBase
 {
     public int OrderLineId { get; set; }
     public int OriginalItemId { get; set; }

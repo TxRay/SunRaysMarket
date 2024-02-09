@@ -2,7 +2,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class Store : TimeStampBaseModel
+internal class Store : TimeStampModelBase
 {
     public string LocationName { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;

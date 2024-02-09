@@ -3,9 +3,9 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class OrderSubstitutionConfiguration : TimeStampBaseConfiguration<OrderSubstitution>
+internal class OrderSubstitution : TimeStampConfigurationBase<PersistenceModels.OrderSubstitution>
 {
-    public override void Configure(EntityTypeBuilder<OrderSubstitution> builder)
+    public override void Configure(EntityTypeBuilder<PersistenceModels.OrderSubstitution> builder)
     {
         base.Configure(builder);
 
@@ -30,6 +30,6 @@ internal class OrderSubstitutionConfiguration : TimeStampBaseConfiguration<Order
         builder
             .HasOne(orderSubstitution => orderSubstitution.OrderLine)
             .WithOne(orderLine => orderLine.OrderSubstitution)
-            .HasForeignKey<OrderSubstitution>(orderSubstitution => orderSubstitution.OrderLineId);
+            .HasForeignKey<PersistenceModels.OrderSubstitution>(orderSubstitution => orderSubstitution.OrderLineId);
     }
 }

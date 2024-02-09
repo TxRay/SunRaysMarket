@@ -3,9 +3,9 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class ListConfiguration : TimeStampBaseConfiguration<List>
+internal class List : TimeStampConfigurationBase<PersistenceModels.List>
 {
-    public override void Configure(EntityTypeBuilder<List> builder)
+    public override void Configure(EntityTypeBuilder<PersistenceModels.List> builder)
     {
         base.Configure(builder);
 

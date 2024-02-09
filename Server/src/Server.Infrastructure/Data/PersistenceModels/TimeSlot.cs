@@ -2,7 +2,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class TimeSlot : BaseModel
+internal class TimeSlot : ModelBase
 {
     public int StoreId { get; set; }
     public int TimeSlotDefinitionId { get; set; }

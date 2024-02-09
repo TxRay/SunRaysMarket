@@ -2,7 +2,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class Image : TimeStampBaseModel
+internal class Image : TimeStampModelBase
 {
     public Guid UrlIdentifier { get; set; }
     public string ContentType { get; set; } = null!;

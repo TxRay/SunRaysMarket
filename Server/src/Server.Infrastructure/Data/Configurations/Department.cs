@@ -3,9 +3,9 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class DepartmentConfiguration : BaseConfiguration<Department>
+internal class Department : ConfigurationBase<PersistenceModels.Department>
 {
-    public override void Configure(EntityTypeBuilder<Department> builder)
+    public override void Configure(EntityTypeBuilder<PersistenceModels.Department> builder)
     {
         base.Configure(builder);
 

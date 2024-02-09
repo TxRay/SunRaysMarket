@@ -2,7 +2,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class Address : BaseModel
+internal class Address : ModelBase
 {
     public string Street { get; set; } = null!;
     public string City { get; set; } = null!;

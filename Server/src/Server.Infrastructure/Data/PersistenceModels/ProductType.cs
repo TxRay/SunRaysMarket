@@ -2,7 +2,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class ProductType : TimeStampBaseModel
+internal class ProductType : TimeStampModelBase
 {
     public int DepartmentId { get; set; }
     public string Name { get; set; } = default!;

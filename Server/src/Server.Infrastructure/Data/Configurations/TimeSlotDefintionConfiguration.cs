@@ -3,9 +3,9 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class TimeSlotDefinitionConfiguration : BaseConfiguration<TimeSlotDefinition>
+internal class TimeSlotDefinition : ConfigurationBase<PersistenceModels.TimeSlotDefinition>
 {
-    public override void Configure(EntityTypeBuilder<TimeSlotDefinition> builder)
+    public override void Configure(EntityTypeBuilder<PersistenceModels.TimeSlotDefinition> builder)
     {
         base.Configure(builder);
 

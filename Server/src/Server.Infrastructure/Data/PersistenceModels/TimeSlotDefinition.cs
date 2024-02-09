@@ -3,7 +3,7 @@ using SunRaysMarket.Shared.Core.Enums;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class TimeSlotDefinition : BaseModel
+internal class TimeSlotDefinition : ModelBase
 {
     public int StartTimeMinutes { get; set; }
     public int EndTimeMinutes { get; set; }

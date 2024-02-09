@@ -2,7 +2,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class UnitOfMeasure : BaseModel
+internal class UnitOfMeasure : ModelBase
 {
     public string Name { get; set; } = default!;
     public string Symbol { get; set; } = default!;

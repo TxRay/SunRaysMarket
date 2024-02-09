@@ -2,7 +2,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class ProductInventory : TimeStampBaseModel
+internal class ProductInventory : TimeStampModelBase
 {
     public int ProductId { get; set; }
     public int StoreId { get; set; }

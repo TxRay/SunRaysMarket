@@ -2,7 +2,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
-internal class CartItem : TimeStampBaseModel
+internal class CartItem : TimeStampModelBase
 {
     public int CartId { get; set; }
     public int ProductId { get; set; }

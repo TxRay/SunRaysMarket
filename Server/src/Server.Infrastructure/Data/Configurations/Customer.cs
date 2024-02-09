@@ -3,9 +3,9 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class CustomerConfiguration : BaseConfiguration<Customer>
+internal class Customer : ConfigurationBase<PersistenceModels.Customer>
 {
-    public override void Configure(EntityTypeBuilder<Customer> builder)
+    public override void Configure(EntityTypeBuilder<PersistenceModels.Customer> builder)
     {
         base.Configure(builder);
 
@@ -18,7 +18,7 @@ internal class CustomerConfiguration : BaseConfiguration<Customer>
         builder
             .HasOne(customer => customer.Cart)
             .WithOne(cart => cart.Customer)
-            .HasForeignKey<Customer>(customer => customer.CartId);
+            .HasForeignKey<PersistenceModels.Customer>(customer => customer.CartId);
 
         builder
             .HasMany(customer => customer.Addresses)
