@@ -3,7 +3,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class Store : TimeStampConfigurationBase<PersistenceModels.Store>
+internal class StoreConfig : TimeStampConfigurationBase<PersistenceModels.Store>
 {
     public override void Configure(EntityTypeBuilder<PersistenceModels.Store> builder)
     {

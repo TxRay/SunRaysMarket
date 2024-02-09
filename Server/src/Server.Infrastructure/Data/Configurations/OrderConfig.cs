@@ -3,7 +3,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class Order : TimeStampConfigurationBase<PersistenceModels.Order>
+internal class OrderConfig : TimeStampConfigurationBase<PersistenceModels.Order>
 {
     public override void Configure(EntityTypeBuilder<PersistenceModels.Order> builder)
     {

@@ -4,7 +4,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class Image : TimeStampConfigurationBase<PersistenceModels.Image>
+internal class ImageConfig : TimeStampConfigurationBase<PersistenceModels.Image>
 {
     public override void Configure(EntityTypeBuilder<PersistenceModels.Image> builder)
     {

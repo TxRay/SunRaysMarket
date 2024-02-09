@@ -3,7 +3,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class Customer : ConfigurationBase<PersistenceModels.Customer>
+internal class CustomerConfig : ConfigurationBase<PersistenceModels.Customer>
 {
     public override void Configure(EntityTypeBuilder<PersistenceModels.Customer> builder)
     {

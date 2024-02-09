@@ -4,7 +4,7 @@ using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class Address : ConfigurationBase<PersistenceModels.Address>
+internal class AddressConfig : ConfigurationBase<PersistenceModels.Address>
 {
     public override void Configure(EntityTypeBuilder<PersistenceModels.Address> builder)
     {
