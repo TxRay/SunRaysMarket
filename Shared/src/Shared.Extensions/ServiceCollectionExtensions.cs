@@ -129,7 +129,7 @@ public static class ServiceCollectionExtensions
     /// <exception cref="InvalidOperationException">
     ///  Thrown when a service does not implement an interface from the given namespaces.
     /// </exception>
-    public static IServiceCollection AddSInterfacesWithImplementationsFromNamespace(
+    public static IServiceCollection AddInterfacesWithImplementationsFromNamespace(
         this IServiceCollection services,
         IEnumerable<NamespaceDescriptor> interfaceNamespaces,
         Assembly implementationAssembly,
@@ -195,13 +195,13 @@ public static class ServiceCollectionExtensions
     /// The lifetime of the registered services.
     /// </param>
     /// <returns></returns>
-    public static IServiceCollection AddSInterfacesWithImplementationsFromNamespace(
+    public static IServiceCollection AddInterfacesWithImplementationsFromNamespace(
         this IServiceCollection services,
         IEnumerable<NamespaceDescriptor> interfaceNamespaces,
         NamespaceDescriptor implementationNamespaceDescriptor,
         ServiceLifetime lifetime
     ) =>
-        services.AddSInterfacesWithImplementationsFromNamespace(
+        services.AddInterfacesWithImplementationsFromNamespace(
             interfaceNamespaces,
             implementationNamespaceDescriptor.Assembly,
             implementationNamespaceDescriptor.NameSpace,
@@ -226,13 +226,13 @@ public static class ServiceCollectionExtensions
     /// <returns>
     /// The <see cref="IServiceCollection"/> with the services registered.
     /// </returns>
-    public static IServiceCollection AddSInterfacesWithImplementationsFromLocalNamespace(
+    public static IServiceCollection AddInterfacesWithImplementationsFromLocalNamespace(
         this IServiceCollection services,
         IEnumerable<NamespaceDescriptor> interfaceNamespaces,
         string implementationNamespace,
         ServiceLifetime lifetime
     ) =>
-        services.AddSInterfacesWithImplementationsFromNamespace(
+        services.AddInterfacesWithImplementationsFromNamespace(
             interfaceNamespaces,
             Assembly.GetCallingAssembly(),
             implementationNamespace,

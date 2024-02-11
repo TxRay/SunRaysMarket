@@ -75,7 +75,7 @@ public static class ServiceExtensions
                 "SunRaysMarket.Server.Application.Repositories"
             )
         };
-        services.AddSInterfacesWithImplementationsFromLocalNamespace(
+        services.AddInterfacesWithImplementationsFromLocalNamespace(
             interfaceNamespaceDescriptors,
             "SunRaysMarket.Server.Infrastructure.Repositories",
             ServiceLifetime.Scoped

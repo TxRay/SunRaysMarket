@@ -22,7 +22,7 @@ public static class ServicesExtensions
             )
         };
 
-        services.AddSInterfacesWithImplementationsFromLocalNamespace(
+        services.AddInterfacesWithImplementationsFromLocalNamespace(
             interfaceNamespaceDescriptors,
             "SunRaysMarket.Client.Application.ProxyServices",
             ServiceLifetime.Scoped
