@@ -1,16 +1,14 @@
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-using SunRaysMarket.Shared.Core.Enums;
-
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal interface ITimeSlotDefinitionsSeeder : ISeeder { }
+internal interface ITimeSlotDefinitionsSeeder : ISeeder
+{
+}
 
 internal class TimeSlotDefinitionsSeeder : ITimeSlotDefinitionsSeeder
 {
-    private readonly ApplicationDbContext _dbContext;
     private const int StartHour = 8;
     private const int EndHour = 20;
+    private readonly ApplicationDbContext _dbContext;
 
     public TimeSlotDefinitionsSeeder(ApplicationDbContext dbContext)
     {
@@ -38,7 +36,7 @@ internal class TimeSlotDefinitionsSeeder : ITimeSlotDefinitionsSeeder
 
         for (var start = startMinutes; start < endMinutes; start += duration)
         {
-            var timeSlot = new TimeSlotDefinition()
+            var timeSlot = new TimeSlotDefinition
             {
                 StartTimeMinutes = start,
                 EndTimeMinutes = start + duration,

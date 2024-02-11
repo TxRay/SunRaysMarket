@@ -1,7 +1,4 @@
 using SunRaysMarket.Server.Application.Repositories;
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Shared.Core.DomainModels;
-using SunRaysMarket.Shared.Core.Enums;
 using SunRaysMarket.Shared.Core.Structs;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
@@ -10,8 +7,9 @@ internal class TimeSlotRepository(ApplicationDbContext dbContext) : ITimeSlotRep
 {
     public async Task<IEnumerable<TimeSlotDefinitionListModel>> GetAllTimeSlotDefinitionsAsync(
         OrderType orderType
-    ) =>
-        await dbContext
+    )
+    {
+        return await dbContext
             .TimeSlotDefinitions
             .Where(tsd => tsd.OrderType == orderType)
             .Select(
@@ -27,12 +25,14 @@ internal class TimeSlotRepository(ApplicationDbContext dbContext) : ITimeSlotRep
                     }
             )
             .ToListAsync();
+    }
 
     public async Task<IEnumerable<TimeSlotListModel>> GetAllTimeSlotsAsync(
         int storeId,
         OrderType orderType
-    ) =>
-        await dbContext
+    )
+    {
+        return await dbContext
             .TimeSlots
             .Include(ts => ts.TimeSlotDefinition)
             .Where(ts => ts.StoreId == storeId && ts.TimeSlotDefinition.OrderType == orderType)
@@ -60,9 +60,11 @@ internal class TimeSlotRepository(ApplicationDbContext dbContext) : ITimeSlotRep
                     }
             )
             .ToListAsync();
+    }
 
-    public Task<TimeSlotModel?> GetTimeSlotAsync(int timeSlotId) =>
-        dbContext
+    public Task<TimeSlotModel?> GetTimeSlotAsync(int timeSlotId)
+    {
+        return dbContext
             .TimeSlots
             .Include(ts => ts.TimeSlotDefinition)
             .Include(ts => ts.Store)
@@ -93,6 +95,7 @@ internal class TimeSlotRepository(ApplicationDbContext dbContext) : ITimeSlotRep
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
     public Task<bool> CreateTimeSlotAsync(CreatTimeSlotModel model)
     {

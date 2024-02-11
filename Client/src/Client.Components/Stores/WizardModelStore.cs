@@ -1,6 +1,8 @@
 namespace SunRaysMarket.Client.Components.Stores;
 
-public interface IWizardModelStore : IModelStore<string> { }
+public interface IWizardModelStore : IModelStore<string>
+{
+}
 
 public class WizardModelStore : IWizardModelStore
 {
@@ -36,7 +38,10 @@ public class WizardModelStore : IWizardModelStore
         _models[key] = model;
     }
 
-    public IEnumerable<string> GetKeys() => _models.Keys;
+    public IEnumerable<string> GetKeys()
+    {
+        return _models.Keys;
+    }
 
     public void Clear()
     {

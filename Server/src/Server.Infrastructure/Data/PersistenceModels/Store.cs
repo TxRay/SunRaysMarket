@@ -14,6 +14,7 @@ internal class Store : TimeStampModelBase
 
     public virtual ICollection<ProductInventory> InventoryItems { get; set; } =
         new List<ProductInventory>();
+
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
     public virtual ICollection<TimeSlot> TimeSlots { get; set; } = new List<TimeSlot>();
 }

@@ -1,8 +1,5 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SunRaysMarket.Server.Application.Repositories;
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-using SunRaysMarket.Shared.Core.DomainModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
@@ -26,8 +23,9 @@ internal class AddressRepository(ApplicationDbContext dbContext) : IAddressRepos
         return AddressEntry.State == EntityState.Added;
     }
 
-    public async Task<AddressModel?> GetAsync(int id) =>
-        await dbContext
+    public async Task<AddressModel?> GetAsync(int id)
+    {
+        return await dbContext
             .Addresses
             .Where(a => a.Id == id)
             .Select(
@@ -43,6 +41,7 @@ internal class AddressRepository(ApplicationDbContext dbContext) : IAddressRepos
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
     public async Task<bool> UpdateAsync(UpdateAddressModel model)
     {

@@ -8,29 +8,29 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="Components\Product\ProductCard.razor" />
-      <_ContentIncludedByDefault Remove="Components\Product\ProductPrice.razor" />
-      <_ContentIncludedByDefault Remove="Components\Product\ProductSection.razor" />
-      <_ContentIncludedByDefault Remove="Components\Home\HeroHome.razor" />
-      <_ContentIncludedByDefault Remove="Components\Shared\AppPageTitle.razor" />
-      <_ContentIncludedByDefault Remove="Components\Shared\AutoNavigator.razor" />
-      <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css.map" />
+        <_ContentIncludedByDefault Remove="Components\Product\ProductCard.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Product\ProductPrice.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Product\ProductSection.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Home\HeroHome.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Shared\AppPageTitle.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Shared\AutoNavigator.razor"/>
+        <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css"/>
+        <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css.map"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Client\src\Client.Web\Client.Web.csproj" />
-      <ProjectReference Include="..\Server.Application\Server.Application.csproj" />
-      <ProjectReference Include="..\Server.Components\Server.Components.csproj" />
-      <ProjectReference Include="..\Server.Infrastructure\Server.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\..\Client\src\Client.Web\Client.Web.csproj"/>
+        <ProjectReference Include="..\Server.Application\Server.Application.csproj"/>
+        <ProjectReference Include="..\Server.Components\Server.Components.csproj"/>
+        <ProjectReference Include="..\Server.Infrastructure\Server.Infrastructure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
 </Project>

@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using SunRaysMarket.Server.Application.Repositories;
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-using SunRaysMarket.Shared.Core.DomainModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
@@ -35,12 +32,14 @@ internal class ImageRepository : IImageRepository
         return model.UrlIdentifier.ToString();
     }
 
-    public async Task<string?> GetUrlAsync(Guid urlIdentifier) =>
-        await _dbContext
+    public async Task<string?> GetUrlAsync(Guid urlIdentifier)
+    {
+        return await _dbContext
             .Images
             .Where(i => i.UrlIdentifier == urlIdentifier)
             .Select(i => i.Url)
             .FirstOrDefaultAsync();
+    }
 
     public async Task<ImageDownloadModel?> DownloadAsync(string urlHandle)
     {

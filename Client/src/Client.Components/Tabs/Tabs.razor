@@ -1,4 +1,4 @@
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
 
 @if (TabsLoaded)
 {
@@ -16,7 +16,7 @@
             }
         </div>
 
-        <CascadingValue Value="@this">
+        <CascadingValue Value="@(this)">
             @ChildContent
         </CascadingValue>
     </div>
@@ -30,7 +30,7 @@ else
             </button>
         </div>
         <div class="tab-content">
-            <CascadingValue Value="@this">
+            <CascadingValue Value="@(this)">
                 @ChildContent
             </CascadingValue>
         </div>
@@ -89,7 +89,10 @@ else
         TabIndex.TryAdd(tab.Label, tab);
     }
 
-    protected internal bool IsCurrentTab(string index) => CurrentIndex == index;
+    protected internal bool IsCurrentTab(string index)
+    {
+        return CurrentIndex == index;
+    }
 
     private async Task ChangeTab(string index)
     {

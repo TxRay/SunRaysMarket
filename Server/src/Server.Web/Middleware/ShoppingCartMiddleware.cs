@@ -1,22 +1,25 @@
-using SunRaysMarket.Server.Application.Cookies;
-
 namespace SunRaysMarket.Server.Web.Middleware;
 
-public class ShoppingCartMiddleware(IServiceProvider serviceProvider) : IMiddleware
+public class ShoppingCartMiddleware(IServiceProvider serviceProvider, ICookieService cookieService) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         using var scope = serviceProvider.CreateScope();
         var customerService = scope.ServiceProvider.GetRequiredService<ICustomerService>();
 
-        var currentCartId = context.Request.Cookies.GetCartIdCookie();
+        var currentCartId = cookieService.GetCartIdCookie();
 
         if (context.User.IsAuthenticated())
         {
-            var customerCartId = await customerService.GetCustomerCartIdAsync(context.User);
+            var sessionCartId = context.Session.GetInt32("customerCartId");
+            var customerCartId = sessionCartId
+                                 ?? await customerService.GetCustomerCartIdAsync(context.User);
+            
+            if (sessionCartId is null && customerCartId is not null)
+                context.Session.SetInt32("customerCartId", customerCartId.Value);
 
             if (currentCartId is null && customerCartId is not null)
-                context.Response.Cookies.SetCartIdCookie(customerCartId.Value);
+                cookieService.SetCartIdCookie(customerCartId.Value);
             else if (currentCartId is not null && customerCartId is null)
                 await customerService.SaveCartAsync(context.User, currentCartId.Value);
         }

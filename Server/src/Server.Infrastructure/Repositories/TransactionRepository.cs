@@ -1,7 +1,4 @@
 using SunRaysMarket.Server.Application.Repositories;
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-using SunRaysMarket.Shared.Core.DomainModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
@@ -22,8 +19,9 @@ internal class TransactionRepository(ApplicationDbContext dbContext) : ITransact
         await dbContext.Transactions.AddAsync(newTransaction);
     }
 
-    public async Task<IEnumerable<TransactionDetailsModel>> GetTransactionsAsync(int customerId) =>
-        await dbContext
+    public async Task<IEnumerable<TransactionDetailsModel>> GetTransactionsAsync(int customerId)
+    {
+        return await dbContext
             .Transactions
             .Include(t => t.Order)
             .ThenInclude(o => o!.Customer)
@@ -43,13 +41,15 @@ internal class TransactionRepository(ApplicationDbContext dbContext) : ITransact
                         OrderId = t.OrderId,
                         Status = t.Status,
                         PaymentMethod = t.PaymentMethod,
-                        AmountPaid = t.AmountPaid,
+                        AmountPaid = t.AmountPaid
                     }
             )
             .ToListAsync();
+    }
 
-    public async Task<TransactionDetailsModel?> GetTransactionAsync(long transactionNumber) =>
-        await dbContext
+    public async Task<TransactionDetailsModel?> GetTransactionAsync(long transactionNumber)
+    {
+        return await dbContext
             .Transactions
             .Include(t => t.Order)
             .ThenInclude(t => t!.Customer)
@@ -68,13 +68,15 @@ internal class TransactionRepository(ApplicationDbContext dbContext) : ITransact
                         OrderId = t.OrderId,
                         Status = t.Status,
                         PaymentMethod = t.PaymentMethod,
-                        AmountPaid = t.AmountPaid,
+                        AmountPaid = t.AmountPaid
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
-    public async Task<TransactionDetailsModel?> GetTransactionAsync(int transactionId) =>
-        await dbContext
+    public async Task<TransactionDetailsModel?> GetTransactionAsync(int transactionId)
+    {
+        return await dbContext
             .Transactions
             .Include(t => t.Order)
             .ThenInclude(o => o!.Customer)
@@ -93,10 +95,11 @@ internal class TransactionRepository(ApplicationDbContext dbContext) : ITransact
                         OrderId = t.OrderId,
                         Status = t.Status,
                         PaymentMethod = t.PaymentMethod,
-                        AmountPaid = t.AmountPaid,
+                        AmountPaid = t.AmountPaid
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
     public async Task<bool> UpdateTransactionMethodAsync(int transactionId, string method)
     {

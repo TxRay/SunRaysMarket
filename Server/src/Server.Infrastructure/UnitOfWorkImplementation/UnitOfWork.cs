@@ -1,6 +1,5 @@
 using SunRaysMarket.Server.Application.Repositories;
 using SunRaysMarket.Server.Application.UnitOfWork;
-using SunRaysMarket.Server.Infrastructure.Data;
 
 namespace SunRaysMarket.Server.Infrastructure.UnitOfWorkImplementation;
 

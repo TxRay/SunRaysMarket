@@ -17,6 +17,7 @@ internal class Product : TimeStampModelBase
     public ProductType? ProductType { get; set; }
     public UnitOfMeasure? UnitOfMeasure { get; set; }
     public virtual ICollection<List> Lists { get; set; } = new List<List>();
+
     public virtual ICollection<ProductInventory> InventoryItems { get; set; } =
         new List<ProductInventory>();
 }

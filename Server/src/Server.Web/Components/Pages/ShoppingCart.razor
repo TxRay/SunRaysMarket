@@ -1,8 +1,6 @@
 @page "/shopping-cart"
-@using Application.UnitOfWork
-@using Application.Cookies
 @using SunRaysMarket.Server.Components.Enums
-@inherits OwningComponentBase<IUnitOfWork>
+@inherits OwningComponentBase<ICartService>
 
 <PageLayout CssClasses="shopping-cart" ContentWidth="ContentWidth.PageContent">
     <h3 class="cart-title">Shopping Cart</h3>
@@ -48,13 +46,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var cartId = Context?.Request.Cookies.GetCartIdCookie();
-
-        if (cartId is not null)
-        {
-            CartItems = await Service.CartRepository.GetCartItemsAsync(cartId.Value);
-            CartSummary = CartItems.GetCartSummary();
-        }
+        CartItems = await Service.GetActiveCartItemsAsync();
     }
 
 }

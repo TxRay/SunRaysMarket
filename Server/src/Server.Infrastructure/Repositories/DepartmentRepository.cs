@@ -1,8 +1,4 @@
 using SunRaysMarket.Server.Application.Repositories;
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-using SunRaysMarket.Shared.Core.DomainModels;
-using SunRaysMarket.Shared.Core.Utilities;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
@@ -15,8 +11,9 @@ internal class DepartmentRepository : IDepartmentRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<DepartmentListModel>> GetAllAsync() =>
-        await _dbContext
+    public async Task<IEnumerable<DepartmentListModel>> GetAllAsync()
+    {
+        return await _dbContext
             .Departments
             .Select(
                 d =>
@@ -28,9 +25,11 @@ internal class DepartmentRepository : IDepartmentRepository
                     }
             )
             .ToListAsync();
+    }
 
-    public async Task<UpdateDepartmentModel?> GetForEditAsync(int id) =>
-        await _dbContext
+    public async Task<UpdateDepartmentModel?> GetForEditAsync(int id)
+    {
+        return await _dbContext
             .Departments
             .Where(d => d.Id == id)
             .Select(
@@ -43,6 +42,7 @@ internal class DepartmentRepository : IDepartmentRepository
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
     public async Task CreateAsync(CreateDepartmentModel model)
     {

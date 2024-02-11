@@ -8,20 +8,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Shared\src\Shared.Extensions\Shared.Extensions.csproj" />
-      <ProjectReference Include="..\..\..\Shared\src\Shared.Services\Shared.Services.csproj" />
+        <ProjectReference Include="..\..\..\Shared\src\Shared.Extensions\Shared.Extensions.csproj"/>
+        <ProjectReference Include="..\..\..\Shared\src\Shared.Services\Shared.Services.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
-        <HintPath>..\..\..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\8.0.0\ref\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-      </Reference>
+        <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+            <HintPath>..\..\..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\8.0.0\ref\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
-        <HintPath>..\..\..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\8.0.0\ref\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-      </Reference>
+        <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+            <HintPath>..\..\..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\8.0.0\ref\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
 </Project>

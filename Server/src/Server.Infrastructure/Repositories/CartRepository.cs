@@ -1,7 +1,4 @@
 using SunRaysMarket.Server.Application.Repositories;
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-using SunRaysMarket.Shared.Core.DomainModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
@@ -22,10 +19,7 @@ internal class CartRepository(ApplicationDbContext dbContext) : ICartRepository
         if (cartPersistenceModel is null)
             return null;
 
-        if (persist)
-        {
-            CartPersistenceModel = cartPersistenceModel;
-        }
+        if (persist) CartPersistenceModel = cartPersistenceModel;
 
         return cartPersistenceModel.Customer is null
             ? new CartDetailsModel { Id = cartPersistenceModel.Id }
@@ -39,8 +33,9 @@ internal class CartRepository(ApplicationDbContext dbContext) : ICartRepository
             };
     }
 
-    public async Task<IEnumerable<CartItemListModel>> GetCartItemsAsync(int cartId) =>
-        await dbContext
+    public async Task<IEnumerable<CartItemListModel>> GetCartItemsAsync(int cartId)
+    {
+        return await dbContext
             .Carts
             .Include(c => c.CartItems)
             .ThenInclude(ci => ci.Product)
@@ -62,9 +57,11 @@ internal class CartRepository(ApplicationDbContext dbContext) : ICartRepository
                     }
             )
             .ToListAsync();
+    }
 
-    public async Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync(int cartId) =>
-        await dbContext
+    public async Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync(int cartId)
+    {
+        return await dbContext
             .CartItems
             .Where(ci => ci.CartId == cartId)
             .Select(
@@ -77,12 +74,14 @@ internal class CartRepository(ApplicationDbContext dbContext) : ICartRepository
                     }
             )
             .ToListAsync();
+    }
 
     public async Task<CartItemControlModel?> GetCartItemControlInfoAsync(
         int cartId,
         int productId
-    ) =>
-        await dbContext
+    )
+    {
+        return await dbContext
             .CartItems
             .Where(ci => ci.CartId == cartId && ci.ProductId == productId)
             .Select(
@@ -95,6 +94,7 @@ internal class CartRepository(ApplicationDbContext dbContext) : ICartRepository
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
     public Task<bool> CartExistsAsync(int cartId)
     {
@@ -174,8 +174,10 @@ internal class CartRepository(ApplicationDbContext dbContext) : ICartRepository
         }
     }
 
-    public int GetPersistedCartId() =>
-        CartPersistenceModel?.Id ?? throw new NullReferenceException("No cart is persisted");
+    public int GetPersistedCartId()
+    {
+        return CartPersistenceModel?.Id ?? throw new NullReferenceException("No cart is persisted");
+    }
 
     public CartDetailsModel GetPersistedCartDetails()
     {
@@ -194,16 +196,20 @@ internal class CartRepository(ApplicationDbContext dbContext) : ICartRepository
             };
     }
 
-    public int GetPersistedCartItemId() =>
-        CartItemPersistenceModel?.Id
-        ?? throw new NullReferenceException("No cart item is persisted");
+    public int GetPersistedCartItemId()
+    {
+        return CartItemPersistenceModel?.Id
+               ?? throw new NullReferenceException("No cart item is persisted");
+    }
 
     public void ClearPersistedCart()
     {
         CartPersistenceModel = null;
     }
 
-    public int? GetPersistedCartItemQuantity() =>
-        CartItemPersistenceModel?.Quantity
-        ?? throw new NullReferenceException("No cart item is persisted");
+    public int? GetPersistedCartItemQuantity()
+    {
+        return CartItemPersistenceModel?.Quantity
+               ?? throw new NullReferenceException("No cart item is persisted");
+    }
 }

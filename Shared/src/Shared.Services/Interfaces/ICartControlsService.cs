@@ -6,7 +6,7 @@ namespace SunRaysMarket.Shared.Services.Interfaces;
 /// <summary>
 ///
 /// </summary>
-public interface ICartService
+public interface ICartControlsService
 {
     /// <summary>
     /// Create a new shopping cart.

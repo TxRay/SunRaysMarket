@@ -1,8 +1,8 @@
-using SunRaysMarket.Server.Infrastructure.Data;
-
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal interface IUserRolesSeeder : ISeeder { }
+internal interface IUserRolesSeeder : ISeeder
+{
+}
 
 internal class UserRolesSeeder : IUserRolesSeeder
 {
@@ -43,8 +43,6 @@ internal class UserRolesSeeder : IUserRolesSeeder
                     }
             )
         )
-        {
             await _roleManager.CreateAsync(role);
-        }
     }
 }

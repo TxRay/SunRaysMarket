@@ -7,5 +7,5 @@ public enum ModalEventType
     Close,
     Loaded,
     Unloaded,
-    Open,
+    Open
 }

@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal interface ISuperAdminSeeder : ISeeder { }
+internal interface ISuperAdminSeeder : ISeeder
+{
+}
 
 internal class SuperAdminSeeder : ISuperAdminSeeder
 {
@@ -48,7 +49,7 @@ internal class SuperAdminSeeder : ISuperAdminSeeder
             Email = superAdminEmail,
             EmailConfirmed = false,
             FirstName = superAdminFirstName,
-            LastName = superAdminLastName,
+            LastName = superAdminLastName
         };
 
         var result = await _userManager.CreateAsync(superAdminUser, superAdminPassword);

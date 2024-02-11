@@ -2,7 +2,7 @@ using Stripe;
 using SunRaysMarket.Shared.Core.DomainModels.Payment;
 using SunRaysMarket.Shared.Services.Interfaces;
 
-namespace SunRaysMarket.Server.Infrastructure.Services;
+namespace SunRaysMarket.Server.Infrastructure.PaymentServices;
 
 public class StripePaymentService(IStripeClient stripeClient) : IPaymentService
 {
@@ -11,7 +11,7 @@ public class StripePaymentService(IStripeClient stripeClient) : IPaymentService
         var options = new PaymentMethodCreateOptions
         {
             Type = "card",
-            Card = new PaymentMethodCardOptions() { Token = token },
+            Card = new PaymentMethodCardOptions { Token = token }
         };
 
         var service = new PaymentMethodService(stripeClient);
@@ -22,7 +22,7 @@ public class StripePaymentService(IStripeClient stripeClient) : IPaymentService
 
     public async Task<string> CreateCustomer(CreatePaymentCustomerModel model)
     {
-        var options = new CustomerCreateOptions { Name = model.Name, Email = model.Email, };
+        var options = new CustomerCreateOptions { Name = model.Name, Email = model.Email };
 
         var service = new CustomerService(stripeClient);
         var customer = await service.CreateAsync(options);
@@ -36,13 +36,13 @@ public class StripePaymentService(IStripeClient stripeClient) : IPaymentService
         {
             Amount = model.Amount,
             Currency = model.Currency,
-            Source = model.Source,
+            Source = model.Source
         };
 
         var service = new ChargeService(stripeClient);
         var charge = await service.CreateAsync(options);
 
-        var updateOptions = new ChargeUpdateOptions { Customer = model.CustomerPaymentId, };
+        var updateOptions = new ChargeUpdateOptions { Customer = model.CustomerPaymentId };
 
         charge = await service.UpdateAsync(charge.Id, updateOptions);
 
@@ -53,7 +53,7 @@ public class StripePaymentService(IStripeClient stripeClient) : IPaymentService
             AmountCaptured = charge.AmountCaptured,
             Currency = charge.Currency,
             Description = charge.Description,
-            CustomerId = charge.CustomerId,
+            CustomerId = charge.CustomerId
         };
     }
 }

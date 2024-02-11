@@ -10,7 +10,7 @@ internal class Customer : ModelBase
     public string? PaymentId { get; set; }
     public User? User { get; set; }
     public Cart? Cart { get; set; }
-    
+
     public Store? PreferredStore { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

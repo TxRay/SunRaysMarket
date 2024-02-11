@@ -1,9 +1,8 @@
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal interface ITimeSlotSeeder : ISeeder { }
+internal interface ITimeSlotSeeder : ISeeder
+{
+}
 
 internal class TimeSlotSeeder(ApplicationDbContext dbContext) : ITimeSlotSeeder
 {

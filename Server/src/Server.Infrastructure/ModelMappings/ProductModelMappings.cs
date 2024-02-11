@@ -1,14 +1,12 @@
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-using SunRaysMarket.Shared.Core.DomainModels;
-
 namespace SunRaysMarket.Server.Infrastructure.ModelMappings;
 
 internal static class ProductModelMappings
 {
     public static async Task<ProductDetailsModel?> ToProductDetailsAsync(
         this IQueryable<Product> set
-    ) =>
-        await set.Select(
+    )
+    {
+        return await set.Select(
                 p =>
                     new ProductDetailsModel
                     {
@@ -32,11 +30,13 @@ internal static class ProductModelMappings
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
     public static async Task<IEnumerable<ProductListModel>> ToProductListAsync(
         this IQueryable<Product> set
-    ) =>
-        await set.Select(
+    )
+    {
+        return await set.Select(
                 p =>
                     new ProductListModel
                     {
@@ -55,11 +55,13 @@ internal static class ProductModelMappings
                     }
             )
             .ToListAsync();
+    }
 
     public static IAsyncEnumerable<ProductListModel> AsProductAsyncEnumerable(
         this IQueryable<Product> set
-    ) =>
-        set.Select(
+    )
+    {
+        return set.Select(
                 p =>
                     new ProductListModel
                     {
@@ -78,4 +80,5 @@ internal static class ProductModelMappings
                     }
             )
             .AsAsyncEnumerable();
+    }
 }

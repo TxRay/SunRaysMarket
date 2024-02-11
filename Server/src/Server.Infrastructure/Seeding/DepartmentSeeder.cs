@@ -1,10 +1,8 @@
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-using SunRaysMarket.Shared.Core.Utilities;
-
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal interface IDepartmentSeeder : ISeeder { }
+internal interface IDepartmentSeeder : ISeeder
+{
+}
 
 internal class DepartmentSeeder : IDepartmentSeeder
 {
@@ -17,38 +15,38 @@ internal class DepartmentSeeder : IDepartmentSeeder
 
     public async Task SeedAsync()
     {
-        var departments = new List<Department>()
+        var departments = new List<Department>
         {
-            new Department()
+            new()
             {
                 Name = "Bakery",
                 Slug = Slugs.CreateSlug("Bakery"),
                 Description = "Bakery department."
             },
-            new Department()
+            new()
             {
                 Name = "Dairy & Eggs",
                 Slug = Slugs.CreateSlug("Dairy & Eggs"),
                 Description = "Dairy and eggs department ."
             },
-            new Department()
+            new()
             {
                 Name = "Frozen Foods",
                 Slug = Slugs.CreateSlug("Frozen Foods"),
                 Description = "Frozen foods."
             },
-            new Department()
+            new()
             {
                 Name = "Meat & Seafood",
                 Slug = Slugs.CreateSlug("Meat & Seafood"),
                 Description = "Meat and seafood."
             },
-            new Department()
+            new()
             {
                 Name = "Produce",
                 Slug = Slugs.CreateSlug("Produce"),
                 Description = "Produce."
-            },
+            }
         };
 
         if (_dbContext.Departments.Any())

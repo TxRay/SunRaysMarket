@@ -1,10 +1,5 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SunRaysMarket.Server.Application.Repositories;
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Extensions;
-using SunRaysMarket.Shared.Core.DomainModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
@@ -12,16 +7,19 @@ internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRep
 {
     private EntityEntry<Customer>? CustomerEntry { get; set; }
 
-    public async Task<int?> GetCustomerIdAsync(int userId) =>
-        await dbContext
+    public async Task<int?> GetCustomerIdAsync(int userId)
+    {
+        return await dbContext
             .Customers
             .Include(customer => customer.User)
             .Where(customer => customer.UserId == userId)
             .Select(customer => customer.Id)
             .FirstOrDefaultAsync();
+    }
 
-    public async Task<CustomerDetailsModel?> GetCustomerDetailsAsync(int customerId) =>
-        await dbContext
+    public async Task<CustomerDetailsModel?> GetCustomerDetailsAsync(int customerId)
+    {
+        return await dbContext
             .Customers
             .Include(c => c.User)
             .Where(c => c.Id == customerId)
@@ -36,6 +34,7 @@ internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRep
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
     public async Task<bool> CreateCustomerAsync(int userId)
     {
@@ -81,20 +80,24 @@ internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRep
         throw new NotImplementedException();
     }
 
-    public async Task<int?> GetCustomerCartIdAsync(int customerId) =>
-        await dbContext
+    public async Task<int?> GetCustomerCartIdAsync(int customerId)
+    {
+        return await dbContext
             .Customers
             .Include(customer => customer.Cart)
             .Where(customer => customer.Id == customerId)
             .Select(customer => customer.CartId)
             .FirstOrDefaultAsync();
+    }
 
-    public async Task<string?> GetCustomerPaymentIdAsync(int customerId) =>
-        await dbContext
+    public async Task<string?> GetCustomerPaymentIdAsync(int customerId)
+    {
+        return await dbContext
             .Customers
             .Where(customer => customer.Id == customerId)
             .Select(customer => customer.PaymentId)
             .FirstOrDefaultAsync();
+    }
 
     public async Task AddCustomerAddressAsync(int customerId, int addressId)
     {
@@ -117,8 +120,9 @@ internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRep
             dbContext.Remove(customerAddress);
     }
 
-    public async Task<IEnumerable<AddressModel>> GetCustomerAddresses(int customerId) =>
-        await dbContext
+    public async Task<IEnumerable<AddressModel>> GetCustomerAddresses(int customerId)
+    {
+        return await dbContext
             .CustomerAddresses
             .Include(ca => ca.Address)
             .Where(ca => ca.CustomerId == customerId)
@@ -134,6 +138,7 @@ internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRep
                     }
             )
             .ToArrayAsync();
+    }
 
     public async Task SetCustomerPreferences(int customerId, UpdateCustomerPreferencesModel model)
     {
@@ -156,7 +161,8 @@ internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRep
     }
 
     public Task<object?> GetCustomerPreferences(int customerId, Func<CustomerPreferences, object> selector)
-        => dbContext.Customers.Where(c => c.Id == customerId)
+    {
+        return dbContext.Customers.Where(c => c.Id == customerId)
             .Select(c
                 =>
                 selector(new CustomerPreferences
@@ -165,6 +171,7 @@ internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRep
                     }
                 )
             ).FirstOrDefaultAsync();
+    }
 
 
     public int? GetPersistedCustomerId()

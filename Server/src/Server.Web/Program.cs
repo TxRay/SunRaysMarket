@@ -14,6 +14,16 @@ builder
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.Name = "SunRaysMarket.Session";
+    options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+});
+
 builder.Services.AddServerInfrastructureAssembly(builder.Configuration);
 builder.Services.AddServerApplicationAssembly();
 builder.Services.AddCustomMiddleware();
@@ -36,10 +46,10 @@ app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseSession();
 app.UseShoppingCart();
 
 app.MapApiEndpoints();
-
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()

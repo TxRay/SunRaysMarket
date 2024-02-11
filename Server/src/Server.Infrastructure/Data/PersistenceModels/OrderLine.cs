@@ -8,13 +8,13 @@ internal class OrderLine : TimeStampModelBase, IOrderItemAmounts
     public int OrderId { get; set; }
     public int ItemId { get; set; }
     public int? OrderSubstitutionId { get; set; }
+
+    public Order? Order { get; set; }
+    public OrderSubstitution? OrderSubstitution { get; set; }
+    public Product? Item { get; set; }
     public int Quantity { get; set; }
 
     public float Price { get; set; }
     public float Discount { get; set; }
     public float TotalPrice { get; set; }
-
-    public Order? Order { get; set; }
-    public OrderSubstitution? OrderSubstitution { get; set; }
-    public Product? Item { get; set; }
 }

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using SunRaysMarket.Server.Application.Cookies;
 using SunRaysMarket.Server.Application.Exceptions;
 using SunRaysMarket.Shared.Core.DomainModels.Responses;
 
@@ -15,7 +14,7 @@ public static class CartEndpoints
             .WithDescription("Endpoints for managing shopping carts.");
 
         cartGroup.MapCreateCartEndpoint();
-        cartGroup.MapGetCartEndpoint();
+        //cartGroup.MapGetCartEndpoint();
         cartGroup.MapAddCartItemEndpoints();
 
         return endpoints;
@@ -25,13 +24,13 @@ public static class CartEndpoints
     {
         endpoints.MapPost(
             "/create",
-            async (ICartService cartService) => Results.Json(await cartService.CreateCartAsync())
+            async (ICartControlsService cartService) => Results.Json(await cartService.CreateCartAsync())
         );
 
         return endpoints;
     }
 
-    private static IEndpointRouteBuilder MapGetCartEndpoint(this IEndpointRouteBuilder endpoints)
+    /*private static IEndpointRouteBuilder MapGetCartEndpoint(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet(
             "/get-id",
@@ -59,7 +58,7 @@ public static class CartEndpoints
         );
 
         return endpoints;
-    }
+    }*/
 
     public static IEndpointRouteBuilder UpdateCareEndpoints(this IEndpointRouteBuilder endpoints)
     {
@@ -77,11 +76,12 @@ public static class CartEndpoints
             async (
                 [FromBody] AddItemToCartCommand command,
                 HttpContext context,
-                ICartService cartService
+                ICookieService cookieService,
+                ICartControlsService cartService
             ) =>
             {
                 var cartId =
-                    context.Request.Cookies.GetCartIdCookie()
+                    cookieService.GetCartIdCookie()
                     ?? (await cartService.CreateCartAsync()).CartId;
 
                 try
@@ -103,7 +103,7 @@ public static class CartEndpoints
 
         endpoints.MapPost(
             "/remove-item",
-            ([FromBody] RemoveCartItemCommand command, ICartService cartControlsService) =>
+            ([FromBody] RemoveCartItemCommand command, ICartControlsService cartControlsService) =>
                 cartControlsService.RemoveItemAsync(command)
         );
 
@@ -111,7 +111,7 @@ public static class CartEndpoints
             "/update-item-quantity",
             async (
                 [FromBody] UpdateCartItemQuantityCommand command,
-                ICartService cartControlsService
+                ICartControlsService cartControlsService
             ) => Results.Json(await cartControlsService.UpdateQuantityAsync(command))
         );
 
@@ -124,13 +124,13 @@ public static class CartEndpoints
 
         itemInfoGroup.MapGet(
             "/{itemId:int}",
-            async (int itemId, ICartService cartService) =>
+            async (int itemId, ICartControlsService cartService) =>
                 Results.Json(await cartService.GetCartItemInfoAsync(itemId))
         );
 
         itemInfoGroup.MapGet(
             "/",
-            async (ICartService cartService) =>
+            async (ICartControlsService cartService) =>
                 Results.Json(
                     new GetCartItemInfoListResponse
                     {

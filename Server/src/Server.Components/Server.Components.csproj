@@ -13,33 +13,33 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazored.FluentValidation" Version="2.1.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" />
+        <PackageReference Include="Blazored.FluentValidation" Version="2.1.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Navigation\AutoNavigator.razor" />
-      <AdditionalFiles Include="Products\ProductCard.razor" />
-      <AdditionalFiles Include="Products\ProductPrice.razor" />
-      <AdditionalFiles Include="Products\ProductSection.razor" />
-      <AdditionalFiles Include="Titles\AppPageTitle.razor" />
+        <AdditionalFiles Include="Navigation\AutoNavigator.razor"/>
+        <AdditionalFiles Include="Products\ProductCard.razor"/>
+        <AdditionalFiles Include="Products\ProductPrice.razor"/>
+        <AdditionalFiles Include="Products\ProductSection.razor"/>
+        <AdditionalFiles Include="Titles\AppPageTitle.razor"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Client\src\Client.Components\Client.Components.csproj" />
-      <ProjectReference Include="..\..\..\Shared\src\Shared.Services\Shared.Services.csproj" />
+        <ProjectReference Include="..\..\..\Client\src\Client.Components\Client.Components.csproj"/>
+        <ProjectReference Include="..\..\..\Shared\src\Shared.Services\Shared.Services.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\AppPageTitle.razor" />
-      <_ContentIncludedByDefault Remove="wwwroot\background.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\exampleJsInterop.js" />
+        <_ContentIncludedByDefault Remove="wwwroot\AppPageTitle.razor"/>
+        <_ContentIncludedByDefault Remove="wwwroot\background.png"/>
+        <_ContentIncludedByDefault Remove="wwwroot\exampleJsInterop.js"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
-        <HintPath>..\..\..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\8.0.1\ref\net8.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
-      </Reference>
+        <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
+            <HintPath>..\..\..\..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\8.0.1\ref\net8.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
 </Project>

@@ -4,29 +4,29 @@ using Microsoft.Extensions.Logging;
 namespace SunRaysMarket.Client.Components.Modals;
 
 /// <summary>
-/// Class used to dispatch modal events and close the active modal.
+///     Class used to dispatch modal events and close the active modal.
 /// </summary>
 public class ModalController(ILogger<ModalController> logger) : IModalController
 {
     private ModalContext ActiveContext { get; set; } = new();
 
     /// <summary>
-    /// Dispatches a modal event to the active modal context.
+    ///     Dispatches a modal event to the active modal context.
     /// </summary>
     /// <param name="options">
-    /// The options to be used for the modal.  If null, a new instance of the options class will be created.
+    ///     The options to be used for the modal.  If null, a new instance of the options class will be created.
     /// </param>
     /// <param name="initialState">
-    /// The initial state to be used for the modal.  If null, a new instance of the state class will be created.
+    ///     The initial state to be used for the modal.  If null, a new instance of the state class will be created.
     /// </param>
     /// <param name="tempData"></param>
     /// <typeparam name="TComponent">The type of the component to be used as the modal content. </typeparam>
     /// <typeparam name="TState"> The type of the state class to be used for the modal.</typeparam>
     /// <returns>
-    /// A <see cref="Task{TResult}"/> representing the asynchronous operation.  The task result is the modal context
+    ///     A <see cref="Task{TResult}" /> representing the asynchronous operation.  The task result is the modal context
     /// </returns>
     /// <exception cref="ArgumentException">
-    /// Thrown if the type parameter <typeparamref name="TComponent"/> is not a Blazor component.
+    ///     Thrown if the type parameter <typeparamref name="TComponent" /> is not a Blazor component.
     /// </exception>
     public async Task<ModalContext<TState>> DispatchAsync<TComponent, TState>(
         ModalOptions? options,
@@ -37,12 +37,10 @@ public class ModalController(ILogger<ModalController> logger) : IModalController
         where TState : class, new()
     {
         if (!typeof(IComponent).IsAssignableFrom(typeof(TComponent)))
-        {
             throw new ArgumentException(
                 $"The type {typeof(TComponent).Name} must be a Blazor Component.",
                 nameof(TComponent)
             );
-        }
 
         var oldContext = ActiveContext;
         var modalShouldBeOpened = !oldContext.IsVisible;
@@ -69,9 +67,7 @@ public class ModalController(ILogger<ModalController> logger) : IModalController
         if (modalShouldBeOpened)
             await newContext.InvokeEventAsync(ModalEventType.Open);
         else
-        {
             await newContext.InvokeEventAsync(ModalEventType.AfterSwitch);
-        }
 
         await newContext.InvokeEventAsync(ModalEventType.Loaded);
 
@@ -81,7 +77,7 @@ public class ModalController(ILogger<ModalController> logger) : IModalController
     }
 
     /// <summary>
-    /// Closes the active modal.
+    ///     Closes the active modal.
     /// </summary>
     public async Task Close()
     {
@@ -92,41 +88,45 @@ public class ModalController(ILogger<ModalController> logger) : IModalController
     }
 
     /// <summary>
-    /// Gets the active modal context in cases where the types of the options and state objects are unknown.
-    /// If no modal is active, an empty modal context is returned.
+    ///     Gets the active modal context in cases where the types of the options and state objects are unknown.
+    ///     If no modal is active, an empty modal context is returned.
     /// </summary>
     /// <returns>
-    /// A <see cref="ModalContext"/> representing the active modal context.
+    ///     A <see cref="ModalContext" /> representing the active modal context.
     /// </returns>
-    public ModalContext GetActiveContext() => ActiveContext;
+    public ModalContext GetActiveContext()
+    {
+        return ActiveContext;
+    }
 
     /// <summary>
-    /// /// Gets the active modal context in cases where the types of the options and state objects are known.
+    ///     /// Gets the active modal context in cases where the types of the options and state objects are known.
     /// </summary>
     /// <typeparam name="TState">
-    /// The type of the state class to be used for the modal content.
+    ///     The type of the state class to be used for the modal content.
     /// </typeparam>
     /// <returns>
-    /// A <see cref="ModalContext{TState}"/> representing the active modal context.
+    ///     A <see cref="ModalContext{TState}" /> representing the active modal context.
     /// </returns>
     /// <exception cref="InvalidOperationException"></exception>
     public ModalContext<TState> GetActiveContext<TState>()
         where TState : class, new()
     {
         if (ActiveContext is not ModalContext<TState> context)
-        {
             throw new InvalidOperationException(
                 $"No active modal context of type {typeof(TState).Name}."
             );
-        }
 
         return context;
     }
 
     /// <summary>
-    ///  Event which signals a change in the state of the modal.  Used to trigger a re-render of the modal.
+    ///     Event which signals a change in the state of the modal.  Used to trigger a re-render of the modal.
     /// </summary>
     public event Action? OnChange;
 
-    private void NotifyStateChanged() => OnChange?.Invoke();
+    private void NotifyStateChanged()
+    {
+        OnChange?.Invoke();
+    }
 }

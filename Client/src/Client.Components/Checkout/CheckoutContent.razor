@@ -1,4 +1,3 @@
-@using SunRaysMarket.Shared.Core.DomainModels.Checkout
 @using SunRaysMarket.Shared.Core.Payment
 @inherits OwningComponentBase<ICheckoutService>
 @inject ILogger<CheckoutContent> Logger
@@ -159,7 +158,7 @@
 
     private async void PaymentMethodEditContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
     {
-        Logger.LogInformation($"Calling 'Checkout.PaymentMethodEditContext_OnFieldChanged'.");
+        Logger.LogInformation("Calling 'Checkout.PaymentMethodEditContext_OnFieldChanged'.");
         PaymentModel = PaymentMethodEditContext.Model as PaymentMethodModel ?? new PaymentMethodModel();
         Model.PaymentMethodId = PaymentModel.PaymentMethodId;
         await Store!.SetValueAsync("PaymentInfo", PaymentModel);

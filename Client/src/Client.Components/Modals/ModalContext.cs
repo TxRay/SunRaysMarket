@@ -5,14 +5,20 @@ public record ModalContext
     public Type? ContentComponent { get; init; }
     public ModalOptions Options { get; init; } = new();
 
-    internal virtual Task InvokeEventAsync(ModalEventType eventType) => Task.CompletedTask;
-
     public Dictionary<string, object?> TempData { get; internal init; } = null!;
+    public bool IsVisible => ContentComponent is not null;
 
-    public Task RequestClose() => CloseRequestHandler?.Invoke() ?? Task.CompletedTask;
+    internal virtual Task InvokeEventAsync(ModalEventType eventType)
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task RequestClose()
+    {
+        return CloseRequestHandler?.Invoke() ?? Task.CompletedTask;
+    }
 
     internal event Func<Task>? CloseRequestHandler;
-    public bool IsVisible => ContentComponent is not null;
 }
 
 public record ModalContext<TState> : ModalContext
@@ -26,6 +32,8 @@ public record ModalContext<TState> : ModalContext
         State = updater.Invoke(State);
     }
 
-    internal override Task InvokeEventAsync(ModalEventType eventType) =>
-        EventHandlers.InvokeEventHandlers(eventType);
+    internal override Task InvokeEventAsync(ModalEventType eventType)
+    {
+        return EventHandlers.InvokeEventHandlers(eventType);
+    }
 }

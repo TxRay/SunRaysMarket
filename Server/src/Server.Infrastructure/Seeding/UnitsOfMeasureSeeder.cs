@@ -1,9 +1,8 @@
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal interface IUnitsOfMeasureSeeder : ISeeder { }
+internal interface IUnitsOfMeasureSeeder : ISeeder
+{
+}
 
 internal class UnitsOfMeasureSeeder : IUnitsOfMeasureSeeder
 {
@@ -30,7 +29,7 @@ internal class UnitsOfMeasureSeeder : IUnitsOfMeasureSeeder
             new() { Name = "Gallon", Symbol = "gal" },
             new() { Name = "Milliliter", Symbol = "ml" },
             new() { Name = "Liter", Symbol = "l" },
-            new() { Name = "Count", Symbol = "ct" },
+            new() { Name = "Count", Symbol = "ct" }
         };
 
         await _dbContext.UnitsOfMeasure.AddRangeAsync(unitsOfMeasure);

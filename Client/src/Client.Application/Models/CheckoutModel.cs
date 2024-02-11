@@ -7,8 +7,9 @@ public class CheckoutModel
     public FulfillmentModel FulfillmentInfo { get; set; } = new FulfillmentModel.EmptyModel();
     public string? PaymentMethodId { get; set; }
 
-    public CheckoutSubmitModel ToSubmitModel() =>
-        FulfillmentInfo switch
+    public CheckoutSubmitModel ToSubmitModel()
+    {
+        return FulfillmentInfo switch
         {
             null => throw new ArgumentNullException(nameof(FulfillmentInfo)),
             FulfillmentModel.EmptyModel
@@ -32,8 +33,9 @@ public class CheckoutModel
                     OrderType = pickupModel.OrderType,
                     PaymentMethodId =
                         PaymentMethodId
-                        ?? throw new InvalidOperationException("No payment method was set."),
+                        ?? throw new InvalidOperationException("No payment method was set.")
                 },
             _ => throw new ArgumentOutOfRangeException(nameof(FulfillmentInfo))
         };
+    }
 }

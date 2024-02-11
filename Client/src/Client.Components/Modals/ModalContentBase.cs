@@ -6,15 +6,15 @@ namespace SunRaysMarket.Client.Components.Modals;
 public abstract class ModalContentBase<TState> : ComponentBase, IDisposable
     where TState : class, new()
 {
-    [Inject]
-    private IServiceProvider ServiceProvider { get; set; } = default!;
+    private ModalContext<TState>? _modalContext;
 
     private IModalController? _modalController;
-    private ModalContext<TState>? _modalContext;
+
+    [Inject] private IServiceProvider ServiceProvider { get; set; } = default!;
 
     protected bool IsDisposed { get; private set; }
 
-    IModalController ModalController
+    private IModalController ModalController
     {
         get
         {
@@ -42,27 +42,6 @@ public abstract class ModalContentBase<TState> : ComponentBase, IDisposable
         }
     }
 
-    protected override void OnInitialized()
-    {
-        ModalContext.EventHandlers.OnUnloaded += OnUnloaded;
-        ModalContext.EventHandlers.OnUnloadedAsync += OnUnloadedAsync;
-    }
-
-    protected virtual void OnUnloaded() { }
-
-    protected virtual Task OnUnloadedAsync() => Task.CompletedTask;
-
-    protected Task ChangeModalContent<TComponent, TNewState>(
-        ModalOptions? options = default,
-        TNewState? initialState = default,
-        Dictionary<string, object?>? tempData = default
-    )
-        where TComponent : IComponent, IDisposable
-        where TNewState : class, new() =>
-        ModalController.DispatchAsync<TComponent, TNewState>(options, initialState, tempData);
-
-    protected Task CloseModal() => ModalController.Close();
-
     void IDisposable.Dispose()
     {
         ModalContext.EventHandlers.OnUnloaded -= OnUnloaded;
@@ -71,5 +50,38 @@ public abstract class ModalContentBase<TState> : ComponentBase, IDisposable
         IsDisposed = true;
     }
 
-    protected virtual void Dispose(bool disposing) { }
+    protected override void OnInitialized()
+    {
+        ModalContext.EventHandlers.OnUnloaded += OnUnloaded;
+        ModalContext.EventHandlers.OnUnloadedAsync += OnUnloadedAsync;
+    }
+
+    protected virtual void OnUnloaded()
+    {
+    }
+
+    protected virtual Task OnUnloadedAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    protected Task ChangeModalContent<TComponent, TNewState>(
+        ModalOptions? options = default,
+        TNewState? initialState = default,
+        Dictionary<string, object?>? tempData = default
+    )
+        where TComponent : IComponent, IDisposable
+        where TNewState : class, new()
+    {
+        return ModalController.DispatchAsync<TComponent, TNewState>(options, initialState, tempData);
+    }
+
+    protected Task CloseModal()
+    {
+        return ModalController.Close();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+    }
 }

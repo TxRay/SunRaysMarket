@@ -1,39 +1,38 @@
-@using SunRaysMarket.Client.Components.Checkout
 @namespace SunRaysMarket.Client.Components
 @inherits ModalContentBase<CreateAddressModel>
 
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
 
 <div>
     <EditForm class="form__group" Model="AddressModel" FormName="AddressForm" OnSubmit="@OnValidSubmitAsync">
-                <div>
-                    <label class="form__label form__label--input" for="street">Street</label>
-                    <InputText class="form__input" @bind-Value="@AddressModel.Street" id="street"/>
-                </div>
-                <div>
-                    <label class="form__label form__label--input" for="city">City</label>
-                    <InputText class="form__input" @bind-Value="@AddressModel.City" id="city"/>
-                </div>
-                <div>
-                    <label class="form__label form__label--input" for="state">State</label>
-                    <InputText class="form__input" @bind-Value="@AddressModel.State" id="state"/>
-                </div>
-                <div>
-                    <label class="form__label form__label--input" for="zip">Zip</label>
-                    <InputText class="form__input" @bind-Value="@AddressModel.PostalCode" id="zip"/>
-                </div>
-                <div>
-                    <label class="form__label form__label--input" for="country">Country</label>
-                    <InputText class="form__input" @bind-Value="@AddressModel.Country" id="country"/>
-                </div>
-                <button type="submit">Submit</button>
+        <div>
+            <label class="form__label form__label--input" for="street">Street</label>
+            <InputText class="form__input" @bind-Value="@AddressModel.Street" id="street"/>
+        </div>
+        <div>
+            <label class="form__label form__label--input" for="city">City</label>
+            <InputText class="form__input" @bind-Value="@AddressModel.City" id="city"/>
+        </div>
+        <div>
+            <label class="form__label form__label--input" for="state">State</label>
+            <InputText class="form__input" @bind-Value="@AddressModel.State" id="state"/>
+        </div>
+        <div>
+            <label class="form__label form__label--input" for="zip">Zip</label>
+            <InputText class="form__input" @bind-Value="@AddressModel.PostalCode" id="zip"/>
+        </div>
+        <div>
+            <label class="form__label form__label--input" for="country">Country</label>
+            <InputText class="form__input" @bind-Value="@AddressModel.Country" id="country"/>
+        </div>
+        <button type="submit">Submit</button>
     </EditForm>
 </div>
 
 @code {
     [Inject] private ICustomerAddressService CustomerAddressService { get; set; } = null!;
-    
-    private CreateAddressModel AddressModel { get; set; } = new();
+
+    private CreateAddressModel AddressModel { get; } = new();
 
     private async Task OnValidSubmitAsync(EditContext editContext)
     {
@@ -49,10 +48,10 @@
 
         var tempData = new Dictionary<string, object?>
         {
-            {"AddressId", addressId}
+            { "AddressId", addressId }
         };
 
         await ChangeModalContent<FulfillmentModal, AddressModel>(options, tempData: tempData);
-        
     }
+
 }

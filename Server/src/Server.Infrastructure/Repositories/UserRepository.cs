@@ -1,8 +1,5 @@
 using SunRaysMarket.Server.Application.Enums;
 using SunRaysMarket.Server.Application.Repositories;
-using SunRaysMarket.Server.Application.Services.Auth;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-using SunRaysMarket.Shared.Core.DomainModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
@@ -14,8 +11,9 @@ internal class UserRepository(
 {
     private readonly RoleManager<IdentityRole<int>> _roleManager = roleManager;
 
-    public async Task<UserDetailsModel?> GetUserByIdAsync(int id) =>
-        await userManager
+    public async Task<UserDetailsModel?> GetUserByIdAsync(int id)
+    {
+        return await userManager
             .Users
             .Where(u => u.Id == id)
             .Select(
@@ -25,13 +23,15 @@ internal class UserRepository(
                         Id = u.Id,
                         Email = u.Email!,
                         FirstName = u.FirstName,
-                        LastName = u.LastName,
+                        LastName = u.LastName
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
-    public async Task<UserDetailsModel?> GetUserByEmailAsync(string email) =>
-        await userManager
+    public async Task<UserDetailsModel?> GetUserByEmailAsync(string email)
+    {
+        return await userManager
             .Users
             .Where(u => u.Email == email)
             .Select(
@@ -41,13 +41,15 @@ internal class UserRepository(
                         Id = u.Id,
                         Email = u.Email!,
                         FirstName = u.FirstName,
-                        LastName = u.LastName,
+                        LastName = u.LastName
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
-    public async Task<IEnumerable<UserListModel>> GetUsersAsync() =>
-        await userManager
+    public async Task<IEnumerable<UserListModel>> GetUsersAsync()
+    {
+        return await userManager
             .Users
             .Select(
                 u =>
@@ -56,10 +58,11 @@ internal class UserRepository(
                         Id = u.Id,
                         Email = u.Email!,
                         FirstName = u.FirstName,
-                        LastName = u.LastName,
+                        LastName = u.LastName
                     }
             )
             .ToListAsync();
+    }
 
     public async Task<UserDetailsModel?> CreateUserAsync(SignUpModel model)
     {
@@ -69,7 +72,7 @@ internal class UserRepository(
                 Email = model.Email,
                 UserName = model.Email,
                 FirstName = model.FirstName,
-                LastName = model.LastName,
+                LastName = model.LastName
             },
             model.Password
         );

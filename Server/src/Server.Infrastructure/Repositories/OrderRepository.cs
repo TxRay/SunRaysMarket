@@ -1,8 +1,5 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SunRaysMarket.Server.Application.Repositories;
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-using SunRaysMarket.Shared.Core.DomainModels;
 using SunRaysMarket.Shared.Core.Structs;
 using SunRaysMarket.Shared.Core.Utilities.OrderCalculations;
 
@@ -12,8 +9,9 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
 {
     private EntityEntry<Order>? OrderEntry { get; set; }
 
-    public async Task<OrderDetailsModel?> GetOrderDetailsAsync(int orderId) =>
-        await dbContext
+    public async Task<OrderDetailsModel?> GetOrderDetailsAsync(int orderId)
+    {
+        return await dbContext
             .Orders
             .Include(o => o.Customer)
             .ThenInclude(c => c!.User)
@@ -53,9 +51,11 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
-    public async Task<OrderDetailsModel?> GetOrderDetailsAsync(long orderNumber) =>
-        await dbContext
+    public async Task<OrderDetailsModel?> GetOrderDetailsAsync(long orderNumber)
+    {
+        return await dbContext
             .Orders
             .Include(o => o.Customer)
             .ThenInclude(c => c!.User)
@@ -95,9 +95,11 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
-    public async Task<IEnumerable<OrderListModel>> GetOrdersAsync() =>
-        await dbContext
+    public async Task<IEnumerable<OrderListModel>> GetOrdersAsync()
+    {
+        return await dbContext
             .Orders
             .Include(o => o.Customer)
             .ThenInclude(c => c!.User)
@@ -132,9 +134,11 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
                     }
             )
             .ToListAsync();
+    }
 
-    public async Task<IEnumerable<OrderListModel>> GetOrdersAsync(int customerId) =>
-        await dbContext
+    public async Task<IEnumerable<OrderListModel>> GetOrdersAsync(int customerId)
+    {
+        return await dbContext
             .Orders
             .Include(o => o.Customer)
             .ThenInclude(c => c!.User)
@@ -170,9 +174,11 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
                     }
             )
             .ToListAsync();
+    }
 
-    public async Task<IEnumerable<OrderLineListModel>> GetOrderLinesAsync(int orderId) =>
-        await dbContext
+    public async Task<IEnumerable<OrderLineListModel>> GetOrderLinesAsync(int orderId)
+    {
+        return await dbContext
             .OrderLine
             .Where(ol => ol.OrderId == orderId)
             .Select(
@@ -184,13 +190,16 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
                         Quantity = ol.Quantity,
                         Price = ol.Price,
                         Discount = ol.Discount,
-                        TotalPrice = ol.TotalPrice,
+                        TotalPrice = ol.TotalPrice
                     }
             )
             .ToListAsync();
+    }
 
-    public async Task<bool> OrderExistsAsync(int orderId) =>
-        await dbContext.Orders.AnyAsync(o => o.Id == orderId);
+    public async Task<bool> OrderExistsAsync(int orderId)
+    {
+        return await dbContext.Orders.AnyAsync(o => o.Id == orderId);
+    }
 
     public async Task<bool> CreateOrderAsync(CreateOrderModel model)
     {
@@ -219,7 +228,7 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
             Quantity = model.Quantity,
             Price = model.Price,
             Discount = model.Discount,
-            TotalPrice = model.TotalPrice,
+            TotalPrice = model.TotalPrice
         };
 
         await dbContext.OrderLine.AddAsync(newOrderLine);
@@ -237,7 +246,7 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
                     Quantity = model.Quantity,
                     Price = model.Price,
                     Discount = model.Discount,
-                    TotalPrice = model.TotalPrice,
+                    TotalPrice = model.TotalPrice
                 }
         );
 
@@ -262,27 +271,24 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
     {
         var order = await dbContext.Orders.FindAsync(orderId);
 
-        if (order is not null)
-        {
-            dbContext.Orders.Remove(order);
-        }
+        if (order is not null) dbContext.Orders.Remove(order);
     }
 
     public async Task DeleteOrderLineAsync(int orderLineId)
     {
         var orderLine = await dbContext.OrderLine.FindAsync(orderLineId);
 
-        if (orderLine is not null)
-        {
-            dbContext.OrderLine.Remove(orderLine);
-        }
+        if (orderLine is not null) dbContext.OrderLine.Remove(orderLine);
     }
 
-    public int? GetPersistedOrderId() =>
-        OrderEntry?.State == EntityState.Unchanged ? OrderEntry.Entity.Id : null;
+    public int? GetPersistedOrderId()
+    {
+        return OrderEntry?.State == EntityState.Unchanged ? OrderEntry.Entity.Id : null;
+    }
 
-    public OrderDetailsModel? GetPersistedOrderDetails() =>
-        OrderEntry is not null && OrderEntry?.State == EntityState.Unchanged
+    public OrderDetailsModel? GetPersistedOrderDetails()
+    {
+        return OrderEntry is not null && OrderEntry?.State == EntityState.Unchanged
             ? new OrderDetailsModel
             {
                 Id = OrderEntry.Entity.Id,
@@ -298,4 +304,5 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
                 Status = OrderEntry.Entity.Status
             }
             : null;
+    }
 }

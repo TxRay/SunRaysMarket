@@ -7,18 +7,18 @@
         <RootNamespace>SunRaysMarket.Client.Components</RootNamespace>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <SupportedPlatform Include="browser"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" />
-        <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Client.Application\Client.Application.csproj" />
+        <ProjectReference Include="..\Client.Application\Client.Application.csproj"/>
     </ItemGroup>
 
 </Project>

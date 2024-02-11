@@ -1,6 +1,4 @@
 using SunRaysMarket.Server.Application.Repositories;
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Shared.Core.DomainModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
@@ -13,8 +11,9 @@ internal class UnitOfMeasureRepository : IUnitOfMeasureRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<UnitOfMeasureListModel>> GetAllAsync() =>
-        await _dbContext
+    public async Task<IEnumerable<UnitOfMeasureListModel>> GetAllAsync()
+    {
+        return await _dbContext
             .UnitsOfMeasure
             .OrderBy(uom => uom.Name)
             .Select(
@@ -27,4 +26,5 @@ internal class UnitOfMeasureRepository : IUnitOfMeasureRepository
                     }
             )
             .ToListAsync();
+    }
 }

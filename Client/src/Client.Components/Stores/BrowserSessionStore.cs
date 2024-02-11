@@ -7,26 +7,6 @@ public class BrowserSessionStore(IJSRuntime jsRuntime) : IStore
 {
     private Lazy<IJSObjectReference> _accessor = new();
 
-    private async Task<bool> InitializeAccessor()
-    {
-        if (_accessor.IsValueCreated is true)
-            return true;
-
-        try
-        {
-            _accessor = new Lazy<IJSObjectReference>(
-                await jsRuntime.InvokeAsync<IJSObjectReference>("import", "/js/session.js")
-            );
-            return true;
-        }
-        catch (InvalidOperationException)
-        {
-            return false;
-        }
-    }
-
-    private string PrefixKey(string key) => $"{KeyPrefix}:{key}";
-
     public async Task<T?> TryGetValueAsync<T>(string key)
     {
         if (!await InitializeAccessor())
@@ -65,23 +45,43 @@ public class BrowserSessionStore(IJSRuntime jsRuntime) : IStore
 
     public async Task ClearAllAsync()
     {
-        if (await InitializeAccessor())
-        {
-            await _accessor.Value.InvokeVoidAsync("clear");
-        }
+        if (await InitializeAccessor()) await _accessor.Value.InvokeVoidAsync("clear");
     }
 
     public event Action? OnChange;
 
-    private void NotifyStateChanged() => OnChange?.Invoke();
-
     public async ValueTask DisposeAsync()
     {
-        if (_accessor.IsValueCreated)
-        {
-            await _accessor.Value.DisposeAsync();
-        }
+        if (_accessor.IsValueCreated) await _accessor.Value.DisposeAsync();
     }
 
     public string? KeyPrefix { get; } = "SunRaysMarket.SessionStore";
+
+    private async Task<bool> InitializeAccessor()
+    {
+        if (_accessor.IsValueCreated is true)
+            return true;
+
+        try
+        {
+            _accessor = new Lazy<IJSObjectReference>(
+                await jsRuntime.InvokeAsync<IJSObjectReference>("import", "/js/session.js")
+            );
+            return true;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
+    }
+
+    private string PrefixKey(string key)
+    {
+        return $"{KeyPrefix}:{key}";
+    }
+
+    private void NotifyStateChanged()
+    {
+        OnChange?.Invoke();
+    }
 }

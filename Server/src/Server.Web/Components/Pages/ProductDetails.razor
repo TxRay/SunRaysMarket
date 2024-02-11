@@ -45,7 +45,7 @@ else
 
     
     private IProductService ProductService { get; set; } = default!;
-    private ICartService CartService { get; set; } = default!;
+    private ICartControlsService CartControlsService { get; set; } = default!;
 
     private ProductDetailsModel? Product { get; set; }
     private CartItemControlModel? CartItemInfo { get; set; }
@@ -54,14 +54,14 @@ else
     protected override void OnInitialized()
     {
         ProductService = ScopedServices.GetRequiredService<IProductService>();
-        CartService = ScopedServices.GetRequiredService<ICartService>();
+        CartControlsService = ScopedServices.GetRequiredService<ICartControlsService>();
     }
 
     protected override async Task OnInitializedAsync()
     {
         Product = await ProductService.GetProductDetailsAsync(Id);
         CartItemInfo = CartItemId is not null
-            ? await CartService.GetCartItemInfoAsync(CartItemId.Value)
+            ? await CartControlsService.GetCartItemInfoAsync(CartItemId.Value)
             : null;
 
         ShouldLoad = true;

@@ -1,7 +1,7 @@
 namespace SunRaysMarket.Client.Components.Modals;
 
 /// <summary>
-/// Class for managing modal event handlers.
+///     Class for managing modal event handlers.
 /// </summary>
 public class ModalEventHandlers
 {
@@ -18,8 +18,9 @@ public class ModalEventHandlers
     public event Func<Task>? OnBeforeSwitchAsync;
     public event Func<Task>? OnCloseAsync;
 
-    private Action? GetHandlerAction(ModalEventType eventType) =>
-        eventType switch
+    private Action? GetHandlerAction(ModalEventType eventType)
+    {
+        return eventType switch
         {
             ModalEventType.Close => OnClose,
             ModalEventType.Open => OnOpen,
@@ -29,9 +30,11 @@ public class ModalEventHandlers
             ModalEventType.BeforeSwitch => OnBeforeSwitch,
             _ => throw new ArgumentOutOfRangeException(nameof(eventType), eventType, null)
         };
+    }
 
-    private Func<Task>? GetHandlerAsyncFunc(ModalEventType eventType) =>
-        eventType switch
+    private Func<Task>? GetHandlerAsyncFunc(ModalEventType eventType)
+    {
+        return eventType switch
         {
             ModalEventType.Close => OnCloseAsync,
             ModalEventType.Open => OnOpenAsync,
@@ -41,12 +44,13 @@ public class ModalEventHandlers
             ModalEventType.Unloaded => OnUnloadedAsync,
             _ => throw new ArgumentOutOfRangeException(nameof(eventType), eventType, null)
         };
+    }
 
     /// <summary>
-    ///  Invokes the event handlers for the specified event type.
+    ///     Invokes the event handlers for the specified event type.
     /// </summary>
     /// <param name="eventType">
-    /// The type of event to invoke the handlers for.
+    ///     The type of event to invoke the handlers for.
     /// </param>
     /// <returns></returns>
     public Task InvokeEventHandlers(ModalEventType eventType)

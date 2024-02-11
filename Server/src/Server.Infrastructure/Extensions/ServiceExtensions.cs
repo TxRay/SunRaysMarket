@@ -3,16 +3,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Extensions;
 using Stripe;
-using SunRaysMarket.Server.Application.Repositories;
 using SunRaysMarket.Server.Application.UnitOfWork;
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-using SunRaysMarket.Server.Infrastructure.Repositories;
+using SunRaysMarket.Server.Infrastructure.PaymentServices;
 using SunRaysMarket.Server.Infrastructure.Seeding;
-using SunRaysMarket.Server.Infrastructure.Services;
 using SunRaysMarket.Server.Infrastructure.UnitOfWorkImplementation;
 using SunRaysMarket.Shared.Services.Interfaces;
-using TransactionRepository = SunRaysMarket.Server.Infrastructure.Repositories.TransactionRepository;
 
 namespace SunRaysMarket.Server.Infrastructure.Extensions;
 
@@ -29,6 +24,7 @@ public static class ServiceExtensions
         services.AddUnitOfWorkServices();
         services.AddSeederServices();
         services.AddStripe(configuration);
+        services.AddServiceImplementations();
 
         return services;
     }
@@ -109,7 +105,7 @@ public static class ServiceExtensions
         IConfiguration configuration
     )
     {
-        var appinfo = new AppInfo { Name = "Sun Rays Market Ecommerce", Version = "0.0.1", };
+        var appinfo = new AppInfo { Name = "Sun Rays Market Ecommerce", Version = "0.0.1" };
 
         StripeConfiguration.ApiKey =
             configuration["Stripe:SecretKey"]
@@ -123,16 +119,34 @@ public static class ServiceExtensions
         {
             var clientFactory = provider.GetService<IHttpClientFactory>();
             var httpClient = new SystemNetHttpClient(
-                httpClient: clientFactory?.CreateClient("Stripe"),
-                maxNetworkRetries: StripeConfiguration.MaxNetworkRetries,
-                appInfo: appinfo,
-                enableTelemetry: StripeConfiguration.EnableTelemetry
+                clientFactory?.CreateClient("Stripe"),
+                StripeConfiguration.MaxNetworkRetries,
+                appinfo,
+                StripeConfiguration.EnableTelemetry
             );
 
-            return new StripeClient(apiKey: StripeConfiguration.ApiKey, httpClient: httpClient);
+            return new StripeClient(StripeConfiguration.ApiKey, httpClient: httpClient);
         });
 
         services.AddTransient<IPaymentService, StripePaymentService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddServiceImplementations(this IServiceCollection services)
+    {
+        var interfaceNamespaceDescriptors = new[]
+        {
+            new NamespaceDescriptor(
+                typeof(IUnitOfWork).Assembly,
+                "SunRaysMarket.Server.Application.Services"
+            )
+        };
+
+        services.AddInterfacesWithImplementationsFromLocalNamespace(
+            interfaceNamespaceDescriptors,
+            "SunRaysMarket.Server.Infrastructure.ServicesImpl"
+        );
 
         return services;
     }

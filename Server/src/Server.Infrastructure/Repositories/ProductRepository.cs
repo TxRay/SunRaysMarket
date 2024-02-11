@@ -1,10 +1,6 @@
 using Microsoft.Extensions.Logging;
 using SunRaysMarket.Server.Application.Repositories;
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 using SunRaysMarket.Server.Infrastructure.ModelMappings;
-using SunRaysMarket.Shared.Core.DomainModels;
-using SunRaysMarket.Shared.Core.Utilities;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
@@ -13,16 +9,19 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
 {
     private readonly ILogger<ProductRepository> _logger = logger;
 
-    public IAsyncEnumerable<ProductListModel> GetAllAsync() =>
-        context
+    public IAsyncEnumerable<ProductListModel> GetAllAsync()
+    {
+        return context
             .Products
             .Include(p => p.ProductType)
             .ThenInclude(pt => pt!.Department)
             .Include(p => p.InventoryItems)
             .AsProductAsyncEnumerable();
+    }
 
-    public IAsyncEnumerable<ProductListModel> GetAllAsync(string listTitle, int? storeId) =>
-        context
+    public IAsyncEnumerable<ProductListModel> GetAllAsync(string listTitle, int? storeId)
+    {
+        return context
             .Lists
             .Include(l => l.Products)
             .ThenInclude(p => p.ProductType)
@@ -32,14 +31,16 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
             .Where(l => l.Title == listTitle)
             .SelectMany(l => l.Products)
             .AsProductAsyncEnumerable();
+    }
 
     public IAsyncEnumerable<ProductListModel> GetAllAsync(string listType, int departmentId)
     {
         throw new NotImplementedException();
     }
 
-    public IAsyncEnumerable<ProductListModel> GetAllAsync(int departmentId) =>
-        context
+    public IAsyncEnumerable<ProductListModel> GetAllAsync(int departmentId)
+    {
+        return context
             .Departments
             .Include(d => d.ProductTypes)
             .ThenInclude(pt => pt.Products)
@@ -48,6 +49,7 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
             .SelectMany(d => d.ProductTypes)
             .SelectMany(pt => pt.Products)
             .AsProductAsyncEnumerable();
+    }
 
     public async Task<IEnumerable<ProductListModel>> GetAllSearchAsync(string? queryString)
     {
@@ -70,8 +72,9 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
         return await query.ToProductListAsync();
     }
 
-    public async Task<ProductDetailsModel?> GetAsync(int id) =>
-        await context
+    public async Task<ProductDetailsModel?> GetAsync(int id)
+    {
+        return await context
             .Products
             .Include(p => p.ProductType)
             .ThenInclude(pt => pt!.Department)
@@ -102,9 +105,11 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
-    public async Task<CreateProductModel?> GetForEditAsync(int id) =>
-        await context
+    public async Task<CreateProductModel?> GetForEditAsync(int id)
+    {
+        return await context
             .Products
             .Where(p => p.Id == id)
             .Select(
@@ -122,6 +127,7 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
                     }
             )
             .FirstOrDefaultAsync();
+    }
 
     public Task CreateAsync(CreateProductModel model)
     {
@@ -135,7 +141,7 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
             DiscountPercent = model.DiscountDecimal,
             ProductTypeId = model.ProductTypeId,
             Measure = model.Measure,
-            UnitOfMeasureId = model.UnitOfMeasureId,
+            UnitOfMeasureId = model.UnitOfMeasureId
         };
 
         context.Products.Add(product);

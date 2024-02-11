@@ -6,7 +6,7 @@ using SunRaysMarket.Shared.Services.Interfaces;
 
 namespace SunRaysMarket.Client.Application.ProxyServicesImpl.Scoped;
 
-internal class CartProxyService(HttpClient client) : ICartService
+internal class CartControlsProxyService(HttpClient client) : ICartControlsService
 {
     public async Task<CreateCartResponse> CreateCartAsync() =>
         await client

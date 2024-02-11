@@ -1,5 +1,4 @@
 using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
-using SunRaysMarket.Shared.Core.Enums;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 

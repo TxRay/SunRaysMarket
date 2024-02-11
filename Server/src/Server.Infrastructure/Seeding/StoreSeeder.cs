@@ -1,9 +1,8 @@
-using SunRaysMarket.Server.Infrastructure.Data;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
-
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal interface IStoreSeeder : ISeeder { }
+internal interface IStoreSeeder : ISeeder
+{
+}
 
 internal class StoreSeeder(ApplicationDbContext dbContext) : IStoreSeeder
 {
