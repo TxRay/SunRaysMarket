@@ -16,6 +16,8 @@ public static class MapEndpointsExtensions
         apiGroup.MapCheckoutEndpoints();
         apiGroup.MapPaymentEndpoints();
         apiGroup.MapProductEndpoints();
+        apiGroup.MapCustomerEndpoints();
+        apiGroup.MapStoreLocationEndpoints();
 
         return endpoints;
     }

@@ -32,7 +32,10 @@ public static class CheckoutEndpoints
             "/locations",
             async (ICheckoutService checkoutService) =>
                 Results.Json(
-                    new StoreLocationsResponse(await checkoutService.GetStoreLocationsAsync())
+                    new StoreLocationsResponse
+                    {
+                        StoreLocations = await checkoutService.GetStoreLocationsAsync()
+                    }
                 )
         );
 

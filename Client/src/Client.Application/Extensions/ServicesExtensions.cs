@@ -1,6 +1,9 @@
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Extensions;
 using SunRaysMarket.Client.Application.ProxyServices;
 using SunRaysMarket.Client.Application.State;
+using SunRaysMarket.Shared.Services;
 using SunRaysMarket.Shared.Services.Interfaces;
 
 namespace SunRaysMarket.Client.Application.Extensions;
@@ -11,12 +14,20 @@ public static class ServicesExtensions
         this IServiceCollection services
     )
     {
-        services.AddScoped<IAddressService, AddressProxyService>();
-        services.AddScoped<ICartService, CartProxyService>();
-        services.AddScoped<ICheckoutService, CheckoutProxyService>();
-        services.AddScoped<IPaymentService, PaymentProxyService>();
-        services.AddScoped<IProductService, ProductProxyService>();
-        services.AddScoped<ICustomerAddressService, CustomerAddressProxyService>();
+        var interfaceNamespaceDescriptors = new[]
+        {
+            new NamespaceDescriptor(
+                typeof(ISharedServicesMarker).Assembly,
+                "SunRaysMarket.Shared.Services.Interfaces"
+            )
+        };
+
+        services.AddSInterfacesWithImplementationsFromLocalNamespace(
+            interfaceNamespaceDescriptors,
+            "SunRaysMarket.Client.Application.ProxyServices",
+            ServiceLifetime.Scoped
+        );
+
         services.AddSingleton<ProductModalState>();
 
         return services;

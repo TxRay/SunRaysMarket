@@ -21,6 +21,11 @@ internal class CustomerConfig : ConfigurationBase<PersistenceModels.Customer>
             .HasForeignKey<PersistenceModels.Customer>(customer => customer.CartId);
 
         builder
+            .HasOne(customer => customer.PreferredStore)
+            .WithMany()
+            .HasForeignKey(customer => customer.PreferredStoreId);
+
+        builder
             .HasMany(customer => customer.Addresses)
             .WithMany()
             .UsingEntity<CustomerAddress>(caBuilder =>

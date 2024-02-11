@@ -1,0 +1,129 @@
+@use "../abstracts/mixins" as mxn;
+@use "../abstracts/variables" as var;
+
+.store-dropdown {
+  position: relative;
+}
+
+.store-btn {
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  grid-template-rows: repeat(2, min-content);
+  align-items: center;
+  column-gap: .8rem;
+
+  @include mxn.reset-link;
+  padding: .8rem;
+  border-radius: 10px;
+  transition: all 200ms ease-in-out;
+
+  &:hover {
+    background-color: var.$color-primary-light;
+    cursor: pointer;
+  }
+
+  @include mxn.media(phone-sm) {
+    grid-template-columns: repeat(2, max-content);
+  }
+
+  &__icon {
+    grid-column: 1 / 2;
+    grid-row: 1 / -1;
+
+
+    width: 3.6rem;
+    aspect-ratio: 1 / 1;
+    fill: var.$color-grey-light-2;
+    transition: all 200ms ease-in-out;
+
+  }
+
+  &__heading {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+
+    font-size: 1.2rem;
+    color: var.$color-secondary-light;
+    transition: all 200ms ease-in-out;
+
+  }
+
+  &__location {
+    grid-column: 2 / 3;
+    grid-row: 2 / -1;
+
+    font-size: 1.4rem;
+    color: var.$color-grey-light-2;
+    transition: all 200ms ease-in-out;
+  }
+
+  &__heading, &__location {
+    @include mxn.media(phone-sm) {
+      display: none;
+    }
+  }
+
+  &__chevron {
+    grid-column: 3 / -1;
+    grid-row: 2 / -1;
+
+    width: 1.3rem;
+    aspect-ratio: 1 / 1;
+    fill: var.$color-grey-light-2;
+
+    @include mxn.media(phone-sm) {
+      grid-column: 2 / -1;
+    }
+  }
+
+  &:hover &__icon {
+    fill: var.$color-grey-dark-1;
+  }
+
+  &:hover &__heading {
+    color: var.$color-secondary-medium;
+  }
+
+  &:hover &__location {
+    color: var.$color-grey-dark-1;
+  }
+}
+
+.store-menu {
+  --top: 0;
+  --min-width: 0;
+  --scaleY: 0;
+  
+  position: absolute;
+  top: var(--top);
+  right: 0;
+  
+  min-width: var(--min-width);
+  padding: var.$spacing-m;
+  background-color: var.$color-background;
+  border-radius: 1rem;
+  box-shadow: var.$shadow-dark;
+  
+  transform: scaleY(var(--scaleY));
+  transform-origin: top;
+  transition: 250ms ease-in-out;
+  
+  &__list {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  &__option {
+    padding: var.$spacing-xs;
+    min-width: max-content;
+    border: 1.5px solid transparent;
+    border-radius: 1rem;
+    text-align: center;
+    
+  }
+  
+  &__radio:checked + &__option {
+    border: 1.5px solid var.$color-success;
+    background-color: var.$color-success-light;
+  }
+}

@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SunRaysMarket.Server.Application.Repositories;
 using SunRaysMarket.Server.Infrastructure.Data;
 using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
+using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
+using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Extensions;
 using SunRaysMarket.Shared.Core.DomainModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
@@ -132,6 +134,38 @@ internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRep
                     }
             )
             .ToArrayAsync();
+
+    public async Task SetCustomerPreferences(int customerId, UpdateCustomerPreferencesModel model)
+    {
+        var entity = await dbContext.Customers.FindAsync(customerId);
+
+        if (entity is null)
+            return;
+
+        foreach (var propertyInfo in model.GetType().GetProperties())
+        {
+            var entityPropertyInfo = entity.GetType().GetProperty(propertyInfo.Name)
+                                     ?? throw new InvalidOperationException(
+                                         $"$The entity {typeof(Customer).FullName} does not contain " +
+                                         $"a property named '{propertyInfo}'."
+                                     );
+            object? value;
+            if ((value = propertyInfo.GetValue(model)) != entityPropertyInfo.GetValue(entity))
+                entityPropertyInfo.SetValue(entity, value);
+        }
+    }
+
+    public Task<object?> GetCustomerPreferences(int customerId, Func<CustomerPreferences, object> selector)
+        => dbContext.Customers.Where(c => c.Id == customerId)
+            .Select(c
+                =>
+                selector(new CustomerPreferences
+                    {
+                        PreferredStoreId = c.PreferredStoreId
+                    }
+                )
+            ).FirstOrDefaultAsync();
+
 
     public int? GetPersistedCustomerId()
     {

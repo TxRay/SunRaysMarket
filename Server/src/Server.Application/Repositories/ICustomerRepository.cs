@@ -23,5 +23,9 @@ public interface ICustomerRepository
 
     Task<IEnumerable<AddressModel>> GetCustomerAddresses(int customerId);
 
+    Task SetCustomerPreferences(int customerId, UpdateCustomerPreferencesModel model);
+
+    Task<object?> GetCustomerPreferences(int customerId, Func<CustomerPreferences, object> selector);
+
     int? GetPersistedCustomerId();
 }

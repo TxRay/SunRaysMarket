@@ -1,3 +1,6 @@
 namespace SunRaysMarket.Shared.Core.DomainModels.Responses;
 
-public record StoreLocationsResponse(IEnumerable<StoreListModel> StoreLocations);
+public record StoreLocationsResponse
+{
+    public IEnumerable<StoreListModel> StoreLocations { get; init; } = [];
+}
