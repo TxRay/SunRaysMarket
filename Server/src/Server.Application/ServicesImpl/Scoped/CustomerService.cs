@@ -1,8 +1,9 @@
 using System.Security.Claims;
+using SunRaysMarket.Server.Application.Services;
 using SunRaysMarket.Server.Application.Services.Auth;
 using SunRaysMarket.Server.Application.UnitOfWork;
 
-namespace SunRaysMarket.Server.Application.Services;
+namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 
 internal class CustomerService(IUnitOfWork unitOfWork, IUserService userService) : ICustomerService
 {

@@ -2,13 +2,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SunRaysMarket.Server.Application.Cookies;
 using SunRaysMarket.Server.Application.Exceptions;
+using SunRaysMarket.Server.Application.Services;
 using SunRaysMarket.Server.Application.UnitOfWork;
 using SunRaysMarket.Shared.Core.DomainModels.Responses;
-using SunRaysMarket.Shared.Core.Utilities;
 using SunRaysMarket.Shared.Services.Builders;
 using SunRaysMarket.Shared.Services.Interfaces;
 
-namespace SunRaysMarket.Server.Application.Services;
+namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 
 internal class CartService(
     IHttpContextAccessor httpContextAccessor,

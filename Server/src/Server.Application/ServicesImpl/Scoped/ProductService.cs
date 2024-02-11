@@ -1,7 +1,7 @@
 using SunRaysMarket.Server.Application.UnitOfWork;
 using SunRaysMarket.Shared.Services.Interfaces;
 
-namespace SunRaysMarket.Server.Application.Services;
+namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 
 public class ProductService(IUnitOfWork unitOfWork) : IProductService
 {

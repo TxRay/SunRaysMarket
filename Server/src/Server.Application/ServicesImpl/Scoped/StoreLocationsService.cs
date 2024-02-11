@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Http;
+using SunRaysMarket.Server.Application.Services;
 using SunRaysMarket.Server.Application.UnitOfWork;
 using SunRaysMarket.Shared.Services.Interfaces;
 
-namespace SunRaysMarket.Server.Application.Services;
+namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 
-public class CustomerPreferencesService(
-    IHttpContextAccessor accessor,
-    ICustomerService customerService,
-    IUnitOfWork unitOfWork)
-    : ICustomerPreferencesService
+public class StoreLocationsService(ICustomerService customerService, IHttpContextAccessor accessor, IUnitOfWork unitOfWork) : IStoreLocationService
 {
+    public Task<IEnumerable<StoreListModel>> GetStoreLocationsAsync()
+        => unitOfWork.StoreRepository.GetAllStoresAsync();
+    
     public async Task SetPreferredStoreAsync(int storeId)
     {
         var user = accessor.HttpContext?.User;

@@ -27,7 +27,7 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         Assembly assembly,
         string nameSpace,
-        ServiceLifetime lifetime
+        ServiceLifetime? lifetime = null
     )
     {
         var serviceDescriptors = assembly
@@ -43,7 +43,7 @@ public static class ServiceCollectionExtensions
                     new ServiceDescriptor(
                         type,
                         serviceProvider => ActivatorUtilities.CreateInstance(serviceProvider, type),
-                        lifetime
+                        lifetime ?? MapServiceLifetime(nameSpace, type.Namespace!)
                     )
             );
 
@@ -71,12 +71,12 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddImplementationsFromNamespace(
         this IServiceCollection services,
         NamespaceDescriptor namespaceDescriptor,
-        ServiceLifetime lifetime
+        ServiceLifetime? lifetime
     ) =>
         services.AddImplementationsFromNamespace(
             namespaceDescriptor.Assembly,
             namespaceDescriptor.NameSpace,
-            lifetime
+            lifetime = null
         );
 
     /// <summary>
@@ -97,7 +97,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddImplementationsFromLocalNameSpace(
         this IServiceCollection services,
         string nameSpace,
-        ServiceLifetime lifetime
+        ServiceLifetime? lifetime = null
     ) =>
         services.AddImplementationsFromNamespace(
             Assembly.GetCallingAssembly(),
@@ -134,7 +134,7 @@ public static class ServiceCollectionExtensions
         IEnumerable<NamespaceDescriptor> interfaceNamespaces,
         Assembly implementationAssembly,
         string implementationNameSpace,
-        ServiceLifetime lifetime
+        ServiceLifetime? lifetime = null
     )
     {
         var implementationTypes = implementationAssembly
@@ -167,10 +167,12 @@ public static class ServiceCollectionExtensions
                         + $"from the given namespaces."
                 );
 
+            var lifetimeValue = lifetime ?? MapServiceLifetime(implementationNameSpace, implType.Namespace!);
+
             var serviceDescriptor = new ServiceDescriptor(
                 interfaceType,
                 (serviceProvider) => ActivatorUtilities.CreateInstance(serviceProvider, implType),
-                lifetime
+                lifetimeValue
             );
 
             services.Add(serviceDescriptor);
@@ -194,12 +196,14 @@ public static class ServiceCollectionExtensions
     /// <param name="lifetime">
     /// The lifetime of the registered services.
     /// </param>
-    /// <returns></returns>
+    /// <returns>
+    /// The <see cref="IServiceCollection"/> with the services registered.
+    /// </returns>
     public static IServiceCollection AddInterfacesWithImplementationsFromNamespace(
         this IServiceCollection services,
         IEnumerable<NamespaceDescriptor> interfaceNamespaces,
         NamespaceDescriptor implementationNamespaceDescriptor,
-        ServiceLifetime lifetime
+        ServiceLifetime? lifetime = null
     ) =>
         services.AddInterfacesWithImplementationsFromNamespace(
             interfaceNamespaces,
@@ -209,7 +213,8 @@ public static class ServiceCollectionExtensions
         );
 
     /// <summary>
-    /// Registers all classes from a given namespace in the calling assembly as services in the <see cref="IServiceCollection"/>.
+    /// Registers all classes from a given namespace in the calling assembly as services in the
+    /// <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services">
     /// The <see cref="IServiceCollection"/> to register the services in.
@@ -230,7 +235,7 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IEnumerable<NamespaceDescriptor> interfaceNamespaces,
         string implementationNamespace,
-        ServiceLifetime lifetime
+        ServiceLifetime? lifetime = null
     ) =>
         services.AddInterfacesWithImplementationsFromNamespace(
             interfaceNamespaces,
@@ -239,5 +244,19 @@ public static class ServiceCollectionExtensions
             lifetime
         );
 
+    private static ServiceLifetime MapServiceLifetime(string baseNamespace, string serviceNamespace)
+    {
+        if (serviceNamespace.StartsWith($"{baseNamespace}.Transient"))
+            return ServiceLifetime.Transient;
+
+        if (serviceNamespace.StartsWith($"{baseNamespace}.Scoped"))
+            return ServiceLifetime.Scoped;
+
+        if (serviceNamespace.StartsWith($"{baseNamespace}.Singleton"))
+            return ServiceLifetime.Singleton;
+
+        throw new InvalidOperationException("No service lifetime was indicated.");
+    }
+    
     private static readonly Regex Alphanumeric = new Regex("^[a-zA-Z0-9]+$");
 }

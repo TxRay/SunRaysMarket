@@ -3,9 +3,10 @@ using Microsoft.Extensions.Logging;
 using SunRaysMarket.Server.Application.Enums;
 using SunRaysMarket.Server.Application.Repositories;
 using SunRaysMarket.Server.Application.Results;
+using SunRaysMarket.Server.Application.Services.Auth;
 using SunRaysMarket.Server.Application.UnitOfWork;
 
-namespace SunRaysMarket.Server.Application.Services.Auth;
+namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped.Auth;
 
 internal class SignUpService(
     ILogger<SignUpService> logger,

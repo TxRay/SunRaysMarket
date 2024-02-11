@@ -3,11 +3,12 @@ using Microsoft.Extensions.Logging;
 using SunRaysMarket.Server.Application.Enums;
 using SunRaysMarket.Server.Application.Repositories;
 using SunRaysMarket.Server.Application.Results;
+using SunRaysMarket.Server.Application.Services.Auth;
 using SunRaysMarket.Server.Application.UnitOfWork;
 using SunRaysMarket.Shared.Core.DomainModels.Payment;
 using SunRaysMarket.Shared.Services.Interfaces;
 
-namespace SunRaysMarket.Server.Application.Services.Auth;
+namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped.Auth;
 
 internal class UserService(
     ILogger<UserService> logger,

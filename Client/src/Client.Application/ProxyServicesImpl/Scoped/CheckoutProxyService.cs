@@ -5,7 +5,7 @@ using SunRaysMarket.Shared.Core.DomainModels.Responses;
 using SunRaysMarket.Shared.Core.Enums;
 using SunRaysMarket.Shared.Services.Interfaces;
 
-namespace SunRaysMarket.Client.Application.ProxyServices;
+namespace SunRaysMarket.Client.Application.ProxyServicesImpl.Scoped;
 
 internal class CheckoutProxyService(
     HttpClient httpClient,

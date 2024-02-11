@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SunRaysMarket.Server.Application.Services;
 using SunRaysMarket.Server.Application.UnitOfWork;
 using SunRaysMarket.Shared.Services.Interfaces;
 
-namespace SunRaysMarket.Server.Application.Services;
+namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 
 public class CustomerAddressService(
     ICustomerService customerService,

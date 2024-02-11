@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Shared.Extensions;
 using SunRaysMarket.Server.Application.Services;
 using SunRaysMarket.Server.Application.Services.Auth;
+using SunRaysMarket.Server.Application.ServicesImpl.Scoped.Auth;
 using SunRaysMarket.Shared.Services;
 using SunRaysMarket.Shared.Services.Interfaces;
 
@@ -28,8 +29,7 @@ public static class ServiceExtensions
 
         services.AddInterfacesWithImplementationsFromLocalNamespace(
             interfaceNamespaceDescriptors,
-            "SunRaysMarket.Server.Application.Services",
-            ServiceLifetime.Scoped
+            "SunRaysMarket.Server.Application.ServicesImpl"
         );
 
         services.AddValidatorsFromAssemblyContaining<SignUpService>();

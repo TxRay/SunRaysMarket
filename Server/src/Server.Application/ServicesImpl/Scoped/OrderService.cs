@@ -1,9 +1,9 @@
 using System.Security.Claims;
+using SunRaysMarket.Server.Application.Services;
 using SunRaysMarket.Server.Application.UnitOfWork;
-using SunRaysMarket.Shared.Core.Enums;
 using SunRaysMarket.Shared.Core.Utilities.OrderCalculations;
 
-namespace SunRaysMarket.Server.Application.Services;
+namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 
 public class OrderService(ICustomerService customerService, IUnitOfWork unitOfWork) : IOrderService
 {

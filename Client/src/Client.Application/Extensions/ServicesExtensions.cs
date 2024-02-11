@@ -1,7 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Extensions;
-using SunRaysMarket.Client.Application.ProxyServices;
 using SunRaysMarket.Client.Application.State;
 using SunRaysMarket.Shared.Services;
 using SunRaysMarket.Shared.Services.Interfaces;
@@ -24,8 +23,7 @@ public static class ServicesExtensions
 
         services.AddInterfacesWithImplementationsFromLocalNamespace(
             interfaceNamespaceDescriptors,
-            "SunRaysMarket.Client.Application.ProxyServices",
-            ServiceLifetime.Scoped
+            "SunRaysMarket.Client.Application.ProxyServices"
         );
 
         services.AddSingleton<ProductModalState>();

@@ -1,12 +1,13 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using SunRaysMarket.Server.Application.Services;
 using SunRaysMarket.Server.Application.UnitOfWork;
 using SunRaysMarket.Shared.Core.DomainModels.Checkout;
 using SunRaysMarket.Shared.Core.DomainModels.Payment;
 using SunRaysMarket.Shared.Services.Builders;
 using SunRaysMarket.Shared.Services.Interfaces;
 
-namespace SunRaysMarket.Server.Application.Services;
+namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 
 internal class CheckoutService(
     IHttpContextAccessor httpContextAccessor,
