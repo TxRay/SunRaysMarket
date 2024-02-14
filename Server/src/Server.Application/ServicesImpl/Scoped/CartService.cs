@@ -11,8 +11,7 @@ public class CartService(IUnitOfWork unitOfWork, ICustomerService customerServic
 
     public async Task<IEnumerable<CartItemListModel>> GetActiveCartItemsAsync()
     {
-        var cartId = cookieService.GetCartIdCookie();
-
+        var cartId = cookieService.CartId;
         return cartId is not null ? await GetCartItemsAsync(cartId.Value) : [];
     }
 }

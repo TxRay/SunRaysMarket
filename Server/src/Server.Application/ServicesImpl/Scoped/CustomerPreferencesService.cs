@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
 using SunRaysMarket.Server.Application.Services;
 using SunRaysMarket.Server.Application.UnitOfWork;
@@ -5,48 +6,41 @@ using SunRaysMarket.Shared.Services.Interfaces;
 
 namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 
-public class CustomerPreferencesService(
-    IHttpContextAccessor accessor,
-    ICustomerService customerService,
-    IUnitOfWork unitOfWork)
+public class CustomerPreferencesService(IUnitOfWork unitOfWork, ICustomerService customerService,IHttpContextAccessor accessor)
     : ICustomerPreferencesService
 {
-    public async Task SetPreferredStoreAsync(int storeId)
+    public async Task SetCustomerPreferences(UpdateCustomerPreferencesModel model)
     {
-        var user = accessor.HttpContext?.User;
+        if (!(accessor.HttpContext?.User.IsAuthenticated() ?? false)) return;
+        
+        var customerId = await customerService.GetCurrentCustomerIdAsync(accessor.HttpContext.User);
+        if (customerId is null) return;
 
-        if (user is null)
-            return;
-
-        var customerId = await customerService.GetCurrentCustomerIdAsync(user)
-                         ?? throw new NullReferenceException("No customer data was found for the current model");
-
-        await unitOfWork.CustomerRepository.SetCustomerPreferences(
-            customerId,
-            new UpdateCustomerPreferencesModel
-            {
-                PreferredStoreId = storeId
-            }
-        );
+        await unitOfWork.CustomerRepository.SetCustomerPreferences(customerId.Value, model);
         await unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<int?> GetPreferredStoreAsync()
+    public async Task<CustomerPreferences?> GetCustomerPreferencesAsync()
     {
-        var user = accessor.HttpContext?.User;
+        if (!(accessor.HttpContext?.User.IsAuthenticated() ?? false)) return null;
+        var customerId = await customerService.GetCurrentCustomerIdAsync(accessor.HttpContext.User);
 
-        if (user is null)
-            return null;
+        if (customerId is null) return null;
+
+        return await unitOfWork.CustomerRepository.GetCustomerPreferences(customerId.Value);
+    }
+
+    public async Task<TPref?> GetCustomerPreference<TPref>(Expression<Func<CustomerPreferences, TPref>> get)
+    {
+        if (!(accessor.HttpContext?.User.IsAuthenticated() ?? false)) return default;
+        var customerId = await customerService.GetCurrentCustomerIdAsync(accessor.HttpContext.User);
+        var getPreferenceDelegate = get.Compile();
         
-        var customerId = await customerService.GetCurrentCustomerIdAsync(user)
-                         ?? throw new NullReferenceException("No customer data was found for the current model");
-
-
-        var preferences = await unitOfWork.CustomerRepository.GetCustomerPreferences(
-            customerId,
-            model => new { model.PreferredStoreId }
+        if (customerId is null) return default;
+        var preferenceObject = await unitOfWork.CustomerRepository.GetCustomerPreferences(customerId.Value,
+            cp => getPreferenceDelegate.Invoke(cp)
         );
 
-        return preferences?.GetType().GetProperty("PreferredStoreId")?.GetValue(preferences) as int?;
+        return preferenceObject is not null ? (TPref)preferenceObject : default;
     }
 }

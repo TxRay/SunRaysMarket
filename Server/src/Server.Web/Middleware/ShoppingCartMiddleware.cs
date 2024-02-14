@@ -7,7 +7,7 @@ public class ShoppingCartMiddleware(IServiceProvider serviceProvider, ICookieSer
         using var scope = serviceProvider.CreateScope();
         var customerService = scope.ServiceProvider.GetRequiredService<ICustomerService>();
 
-        var currentCartId = cookieService.GetCartIdCookie();
+        var currentCartId = cookieService.CartId;
 
         if (context.User.IsAuthenticated())
         {
@@ -19,7 +19,7 @@ public class ShoppingCartMiddleware(IServiceProvider serviceProvider, ICookieSer
                 context.Session.SetInt32("customerCartId", customerCartId.Value);
 
             if (currentCartId is null && customerCartId is not null)
-                cookieService.SetCartIdCookie(customerCartId.Value);
+                cookieService.CartId = customerCartId.Value;
             else if (currentCartId is not null && customerCartId is null)
                 await customerService.SaveCartAsync(context.User, currentCartId.Value);
         }

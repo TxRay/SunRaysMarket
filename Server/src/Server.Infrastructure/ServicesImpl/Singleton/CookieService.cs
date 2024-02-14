@@ -1,0 +1,74 @@
+using System.Linq.Expressions;
+using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using Shared.Extensions.Visitors;
+using SunRaysMarket.Server.Application.Services;
+
+namespace SunRaysMarket.Server.Infrastructure.ServicesImpl.Singleton;
+
+internal class CookieService(IHttpContextAccessor accessor) : ICookieService
+{
+    private const string Prefix = ".SunRaysMarket.";
+    private const string CartKey = Prefix + "Cart";
+    private const string PreferencesKey = Prefix + "Preferences";
+    private List<string> _updatedCookieProperties = [];
+    
+    private void SetCookie(string key, object value, CookieOptions options)
+        => accessor.HttpContext?.Response.Cookies.Append(key, JsonSerializer.Serialize(value), options);
+
+    private TValue? GetCookie<TValue>(string key)
+        => accessor.HttpContext?.Request.Cookies.TryGetValue(key, out var value) ?? false
+            ? JsonSerializer.Deserialize<TValue>(value)
+            : default;
+
+    public int? CartId
+    {
+        get => GetCookie<int?>(CartKey);
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            
+            SetCookie(CartKey, value,
+                new CookieOptions
+                {
+                    Expires = DateTimeOffset.Now.AddDays(2),
+                    SameSite = SameSiteMode.Strict,
+                    HttpOnly = true,
+                    Secure = true
+                }
+            );
+            
+            _updatedCookieProperties.Add(nameof(CartId));
+        }
+    }
+    public CustomerPreferences? Preferences { get => GetCookie<CustomerPreferences>(PreferencesKey);
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+
+            SetCookie(PreferencesKey, value, new CookieOptions
+            {
+                Expires = DateTimeOffset.Now.AddDays(30),
+                SameSite = SameSiteMode.Strict,
+                HttpOnly = true,
+                Secure = true
+            });
+            
+            _updatedCookieProperties.Add(nameof(Preferences));
+        }
+        
+    }
+
+    public bool WasCookieUpdated(Expression<Func<ICookieService, object>> selector)
+    {
+        var visitor = new PropertyNameExtractingVisitor();
+        visitor.Visit(selector);
+        
+        return _updatedCookieProperties.Contains(visitor.PropertyName);
+    }
+
+    public void Reset()
+    {
+        _updatedCookieProperties = [];
+    }
+}

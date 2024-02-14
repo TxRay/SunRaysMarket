@@ -4,7 +4,7 @@ using SunRaysMarket.Shared.Core.DomainModels.Responses;
 
 namespace SunRaysMarket.Server.Web.Endpoints;
 
-public static class CartEndpoints
+internal static class CartEndpoints
 {
     public static IEndpointRouteBuilder MapCartEndpoints(this IEndpointRouteBuilder endpoints)
     {
@@ -20,7 +20,7 @@ public static class CartEndpoints
         return endpoints;
     }
 
-    public static IEndpointRouteBuilder MapCreateCartEndpoint(this IEndpointRouteBuilder endpoints)
+    private static IEndpointRouteBuilder MapCreateCartEndpoint(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost(
             "/create",
@@ -60,14 +60,14 @@ public static class CartEndpoints
         return endpoints;
     }*/
 
-    public static IEndpointRouteBuilder UpdateCareEndpoints(this IEndpointRouteBuilder endpoints)
+    private static IEndpointRouteBuilder UpdateCareEndpoints(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPut("/update", async () => { });
 
         return endpoints;
     }
 
-    public static IEndpointRouteBuilder MapAddCartItemEndpoints(
+    private static IEndpointRouteBuilder MapAddCartItemEndpoints(
         this IEndpointRouteBuilder endpoints
     )
     {
@@ -81,7 +81,7 @@ public static class CartEndpoints
             ) =>
             {
                 var cartId =
-                    cookieService.GetCartIdCookie()
+                    cookieService.CartId
                     ?? (await cartService.CreateCartAsync()).CartId;
 
                 try

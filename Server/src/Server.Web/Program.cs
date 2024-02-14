@@ -47,6 +47,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSession();
+
+app.UseTrackedCookies();
+app.UseCustomerPreferences();
 app.UseShoppingCart();
 
 app.MapApiEndpoints();

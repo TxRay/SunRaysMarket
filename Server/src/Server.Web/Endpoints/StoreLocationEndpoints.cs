@@ -2,7 +2,7 @@ using SunRaysMarket.Shared.Core.DomainModels.Responses;
 
 namespace SunRaysMarket.Server.Web.Endpoints;
 
-public static class StoreLocationEndpoints
+internal static class StoreLocationEndpoints
 {
     public static IEndpointRouteBuilder MapStoreLocationEndpoints(this IEndpointRouteBuilder endpoints)
     {

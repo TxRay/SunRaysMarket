@@ -4,7 +4,7 @@ using SunRaysMarket.Shared.Core.DomainModels.Responses;
 
 namespace SunRaysMarket.Server.Web.Endpoints;
 
-public static class CheckoutEndpoints
+internal static class CheckoutEndpoints
 {
     public static IEndpointRouteBuilder MapCheckoutEndpoints(this IEndpointRouteBuilder endpoints)
     {

@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using SunRaysMarket.Server.Application.Preferences;
 using SunRaysMarket.Shared.Core.DomainModels.Responses;
 
 namespace SunRaysMarket.Server.Web.Endpoints;
 
-public static class CustomerEndpoints
+internal static class CustomerEndpoints
 {
     public static IEndpointRouteBuilder MapCustomerEndpoints(this IEndpointRouteBuilder endpoints)
     {
@@ -16,20 +17,22 @@ public static class CustomerEndpoints
         return endpoints;
     }
 
-    private static async Task<IResult> HandleGetCustomerStorePreference(
-        ICustomerPreferencesService customerPreferencesService)
+    private static IResult HandleGetCustomerStorePreference(
+        ICookieService cookieService)
         => Results.Json(
             new CustomerStorePreferenceResponse
             {
-                PreferredStoreId = await customerPreferencesService.GetPreferredStoreAsync()
+                PreferredStoreId = cookieService.Preferences?.PreferredStoreId
             }
         );
 
-    private static async Task<IResult> HandleSetCustomerStorePreference([FromBody] SetCustomerPreferredStoreCommand command,
-        ICustomerPreferencesService customerPreferencesService)
+    private static IResult HandleSetCustomerStorePreference([FromBody] SetCustomerPreferredStoreCommand command,
+        ICookieService cookieService)
     {
-        await customerPreferencesService.SetPreferredStoreAsync(command.PreferredStoreId);
-
+        var preferences = cookieService.Preferences ?? DefaultPreferences.Model;
+        preferences.PreferredStoreId = command.PreferredStoreId;
+        cookieService.Preferences = preferences;
+        
         return Results.StatusCode(201);
     }
 }

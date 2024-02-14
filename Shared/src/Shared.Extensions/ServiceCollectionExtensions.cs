@@ -255,7 +255,9 @@ public static class ServiceCollectionExtensions
         if (serviceNamespace.StartsWith($"{baseNamespace}.Singleton"))
             return ServiceLifetime.Singleton;
 
-        throw new InvalidOperationException("No service lifetime was indicated.");
+        throw new InvalidOperationException(
+            $"No service lifetime was indicated by the given namespace {serviceNamespace}."
+            );
     }
     
     private static readonly Regex Alphanumeric = new Regex("^[a-zA-Z0-9]+$");

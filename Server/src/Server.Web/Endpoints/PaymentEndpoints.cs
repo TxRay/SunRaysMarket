@@ -3,7 +3,7 @@ using SunRaysMarket.Shared.Core.DomainModels.Payment;
 
 namespace SunRaysMarket.Server.Web.Endpoints;
 
-public static class PaymentEndpoints
+internal static class PaymentEndpoints
 {
     public static IEndpointRouteBuilder MapPaymentEndpoints(this IEndpointRouteBuilder endpoints)
     {

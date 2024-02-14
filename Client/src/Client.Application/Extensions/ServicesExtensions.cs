@@ -21,7 +21,7 @@ public static class ServicesExtensions
 
         services.AddInterfacesWithImplementationsFromLocalNamespace(
             interfaceNamespaceDescriptors,
-            "SunRaysMarket.Client.Application.ProxyServices"
+            "SunRaysMarket.Client.Application.ProxyServicesImpl"
         );
 
         services.AddSingleton<ProductModalState>();

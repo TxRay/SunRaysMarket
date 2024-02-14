@@ -2,5 +2,5 @@ namespace SunRaysMarket.Server.Application.Preferences;
 
 public static class DefaultPreferences
 {
-    public static readonly PreferencesModel Model = new() { PreferredStoreId = 2 };
+    public static readonly CustomerPreferences Model = new() { PreferredStoreId = 2 };
 }

@@ -23,7 +23,7 @@
         var scaleY = _showMenu ? 1 : 0;
     }
 
-    <div class="store-menu" id="@StoreMenuId" 
+    <div class="store-menu" id="@StoreMenuId"
          style="--top: @menuTop; --min-width: @menuMinWidth; --scaleY: @scaleY">
         @if (_showMenu)
         {
@@ -60,7 +60,11 @@
     private SelectedStoreLocationModel StoreLocationModel { get; set; }
     private EditContext StoreLocationEditContext { get; set; }
 #nullable enable
-    private string? SelectedStoreName { get; set; }
+    private string? SelectedStoreName => 
+        StoreLocations
+        .Where(sl => sl.Id == StoreLocationModel.SelectedStoreLocationId)
+        .Select(sl => sl.LocationName)
+        .FirstOrDefault();
 
     protected override void OnInitialized()
     {
@@ -72,11 +76,7 @@
     protected override async Task OnInitializedAsync()
     {
         StoreLocations = await Service.GetStoreLocationsAsync();
-    }
-
-    protected override void OnParametersSet()
-    {
-       
+        StoreLocationModel.SelectedStoreLocationId = await Service.GetPreferredStoreAsync() ?? default;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -101,9 +101,7 @@
 
     private async void StoreLocationEditContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
     {
-        SelectedStoreName = StoreLocations.Where(model => model.Id == StoreLocationModel.SelectedStoreLocationId)
-            .Select(model => model.LocationName)
-            .FirstOrDefault();
+        await Service.SetPreferredStoreAsync(StoreLocationModel.SelectedStoreLocationId);
         _showMenu = false;
         StateHasChanged();
     }

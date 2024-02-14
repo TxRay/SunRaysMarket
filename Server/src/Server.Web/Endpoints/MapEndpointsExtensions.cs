@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace SunRaysMarket.Server.Web.Endpoints;
 
 public static class MapEndpointsExtensions
@@ -9,15 +11,18 @@ public static class MapEndpointsExtensions
             .WithGroupName("Api")
             .WithDescription("Api endpoints");
 
-        apiGroup.MapImageEndpoints();
-        //apiGroup.MapApplicationEndpoints();
-        apiGroup.MapAddressEndpoints();
-        apiGroup.MapCartEndpoints();
-        apiGroup.MapCheckoutEndpoints();
-        apiGroup.MapPaymentEndpoints();
-        apiGroup.MapProductEndpoints();
-        apiGroup.MapCustomerEndpoints();
-        apiGroup.MapStoreLocationEndpoints();
+        var mappingMethods = Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .Where(type => type is { Namespace: "SunRaysMarket.Server.Web.Endpoints", IsClass: true }
+                           && type.FullName != "SunRaysMarket.Server.Web.Endpoints.MapEndpointsExtensions")
+            .SelectMany(type => type.GetMethods()
+                .Where(method => method is { IsPublic: true, IsStatic: true })
+            );
+
+        foreach (var method in mappingMethods)
+        {
+            method.Invoke(null, [apiGroup]);
+        }
 
         return endpoints;
     }

@@ -1,6 +1,6 @@
 namespace SunRaysMarket.Server.Web.Endpoints;
 
-public static class ImageEndPoints
+internal static class ImageEndPoints
 {
     public static IEndpointRouteBuilder MapImageEndpoints(this IEndpointRouteBuilder endpoints)
     {

@@ -160,7 +160,17 @@ internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRep
         }
     }
 
-    public Task<object?> GetCustomerPreferences(int customerId, Func<CustomerPreferences, object> selector)
+    public Task<CustomerPreferences?> GetCustomerPreferences(int customerId)
+        => dbContext.Customers
+            .Where(c => c.Id == customerId)
+            .Select(
+                c => new CustomerPreferences
+                {
+                    PreferredStoreId = c.PreferredStoreId
+                }
+            ).FirstOrDefaultAsync();
+
+    public Task<object?> GetCustomerPreferences(int customerId, Func<CustomerPreferences, object?> selector)
     {
         return dbContext.Customers.Where(c => c.Id == customerId)
             .Select(c

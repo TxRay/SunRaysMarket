@@ -3,7 +3,7 @@ using SunRaysMarket.Shared.Core.DomainModels.Responses;
 
 namespace SunRaysMarket.Server.Web.Endpoints;
 
-public static class AddressEndpoints
+internal static class AddressEndpoints
 {
     public static IEndpointRouteBuilder MapAddressEndpoints(this IEndpointRouteBuilder endpoints)
     {
