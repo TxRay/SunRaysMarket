@@ -18,13 +18,15 @@
                 </div>
             }
         </div>
+        
+        var cartSummary = CartItems.GetCartSummary(); 
 
         <div class="cart-summary">
             <h4 class="cart-summary__title">Cart Summary</h4>
-            <p class="cart-summary__item">Subtotal: @CartSummary.Subtotal</p>
-            <p class="cart-summary__item">Savings: @CartSummary.Discount</p>
-            <p class="cart-summary__item">Tax: @CartSummary.Tax</p>
-            <p class="cart-summary__item">Total: @CartSummary.TotalPrice</p>
+            <p class="cart-summary__item">Subtotal: @cartSummary.Subtotal</p>
+            <p class="cart-summary__item">Savings: @cartSummary.Discount</p>
+            <p class="cart-summary__item">Tax: @cartSummary.Tax</p>
+            <p class="cart-summary__item">Total: @cartSummary.TotalPrice</p>
         </div>
         <NavLink href="/checkout" class="btn btn--md btn--primary cart-btn">Checkout</NavLink>
     }
@@ -41,9 +43,7 @@
     [CascadingParameter] private HttpContext? Context { get; set; }
 
     private IEnumerable<CartItemListModel> CartItems { get; set; } = new List<CartItemListModel>();
-
-    private CartSummaryModel CartSummary { get; set; } = new CartSummaryModel();
-
+    
     protected override async Task OnInitializedAsync()
     {
         CartItems = await Service.GetActiveCartItemsAsync();
