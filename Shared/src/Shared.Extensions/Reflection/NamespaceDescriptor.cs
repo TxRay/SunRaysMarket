@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Shared.Extensions;
+namespace SunRaysMarket.Shared.Extensions.Reflection;
 
 /// <summary>
 /// Describes a namespace in an assembly

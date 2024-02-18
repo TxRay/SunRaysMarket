@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using Shared.Extensions;
 using SunRaysMarket.Client.Application.State;
+using SunRaysMarket.Shared.Extensions.Reflection;
 using SunRaysMarket.Shared.Services;
 
 namespace SunRaysMarket.Client.Application.Extensions;

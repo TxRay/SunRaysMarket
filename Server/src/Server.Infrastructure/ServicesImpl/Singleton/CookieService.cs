@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
-using Shared.Extensions.Visitors;
 using SunRaysMarket.Server.Application.Services;
+using SunRaysMarket.Shared.Extensions.Visitors;
 
 namespace SunRaysMarket.Server.Infrastructure.ServicesImpl.Singleton;
 

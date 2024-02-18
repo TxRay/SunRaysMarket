@@ -1,12 +1,12 @@
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Shared.Extensions;
 using Stripe;
 using SunRaysMarket.Server.Application.UnitOfWork;
 using SunRaysMarket.Server.Infrastructure.PaymentServices;
 using SunRaysMarket.Server.Infrastructure.Seeding;
 using SunRaysMarket.Server.Infrastructure.UnitOfWorkImplementation;
+using SunRaysMarket.Shared.Extensions.Reflection;
 using SunRaysMarket.Shared.Services.Interfaces;
 
 namespace SunRaysMarket.Server.Infrastructure.Extensions;

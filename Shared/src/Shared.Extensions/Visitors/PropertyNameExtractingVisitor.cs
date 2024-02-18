@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace Shared.Extensions.Visitors;
+namespace SunRaysMarket.Shared.Extensions.Visitors;
 
 public class PropertyNameExtractingVisitor : ExpressionVisitor
 {

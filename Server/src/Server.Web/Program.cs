@@ -4,6 +4,8 @@ using SunRaysMarket.Server.Infrastructure.Extensions;
 using SunRaysMarket.Server.Web.Components;
 using SunRaysMarket.Server.Web.Endpoints;
 using SunRaysMarket.Server.Web.Middleware;
+using SunRaysMarket.Server.Web.RenderMethods;
+using SunRaysMarket.Shared.Extensions.RenderMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddServerInfrastructureAssembly(builder.Configuration);
 builder.Services.AddServerApplicationAssembly();
 builder.Services.AddCustomMiddleware();
+builder.Services.AddSingleton<IRenderContext, ServerRenderContext>();
 
 var app = builder.Build();
 

@@ -1,15 +1,14 @@
-using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Shared.Extensions;
+namespace SunRaysMarket.Shared.Extensions.Reflection;
 
 /// <summary>
 ///  Provides extension methods for the <see cref="IServiceCollection"/> interface to register services
 ///  from a given namespace in an assembly.
 /// </summary>
-public static class ServiceCollectionExtensions
+public static class ServiceRegistrationExtensions
 {
     /// <summary>
     ///  Registers all classes from a given namespace in an assembly as services in the <see cref="IServiceCollection"/>.
