@@ -1,29 +1,43 @@
 @namespace SunRaysMarket.Client.Components
 @rendermode InteractiveAuto
 
-<div class="checkout-section">
-    <h3 class="checkout-section__heading">@Heading</h3>
-    @if (ActionButton is not null)
+@if (ShowSection)
+{
+    var statusClass = Status switch
     {
-        <button class="checkout-section__action-btn" @onclick="HandleActionBtnClick">
-            <span>@ActionButton</span>
-            <svg>
-                <use href="/img/icons/solid.svg#chevron-right"></use>
-            </svg>
-        </button>
-    }
-    <div class="checkout-section__content">
-        @ChildContent
-    </div>
-</div>
+        CheckoutSectionStatus.Unset => string.Empty,
+        CheckoutSectionStatus.Invalid => "checkout-section--invalid",
+        CheckoutSectionStatus.Valid => "checkout-section--valid",
+        _ => string.Empty
+    };
 
+    var sectionClasses = string.Join(" ", ["checkout-section", statusClass]).Trim();
+
+    <div class="@sectionClasses">
+        <h3 class="checkout-section__heading">@Heading</h3>
+        @if (ActionButton is not null)
+        {
+            <button class="checkout-section__action-btn" @onclick="HandleActionBtnClick">
+                <span>@ActionButton</span>
+                <svg>
+                    <use href="/img/icons/solid.svg#chevron-right"></use>
+                </svg>
+            </button>
+        }
+        <div class="checkout-section__content">
+            @ChildContent
+        </div>
+    </div>
+}
 
 @code {
     [Parameter] public RenderFragment? Heading { get; set; }
     [Parameter] public RenderFragment? ActionButton { get; set; }
-    [Parameter] public bool ShowSection { get; set; }
+    [Parameter] public bool ShowSection { get; set; } = true;
+    [Parameter] public CheckoutSectionStatus Status { get; set; } = CheckoutSectionStatus.Unset;
     [Parameter] public EventCallback OnActionButtonClicked { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
+
 
     private async Task HandleActionBtnClick()
     {

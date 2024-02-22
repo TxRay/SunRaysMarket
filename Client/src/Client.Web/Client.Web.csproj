@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>SunRaysMarket.Client.Web</RootNamespace>
+        <BlazorCacheBootResources>false</BlazorCacheBootResources>
     </PropertyGroup>
 
     <ItemGroup>

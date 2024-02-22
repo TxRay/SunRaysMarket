@@ -1,9 +1,11 @@
+using SunRaysMarket.Shared.Core.Structs;
+
 namespace SunRaysMarket.Shared.Core.DomainModels;
 
 public class CartSummaryModel
 {
-    public string Subtotal { get; init; } = null!;
-    public string Discount { get; init; } = null!;
-    public string Tax { get; init; } = null!;
-    public string TotalPrice { get; init; } = null!;
+    public Price Subtotal { get; init; } 
+    public Price Discount { get; init; }
+    public Price Tax { get; init; }
+    public Price TotalPrice { get; init; }
 }

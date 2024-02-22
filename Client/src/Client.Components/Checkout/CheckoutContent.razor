@@ -1,140 +1,95 @@
 @using SunRaysMarket.Shared.Core.Payment
-@inherits OwningComponentBase<ICheckoutService>
-@inject ILogger<CheckoutContent> Logger
+@using System.Runtime.InteropServices
+@using SunRaysMarket.Client.Components.Checkout
+@using SunRaysMarket.Shared.Core.Structs
+
 @namespace SunRaysMarket.Client.Components
-@rendermode InteractiveWebAssembly
+@rendermode InteractiveAuto
 
 @if (ShouldLoadContent)
 {
     <div class="checkout__content">
         <div class="checkout-column checkout__sections">
-            <CheckoutSection
-                ShowSection="true"
-                OnActionButtonClicked="OnFulfillmentActionBtnClicked">
-                <Heading>
-                    @if (Model.FulfillmentInfo is null)
-                    {
-                        @: Delivery or Pickup
-                    }
-                    else
-                    {
-                        switch (Model.FulfillmentInfo)
-                        {
-                            case FulfillmentModel.DeliveryModel:
-                                @: Delivery
-                                break;
-                            case FulfillmentModel.PickupModel:
-                                @: Pickup
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-                    }
-                </Heading>
-                <ActionButton>
-                    @if (Model.FulfillmentInfo is null)
-                    {
-                        @: Select time
-                    }
-                    else
-                    {
-                        @: Change time
-                    }
-                </ActionButton>
-                <ChildContent>
-                    @if (Model.FulfillmentInfo is null)
-                    {
-                        <span>Please select a pickup or delivery time.</span>
-                    }
-                    else
-                    {
-                        <div>
-                            <span>@TimeSlotModel!.TimeSlotDefinition.TimeSlotRange.ToString()</span>
-                        </div>
-                    }
-                </ChildContent>
-            </CheckoutSection>
+            <FulfilmentSection @bind-Model="Model.FulfillmentInfo"/>
 
-            <CheckoutSection ShowSection="@(Model.FulfillmentInfo is not null)">
-                <Heading> Payment method</Heading>
-                <ChildContent>
-                    <EditForm EditContext="@PaymentMethodEditContext" FormName="PaymentMethodForm">
-                        <div>
-                            <InputCheckoutOptionGroup TValue="string" @bind-Value="PaymentModel.PaymentMethodId">
-                                @foreach (var (card, id) in TestCards.CardMap)
-                                {
-                                    <InputCheckoutOption Value="id" IdBase="payment">
-                                        @FormatHelpers.ShortenCardNumber(card.Number)
-                                    </InputCheckoutOption>
-                                }
-                            </InputCheckoutOptionGroup>
-                        </div>
-                    </EditForm>
-                </ChildContent>
-            </CheckoutSection>
+            @{
+                var showNext = Model.FulfillmentInfo is FulfillmentModel.NonEmptyModel
+                               && PaymentModel is not null;
+            }
+
+            <PaymentSection @bind-PaymentMethodId="@Model.PaymentMethodId" ShowPaymentSection="@showNext"/>
+
+            @{
+                showNext = showNext && Model.PaymentMethodId is not null;
+            }
+
+            <ContactInfoSection @bind-ContactNumber="Model.ContactNumber" ShowSection="showNext"/>
+
+            @{
+                var showDeliveryInstructions = showNext && Model.FulfillmentInfo is FulfillmentModel.DeliveryModel;
+            }
+
+            <DeliveryInstructionsSection @bind-DeliveryInstructions="@Model.DeliveryInstructions"
+                                         ShowSection="@showDeliveryInstructions"/>
+
         </div>
-        <CheckoutSummary/>
+
+        @{
+            var fulfillmentChargeType = Model.FulfillmentInfo switch
+            {
+                FulfillmentModel.DeliveryModel { IsValid: true } => "Delivery",
+                FulfillmentModel.PickupModel { IsValid: true } => "Pickup",
+                _ => null
+            };
+        }
+
+        <CheckoutSummary Summary="@CostSummary" FulfilmentChargeType="@fulfillmentChargeType"/>
+
         <button class="btn btn--md btn--primary checkout__submit-btn" @onclick="OnSubmitAsync">Submit</button>
     </div>
 }
 
 @code {
-    private IStore? Store { get; set; }
+#nullable disable
+    [Inject] private ILogger<CheckoutContent> Logger { get; set; }
+    [Inject] private ICheckoutService CheckoutService { get; set; }
+    [Inject] private IServiceProvider ServiceProvider { get; set; }
+#nullable enable
+
+    [Parameter, EditorRequired] public CartSummaryModel Summary { get; set; } = default!;
+
     private bool ShouldLoadContent { get; set; }
     private CheckoutModel Model { get; set; } = new();
-    private PaymentMethodModel PaymentModel { get; set; } = null!;
-    private EditContext PaymentMethodEditContext { get; set; } = null!;
-    private IModalController? ModalController { get; set; }
-    private TimeSlotModel? TimeSlotModel { get; set; }
+    private PaymentSection.PaymentMethodModel? PaymentModel { get; set; }
+    private CheckoutCostSummary CostSummary { get; set; } = default!;
 
-    protected override void OnInitialized()
-    {
-        ModalController = ScopedServices.GetService<IModalController>();
-        Store = ScopedServices.GetService<IStore>();
-    }
 
     protected override async Task OnInitializedAsync()
     {
-        if (Store is not null)
-        {
-            if (ModalController is not null)
-                ModalController.OnChange += Modal_OnChange;
+        var store = ServiceProvider.GetService<IStore>();
+        if (store is null) return;
 
-            await RetrieveFulfillmentInfoFromStore();
-            PaymentModel = await Store.TryGetValueAsync<PaymentMethodModel>("PaymentInfo")
-                           ?? new PaymentMethodModel();
-            PaymentMethodEditContext = new EditContext(PaymentModel);
-            PaymentMethodEditContext.OnFieldChanged += PaymentMethodEditContext_OnFieldChanged;
+        PaymentModel = await store.TryGetValueAsync<PaymentSection.PaymentMethodModel>("PaymentInfo")
+                       ?? new PaymentSection.PaymentMethodModel();
+        Model.PaymentMethodId = PaymentModel.PaymentMethodId;
+        Model.FulfillmentInfo = await store.TryGetValueAsync<FulfillmentModel.DeliveryModel>("FulfillmentData")
+                                ?? await store.TryGetValueAsync<FulfillmentModel.PickupModel>("FulfillmentData")
+                                    as FulfillmentModel
+                                ?? new FulfillmentModel.EmptyModel();
+        Model.ContactNumber = await store.TryGetValueAsync<string>("ContactNumber");
+        Model.DeliveryInstructions = await store.TryGetValueAsync<string>("DeliveryInstructions");
 
-            if (Model.FulfillmentInfo is FulfillmentModel.NonEmptyModel nonEmptyModel)
-                TimeSlotModel = await Service.GetCheckoutTimeSlotAsync(nonEmptyModel.TimeSlotId);
+        CostSummary = new CheckoutCostSummary { ItemTotal = Summary.TotalPrice };
 
-            ShouldLoadContent = true;
-        }
+        ShouldLoadContent = true;
     }
 
-    protected override void Dispose(bool disposing)
-    {
-        if (!disposing) return;
-
-        if (ModalController is not null)
-            ModalController.OnChange -= Modal_OnChange;
-
-        PaymentMethodEditContext.OnFieldChanged -= PaymentMethodEditContext_OnFieldChanged;
-    }
-
-    private async Task RetrieveFulfillmentInfoFromStore()
-    {
-        Model.FulfillmentInfo = await Store!.TryGetValueAsync<FulfillmentModel.DeliveryModel>("FulfillmentData")
-                                ?? await Store!.TryGetValueAsync<FulfillmentModel.PickupModel>("FulfillmentData")
-                                ?? Model.FulfillmentInfo;
-    }
 
     private async Task OnSubmitAsync()
     {
         try
         {
-            await Service.CheckoutAsync(Model.ToSubmitModel());
+            await CheckoutService.CheckoutAsync(Model.ToSubmitModel());
         }
         catch
         {
@@ -142,37 +97,11 @@
         }
     }
 
-    private async Task OnFulfillmentActionBtnClicked()
+    public record CheckoutCostSummary
     {
-        var options = new ModalOptions
-        {
-            Title = "Select time",
-            Width = "75%",
-            Height = "75%"
-        };
-
-        var context = await ModalController!.DispatchAsync<FulfillmentModal, AddressModel>(options);
-
-        Logger.LogInformation($"{context.IsVisible}");
-    }
-
-    private async void PaymentMethodEditContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
-    {
-        Logger.LogInformation("Calling 'Checkout.PaymentMethodEditContext_OnFieldChanged'.");
-        PaymentModel = PaymentMethodEditContext.Model as PaymentMethodModel ?? new PaymentMethodModel();
-        Model.PaymentMethodId = PaymentModel.PaymentMethodId;
-        await Store!.SetValueAsync("PaymentInfo", PaymentModel);
-    }
-
-    private async void Modal_OnChange()
-    {
-        await RetrieveFulfillmentInfoFromStore();
-        StateHasChanged();
-    }
-
-    private class PaymentMethodModel
-    {
-        public string? PaymentMethodId { get; set; }
+        public Price ItemTotal { get; init; }
+        public Price FulfilmentCharge { get; init; }
+        public Price GrandTotal => ItemTotal + FulfilmentCharge;
     }
 
 }

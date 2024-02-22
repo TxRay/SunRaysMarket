@@ -55,14 +55,9 @@ else
     internal bool TabsLoaded { get; private set; }
 
     private int RenderCount { get; set; } = 0;
+    
 
-    protected override void OnParametersSet()
-    {
-        RenderCount += 1;
-        Logger?.LogInformation($"RenderCount = {RenderCount}");
-    }
-
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
 
@@ -78,9 +73,8 @@ else
                 );
         }
 
-        Logger?.LogInformation("First tab loaded: {Index}", CurrentIndex);
+        await OnTabLoaded.InvokeAsync(CurrentIndex);
         TabsLoaded = TabIndex.Any();
-        OnTabLoaded.InvokeAsync(CurrentIndex);
         StateHasChanged();
     }
 
@@ -98,10 +92,14 @@ else
     {
         if (index == CurrentIndex) return;
 
+        TabsLoaded = false;
+        StateHasChanged();
         await OnTabUnloaded.InvokeAsync(CurrentIndex);
+  
+        
         await OnTabLoaded.InvokeAsync(index);
-
         CurrentIndex = index;
+        TabsLoaded = true;
         StateHasChanged();
     }
 

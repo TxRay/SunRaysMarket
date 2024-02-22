@@ -6,6 +6,8 @@ public class CheckoutModel
 {
     public FulfillmentModel FulfillmentInfo { get; set; } = new FulfillmentModel.EmptyModel();
     public string? PaymentMethodId { get; set; }
+    public string? ContactNumber { get; set; }
+    public string? DeliveryInstructions { get; set; }
 
     public CheckoutSubmitModel ToSubmitModel()
     {

@@ -1,4 +1,5 @@
 using SunRaysMarket.Shared.Core.DomainModels;
+using SunRaysMarket.Shared.Core.Structs;
 
 namespace SunRaysMarket.Shared.Core.Utilities;
 
@@ -16,10 +17,10 @@ public static class CartSummary
 
         return new CartSummaryModel
         {
-            Subtotal = FormatHelpers.ToCurrencyString(subtotal),
-            Discount = FormatHelpers.ToCurrencyString(discount),
-            Tax = FormatHelpers.ToCurrencyString(tax),
-            TotalPrice = FormatHelpers.ToCurrencyString(totalPrice)
+            Subtotal = new Price(subtotal),
+            Discount = new Price(discount),
+            Tax = new Price(tax),
+            TotalPrice = new Price(totalPrice)
         };
     }
 }

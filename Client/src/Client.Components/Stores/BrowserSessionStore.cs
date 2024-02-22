@@ -15,7 +15,11 @@ public class BrowserSessionStore(IJSRuntime jsRuntime) : IStore
         try
         {
             var valueJson = await _accessor.Value.InvokeAsync<string>("get", PrefixKey(key));
-            return JsonSerializer.Deserialize<T>(valueJson);
+            var obj = JsonSerializer.Deserialize<T>(valueJson);
+
+            Console.WriteLine($"Json data was successfully deserialized into type '{typeof(T).FullName}'");
+            
+            return obj;
         }
         catch (Exception e)
         {

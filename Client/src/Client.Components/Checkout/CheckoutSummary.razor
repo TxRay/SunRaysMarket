@@ -1,10 +1,33 @@
+@using System.Runtime.InteropServices
 @namespace SunRaysMarket.Client.Components
-@rendermode InteractiveWebAssembly
 
-<div class="checkout__summary">
-    
+<div class="checkout-summary">
+    <h3 class="checkout-summary__title">Order Summary</h3>
+    <div class="checkout-summary__list">
+        <div class="checkout-summary__item">
+            <span class="checkout-summary__label">Subtotal:</span>
+            <span>@Summary.ItemTotal</span>
+        </div>
+
+        @if (FulfilmentChargeType is not null)
+        {
+            <div>
+                <span class="checkout-summary__label">@FulfilmentChargeType Charge:</span>
+                <span>@Summary.FulfilmentCharge</span>
+            </div>
+            <div>
+                <span class="checkout-summary__label">Total:</span>
+                <span>@Summary.GrandTotal</span>
+            </div>
+        }
+    </div>
 </div>
 
 @code {
-    
+#nullable disable
+    [Inject] IStore Store { get; set; }
+#nullable enable
+
+    [Parameter, EditorRequired] public CheckoutContent.CheckoutCostSummary Summary { get; set; } = default!;
+    [Parameter] public string? FulfilmentChargeType { get; set; }
 }
