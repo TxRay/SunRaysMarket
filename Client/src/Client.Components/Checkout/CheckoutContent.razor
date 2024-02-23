@@ -1,55 +1,63 @@
 @using SunRaysMarket.Shared.Core.Payment
 @using System.Runtime.InteropServices
 @using SunRaysMarket.Client.Components.Checkout
+@using SunRaysMarket.Libraries.Components.State
 @using SunRaysMarket.Shared.Core.Structs
 
 @namespace SunRaysMarket.Client.Components
 @rendermode InteractiveAuto
 
-@if (ShouldLoadContent)
-{
-    <div class="checkout__content">
-        <div class="checkout-column checkout__sections">
-            <FulfilmentSection @bind-Model="Model.FulfillmentInfo"/>
+<DisplayByUiState State="@_uiState">
+    <UiLoading>
+        <RingSpinner ColorProperty="red" SizeProperty="8rem"/>
+    </UiLoading>
+    <UiLoaded>
+        <div class="checkout__content">
+            <div class="checkout-column checkout__sections">
+                <FulfilmentSection @bind-Model="Model.FulfillmentInfo"/>
+
+                @{
+                    var showNext = Model.FulfillmentInfo is FulfillmentModel.NonEmptyModel
+                                   && PaymentModel is not null;
+                }
+
+                <PaymentSection @bind-PaymentMethodId="@Model.PaymentMethodId" ShowPaymentSection="@showNext"/>
+
+                @{
+                    showNext = showNext && Model.PaymentMethodId is not null;
+                }
+
+                <ContactInfoSection @bind-ContactNumber="Model.ContactNumber" ShowSection="showNext"/>
+
+                @{
+                    var showDeliveryInstructions = showNext && Model.FulfillmentInfo is FulfillmentModel.DeliveryModel;
+                }
+
+                <DeliveryInstructionsSection @bind-DeliveryInstructions="@Model.DeliveryInstructions"
+                                             ShowSection="@showDeliveryInstructions"/>
+
+            </div>
 
             @{
-                var showNext = Model.FulfillmentInfo is FulfillmentModel.NonEmptyModel
-                               && PaymentModel is not null;
+                var fulfillmentChargeType = Model.FulfillmentInfo switch
+                {
+                    FulfillmentModel.DeliveryModel { IsValid: true } => "Delivery",
+                    FulfillmentModel.PickupModel { IsValid: true } => "Pickup",
+                    _ => null
+                };
             }
 
-            <PaymentSection @bind-PaymentMethodId="@Model.PaymentMethodId" ShowPaymentSection="@showNext"/>
+            <CheckoutSummary Summary="@CostSummary" FulfilmentChargeType="@fulfillmentChargeType"/>
 
-            @{
-                showNext = showNext && Model.PaymentMethodId is not null;
-            }
-
-            <ContactInfoSection @bind-ContactNumber="Model.ContactNumber" ShowSection="showNext"/>
-
-            @{
-                var showDeliveryInstructions = showNext && Model.FulfillmentInfo is FulfillmentModel.DeliveryModel;
-            }
-
-            <DeliveryInstructionsSection @bind-DeliveryInstructions="@Model.DeliveryInstructions"
-                                         ShowSection="@showDeliveryInstructions"/>
-
+            <button class="btn btn--md btn--primary checkout__submit-btn" @onclick="OnSubmitAsync">Submit</button>
         </div>
+    </UiLoaded>
+</DisplayByUiState>
 
-        @{
-            var fulfillmentChargeType = Model.FulfillmentInfo switch
-            {
-                FulfillmentModel.DeliveryModel { IsValid: true } => "Delivery",
-                FulfillmentModel.PickupModel { IsValid: true } => "Pickup",
-                _ => null
-            };
-        }
-
-        <CheckoutSummary Summary="@CostSummary" FulfilmentChargeType="@fulfillmentChargeType"/>
-
-        <button class="btn btn--md btn--primary checkout__submit-btn" @onclick="OnSubmitAsync">Submit</button>
-    </div>
-}
 
 @code {
+    private UiState _uiState = UiState.Loading;
+
 #nullable disable
     [Inject] private ILogger<CheckoutContent> Logger { get; set; }
     [Inject] private ICheckoutService CheckoutService { get; set; }
@@ -58,7 +66,6 @@
 
     [Parameter, EditorRequired] public CartSummaryModel Summary { get; set; } = default!;
 
-    private bool ShouldLoadContent { get; set; }
     private CheckoutModel Model { get; set; } = new();
     private PaymentSection.PaymentMethodModel? PaymentModel { get; set; }
     private CheckoutCostSummary CostSummary { get; set; } = default!;
@@ -81,7 +88,7 @@
 
         CostSummary = new CheckoutCostSummary { ItemTotal = Summary.TotalPrice };
 
-        ShouldLoadContent = true;
+        _uiState = UiState.Loaded;
     }
 
 

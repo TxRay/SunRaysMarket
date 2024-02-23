@@ -1,88 +1,90 @@
+@using SunRaysMarket.Libraries.Components.State
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
-@if (_loadSection)
-{
-    <CheckoutSection
-        ShowSection="true"
-        OnActionButtonClicked="OnFulfillmentActionBtnClicked"
-        Status="@Status">
-        <Heading>
-            <span>
-                @switch (Model)
-                {
-                    case FulfillmentModel.DeliveryModel:
-                        @: Delivery
-                        break;
-                    case FulfillmentModel.PickupModel:
-                        @: Pickup
-                        break;
-                    default:
-                        @: Pickup or Delivery
-                        break;
-                }
-            </span>
-        </Heading>
-        <ActionButton>
-            @if (Model is FulfillmentModel.NonEmptyModel)
-            {
-                @: Change time
-            }
-            else
-            {
-                @: Select time
-            }
-
-        </ActionButton>
-        <ChildContent>
+<CheckoutSection
+    ShowSection="true"
+    OnActionButtonClicked="OnFulfillmentActionBtnClicked"
+    Status="@Status"
+    ComponentUiState="@_sectionUiState">
+    <Heading>
+        <span>
             @switch (Model)
             {
-                case FulfillmentModel.EmptyModel:
-                    <span class="fulfillment-section__content--invalid">
-                        Please select a pickup or delivery time.
-                    </span>
+                case FulfillmentModel.DeliveryModel:
+                    @: Delivery
                     break;
-                case FulfillmentModel.NonEmptyModel { TimeSlotId: 0 }:
-                    <span class="fulfillment-section__content--invalid">
-                        Please select a timeslot.
-                    </span>
-                    break;
-                case FulfillmentModel.DeliveryModel { DeliveryAddressId: null or 0 }:
-                    <span class="fulfillment-section__content--invalid"> Please provide a delivery address </span>
-                    break;
-                case FulfillmentModel.DeliveryModel { IsValid: true }:
-                    <div class="fulfillment-section__content--valid">
-                        <span class="fulfilment-section__line">
-                            Between @_timeSlotModel?.TimeSlotDefinition.TimeSlotRange.ToString()
-                        </span>
-
-                        @if (_address is not null)
-                        {
-                            <span> to @_address.Street, @_address.City, @_address.State.</span>
-                        }
-                    </div>
-                    break;
-                case FulfillmentModel.PickupModel { IsValid: true }:
-                    <div class="fulfillment-section__content--valid">
-                        <span class="fulfilment-section__line">
-                            Between @_timeSlotModel?.TimeSlotDefinition.TimeSlotRange.ToString()
-                        </span>
-                        <span class="fulfilment-section__line">
-                            at the @_storeLocationName Location.
-                        </span>
-                    </div>
+                case FulfillmentModel.PickupModel:
+                    @: Pickup
                     break;
                 default:
-                    <span class="fulfillment-section__content--invalid">
-                        Please be sure to select all required options.
-                    </span>
+                    @: Pickup or Delivery
                     break;
             }
-        </ChildContent>
-    </CheckoutSection>
-}
+        </span>
+    </Heading>
+    <ActionButton>
+        @if (Model is FulfillmentModel.NonEmptyModel)
+        {
+            @: Change time
+        }
+        else
+        {
+            @: Select time
+        }
+
+    </ActionButton>
+    <ChildContent>
+        @switch (Model)
+        {
+            case FulfillmentModel.EmptyModel:
+                <span class="fulfillment-section__content--invalid">
+                    Please select a pickup or delivery time.
+                </span>
+                break;
+            case FulfillmentModel.NonEmptyModel { TimeSlotId: 0 }:
+                <span class="fulfillment-section__content--invalid">
+                    Please select a timeslot.
+                </span>
+                break;
+            case FulfillmentModel.DeliveryModel { DeliveryAddressId: null or 0 }:
+                <span class="fulfillment-section__content--invalid"> Please provide a delivery address </span>
+                break;
+            case FulfillmentModel.DeliveryModel { IsValid: true }:
+                <div class="fulfillment-section__content--valid">
+                    <span class="fulfilment-section__line">
+                        Between @_timeSlotModel?.TimeSlotDefinition.TimeSlotRange.ToString()
+                    </span>
+
+                    @if (_address is not null)
+                    {
+                        <span> to @_address.Street, @_address.City, @_address.State.</span>
+                    }
+                </div>
+                break;
+            case FulfillmentModel.PickupModel { IsValid: true }:
+                <div class="fulfillment-section__content--valid">
+                    <span class="fulfilment-section__line">
+                        Between @_timeSlotModel?.TimeSlotDefinition.TimeSlotRange.ToString()
+                    </span>
+                    <span class="fulfilment-section__line">
+                        at the @_storeLocationName Location.
+                    </span>
+                </div>
+                break;
+            default:
+                <span class="fulfillment-section__content--invalid">
+                    Please be sure to select all required options.
+                </span>
+                break;
+        }
+    </ChildContent>
+    <ErrorContent>
+        <p>Something went wrong while loading the content.</p>
+    </ErrorContent>
+</CheckoutSection>
 
 @code {
-    private bool _loadSection;
+    private UiState _sectionUiState = UiState.Loading;
     private AddressModel? _address;
     private string _storeLocationName = string.Empty;
     private TimeSlotModel? _timeSlotModel;
@@ -108,15 +110,17 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (Store is not null)
+        if (Store is null)
         {
-            if (ModalController is not null)
-                ModalController.OnChange += Modal_OnChange;
-
-            await RetrieveFulfillmentInfo();
+            _sectionUiState = UiState.Error;
+            return;
         }
 
-        _loadSection = true;
+        if (ModalController is not null)
+            ModalController.OnChange += Modal_OnChange;
+
+        await RetrieveFulfillmentInfo();
+        _sectionUiState = UiState.Loaded;
     }
 
     private async Task RetrieveFulfillmentInfo()

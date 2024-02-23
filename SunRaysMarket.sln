@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Services", "Shared\s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Extensions", "Shared\src\Shared.Extensions\Shared.Extensions.csproj", "{DBE69630-01A5-4B07-99CE-A18C641CCEB8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libraries.Components", "Libraries.Components\Libraries.Components.csproj", "{7A1F473D-99B8-4755-9ACD-5B6B55FAFB5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{DBE69630-01A5-4B07-99CE-A18C641CCEB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBE69630-01A5-4B07-99CE-A18C641CCEB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBE69630-01A5-4B07-99CE-A18C641CCEB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A1F473D-99B8-4755-9ACD-5B6B55FAFB5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A1F473D-99B8-4755-9ACD-5B6B55FAFB5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A1F473D-99B8-4755-9ACD-5B6B55FAFB5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A1F473D-99B8-4755-9ACD-5B6B55FAFB5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
