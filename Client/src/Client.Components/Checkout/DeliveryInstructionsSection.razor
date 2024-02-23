@@ -29,5 +29,6 @@
     private async void DeliveryInstructionsEditContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
     {
         await Store.SetValueAsync("DeliveryInstructions", DeliveryInstructions);
+        await DeliveryInstructionsChanged.InvokeAsync(DeliveryInstructions);
     }
 }

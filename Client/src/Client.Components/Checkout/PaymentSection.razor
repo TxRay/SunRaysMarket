@@ -60,6 +60,7 @@
         PaymentModel = PaymentMethodEditContext.Model as PaymentMethodModel ?? new PaymentMethodModel();
         PaymentMethodId = PaymentModel.PaymentMethodId;
         await Store!.SetValueAsync("PaymentInfo", PaymentModel);
+        await PaymentMethodIdChanged.InvokeAsync(PaymentMethodId);
     }
 
     internal class PaymentMethodModel
