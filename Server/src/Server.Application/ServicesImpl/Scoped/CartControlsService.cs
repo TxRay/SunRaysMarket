@@ -36,21 +36,14 @@ internal class CartControlsService(
     }
 
     public async Task<CartItemControlModel?> GetCartItemInfoAsync(int cartItemId)
-    {
-        var context = httpContextAccessor.HttpContext;
-        var cartId = cookieService.CartId;
-
-        return cartId is null
-            ? null
-            : (await unitOfWork.CartRepository.GetAllCartItemInfoAsync(cartItemId)).FirstOrDefault(
-                ci => ci.Id == cartItemId
-            );
-    }
-
+        => (await GetAllCartItemInfoAsync()).FirstOrDefault(
+            ci => ci.Id == cartItemId
+        );
+    
     public async Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync()
     {
         var context = httpContextAccessor.HttpContext;
-        var cartId= cookieService.CartId;
+        var cartId = cookieService.CartId;
 
         if (cartId is null)
             return [];
