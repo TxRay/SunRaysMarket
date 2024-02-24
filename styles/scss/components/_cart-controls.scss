@@ -5,15 +5,22 @@
   gap: var.$spacing-s;
   justify-content: space-between;
   align-items: center;
-  
+
   &--visible {
     display: flex;
   }
 
   &__add-icon {
-    width: var.$fs-l;
-    aspect-ratio:  1 / 1;
+    aspect-ratio: 1 / 1;
     fill: #fff;
+
+    &--sm {
+      width: var.$fs-m;
+    }
+    
+    &--md {
+      width: var.$fs-l;
+    }
   }
 
   &__remove-btn {
@@ -21,8 +28,6 @@
     background-color: transparent;
     cursor: pointer;
   }
-  
-  
 
   &__remove-icon {
     width: var.$fs-2xl;
@@ -33,7 +38,7 @@
   &__remove-btn:hover > &__remove-icon {
     fill: lighten(var.$color-danger, 10%);
   }
-  
+
 }
 
 .quantity {
@@ -43,18 +48,24 @@
   border-radius: 2rem;
   background-color: var.$color-primary-dark;
   padding: var.$spacing-xs var.$spacing-s;
-  
-  &__btn {
+
+  button {
     border: none;
     background-color: transparent;
     cursor: pointer;
+
+    svg {
+      aspect-ratio: 1 / 1;
+      fill: var.$color-grey-light-1;
+    }
+
   }
 
-  &__btn:hover > &__icon {
+  button:hover > svg {
     fill: var.$color-grey-dark-1;
   }
 
-  &__btn:disabled > &__icon {
+  button:disabled > svg {
     fill: var.$color-grey-light-2;
   }
 
@@ -64,19 +75,12 @@
     background-color: var.$color-grey-light-2;
   }
 
-  &__icon {
-    width: var.$fs-m;
-    aspect-ratio: 1 / 1;
-    fill: var.$color-grey-light-1;
-  }
-  
-  &__input {
-    font-size: var.$fs-m;
+  input {
     font-weight: 300;
     color: var.$color-grey-light-1;
     border: none;
     padding: 0 1rem;
-    width: 4rem;
+
     text-align: center;
     appearance: textfield;
     background-color: transparent;
@@ -84,5 +88,44 @@
     &:focus {
       outline: none;
     }
+  }
+
+  &--sm {
+    button svg {
+      width: var.$fs-s;
+    }
+
+    input {
+      width: var.$spacing-2xl;
+      font-size: var.$fs-l;
+    }
+
+  }
+
+  &--md {
+
+    button svg {
+      width: var.$fs-m;
+    }
+
+    input {
+      width: var.$spacing-xl;
+      font-size: var.$fs-m;
+    }
+
+  }
+
+  &--lg {
+
+    button svg {
+      width: var.$fs-l;
+
+    }
+
+    input {
+      width: var.$spacing-l;
+      font-size: var.$fs-s;
+    }
+
   }
 }

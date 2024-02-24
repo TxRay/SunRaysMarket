@@ -196,9 +196,14 @@ body {
   display: flex;
 }
 .cart-controls__add-icon {
-  width: 1.8rem;
   aspect-ratio: 1/1;
   fill: #fff;
+}
+.cart-controls__add-icon--sm {
+  width: 1.6rem;
+}
+.cart-controls__add-icon--md {
+  width: 1.8rem;
 }
 .cart-controls__remove-btn {
   border: none;
@@ -222,15 +227,19 @@ body {
   background-color: #1c2837;
   padding: 0.8rem 1.6rem;
 }
-.quantity__btn {
+.quantity button {
   border: none;
   background-color: transparent;
   cursor: pointer;
 }
-.quantity__btn:hover > .quantity__icon {
+.quantity button svg {
+  aspect-ratio: 1/1;
+  fill: #f5f5f5;
+}
+.quantity button:hover > svg {
   fill: #8c8c8c;
 }
-.quantity__btn:disabled > .quantity__icon {
+.quantity button:disabled > svg {
   fill: #d6d6d6;
 }
 .quantity__divider {
@@ -238,24 +247,38 @@ body {
   height: 1.6rem;
   background-color: #d6d6d6;
 }
-.quantity__icon {
-  width: 1.6rem;
-  aspect-ratio: 1/1;
-  fill: #f5f5f5;
-}
-.quantity__input {
-  font-size: 1.6rem;
+.quantity input {
   font-weight: 300;
   color: #f5f5f5;
   border: none;
   padding: 0 1rem;
-  width: 4rem;
   text-align: center;
   appearance: textfield;
   background-color: transparent;
 }
-.quantity__input:focus {
+.quantity input:focus {
   outline: none;
+}
+.quantity--sm button svg {
+  width: 1.4rem;
+}
+.quantity--sm input {
+  width: 4.8rem;
+  font-size: 1.8rem;
+}
+.quantity--md button svg {
+  width: 1.6rem;
+}
+.quantity--md input {
+  width: 4rem;
+  font-size: 1.6rem;
+}
+.quantity--lg button svg {
+  width: 1.8rem;
+}
+.quantity--lg input {
+  width: 3.2rem;
+  font-size: 1.4rem;
 }
 
 .btn, .btn:link, .btn:visited {
