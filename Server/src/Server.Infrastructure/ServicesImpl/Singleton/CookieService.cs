@@ -12,9 +12,17 @@ internal class CookieService(IHttpContextAccessor accessor) : ICookieService
     private const string CartKey = Prefix + "Cart";
     private const string PreferencesKey = Prefix + "Preferences";
     private List<string> _updatedCookieProperties = [];
-    
+
     private void SetCookie(string key, object value, CookieOptions options)
         => accessor.HttpContext?.Response.Cookies.Append(key, JsonSerializer.Serialize(value), options);
+
+    private void DeleteCookie(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+            return;
+
+        accessor.HttpContext?.Response.Cookies.Delete(key);
+    }
 
     private TValue? GetCookie<TValue>(string key)
         => accessor.HttpContext?.Request.Cookies.TryGetValue(key, out var value) ?? false
@@ -27,7 +35,7 @@ internal class CookieService(IHttpContextAccessor accessor) : ICookieService
         set
         {
             ArgumentNullException.ThrowIfNull(value);
-            
+
             SetCookie(CartKey, value,
                 new CookieOptions
                 {
@@ -37,11 +45,14 @@ internal class CookieService(IHttpContextAccessor accessor) : ICookieService
                     Secure = true
                 }
             );
-            
+
             _updatedCookieProperties.Add(nameof(CartId));
         }
     }
-    public CustomerPreferences? Preferences { get => GetCookie<CustomerPreferences>(PreferencesKey);
+
+    public CustomerPreferences? Preferences
+    {
+        get => GetCookie<CustomerPreferences>(PreferencesKey);
         set
         {
             ArgumentNullException.ThrowIfNull(value);
@@ -53,18 +64,32 @@ internal class CookieService(IHttpContextAccessor accessor) : ICookieService
                 HttpOnly = true,
                 Secure = true
             });
-            
+
             _updatedCookieProperties.Add(nameof(Preferences));
         }
-        
     }
 
     public bool WasCookieUpdated(Expression<Func<ICookieService, object>> selector)
     {
         var visitor = new PropertyNameExtractingVisitor();
         visitor.Visit(selector);
-        
+
         return _updatedCookieProperties.Contains(visitor.PropertyName);
+    }
+
+    public void DeleteCookie(Expression<Func<ICookieService, object>> selector)
+    {
+        var visitor = new PropertyNameExtractingVisitor();
+        visitor.Visit(selector);
+
+        var deleteKey = visitor.PropertyName switch
+        {
+            "CartId" => CartKey,
+            "Preferences" => PreferencesKey,
+            _ => string.Empty
+        };
+
+        DeleteCookie(deleteKey);
     }
 
     public void Reset()

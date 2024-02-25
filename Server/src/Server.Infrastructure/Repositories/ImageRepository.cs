@@ -1,16 +1,12 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
 using SunRaysMarket.Server.Application.Repositories;
+using SunRaysMarket.Server.Infrastructure.Cache;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
-internal class ImageRepository : IImageRepository
+internal class ImageRepository(ApplicationDbContext dbContext, IDistributedCache cache) : IImageRepository
 {
-    private readonly ApplicationDbContext _dbContext;
-
-    public ImageRepository(ApplicationDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
 
     public async Task<string> UploadAsync(IFormFile file)
     {
@@ -27,14 +23,14 @@ internal class ImageRepository : IImageRepository
             Data = data
         };
 
-        await _dbContext.Images.AddAsync(model);
+        await dbContext.Images.AddAsync(model);
 
         return model.UrlIdentifier.ToString();
     }
 
     public async Task<string?> GetUrlAsync(Guid urlIdentifier)
     {
-        return await _dbContext
+        return await dbContext
             .Images
             .Where(i => i.UrlIdentifier == urlIdentifier)
             .Select(i => i.Url)
@@ -42,14 +38,18 @@ internal class ImageRepository : IImageRepository
     }
 
     public async Task<ImageDownloadModel?> DownloadAsync(string urlHandle)
-    {
-        var handleSplit = urlHandle.Split(".");
-        var urlIdentifier = Guid.Parse(handleSplit[0]);
+        => await cache.SetOrFetchAsync(
+            $"Image_{urlHandle}",
+            async () =>
+            {
+                var handleSplit = urlHandle.Split(".");
+                var urlIdentifier = Guid.Parse(handleSplit[0]);
 
-        return await _dbContext
-            .Images
-            .Where(i => i.UrlIdentifier == urlIdentifier)
-            .Select(i => new ImageDownloadModel { ContentType = i.ContentType, Data = i.Data })
-            .FirstOrDefaultAsync();
-    }
+                return await dbContext
+                    .Images
+                    .Where(i => i.UrlIdentifier == urlIdentifier)
+                    .Select(i => new ImageDownloadModel { ContentType = i.ContentType, Data = i.Data })
+                    .FirstOrDefaultAsync();
+            }
+        );
 }

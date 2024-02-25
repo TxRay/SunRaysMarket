@@ -1,8 +1,11 @@
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using SunRaysMarket.Server.Application.Repositories;
+using SunRaysMarket.Server.Infrastructure.Cache;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
-internal class CartRepository(ApplicationDbContext dbContext) : ICartRepository
+internal class CartRepository(ApplicationDbContext dbContext, IDistributedCache cache) : ICartRepository
 {
     private Cart? CartPersistenceModel { get; set; }
     private CartItem? CartItemPersistenceModel { get; set; }
@@ -33,9 +36,8 @@ internal class CartRepository(ApplicationDbContext dbContext) : ICartRepository
             };
     }
 
-    public async Task<IEnumerable<CartItemListModel>> GetCartItemsAsync(int cartId)
-    {
-        return await dbContext
+    private IQueryable<CartItemListModel> QueryCartItems(int cartId)
+        => dbContext
             .Carts
             .Include(c => c.CartItems)
             .ThenInclude(ci => ci.Product)
@@ -55,13 +57,22 @@ internal class CartRepository(ApplicationDbContext dbContext) : ICartRepository
                         RegularPrice = ci.Product.Price,
                         DiscountDecimal = ci.Product.DiscountPercent
                     }
-            )
-            .ToListAsync();
-    }
+            );
+
+    public async Task<IEnumerable<CartItemListModel>> GetCartItemsAsync(int cartId)
+        => await QueryCartItems(cartId).ToArrayAsync();
+
+    public IAsyncEnumerable<CartItemListModel> GetCartItemsAsyncEnumerable(int cartId)
+        => QueryCartItems(cartId).AsAsyncEnumerable();
 
     public async Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync(int cartId)
     {
-        return await dbContext
+        const string key = "GetCartInfoList";
+
+        if (cache.TryGetValue<IEnumerable<CartItemControlModel>>(key, out var cachedCartItemInfoList))
+            return cachedCartItemInfoList!;
+
+        var fetchedCartItemInfoList = await dbContext
             .CartItems
             .Where(ci => ci.CartId == cartId)
             .Select(
@@ -73,8 +84,18 @@ internal class CartRepository(ApplicationDbContext dbContext) : ICartRepository
                         Quantity = ci.Quantity
                     }
             )
-            .ToListAsync();
+            .ToArrayAsync();
+
+        await cache.SetValueAsync(
+            key, fetchedCartItemInfoList, 
+            new DistributedCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTimeOffset.Now.Add(TimeSpan.FromSeconds(60))
+        });
+
+        return fetchedCartItemInfoList;
     }
+
 
     public async Task<CartItemControlModel?> GetCartItemControlInfoAsync(
         int cartId,

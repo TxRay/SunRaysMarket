@@ -24,7 +24,8 @@ public static class ServiceExtensions
         services.AddUnitOfWorkServices();
         services.AddSeederServices();
         services.AddStripe(configuration);
-        services.AddServiceImplementations();
+        services.AddServiceImplementations(); 
+        services.AddDistributedMemoryCache();
 
         return services;
     }

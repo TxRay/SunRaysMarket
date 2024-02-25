@@ -1,35 +1,31 @@
+using Microsoft.Extensions.Caching.Distributed;
 using SunRaysMarket.Server.Application.Repositories;
+using SunRaysMarket.Server.Infrastructure.Cache;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
-internal class DepartmentRepository : IDepartmentRepository
+internal class DepartmentRepository(ApplicationDbContext dbContext, IDistributedCache cache) : IDepartmentRepository
 {
-    private readonly ApplicationDbContext _dbContext;
-
-    public DepartmentRepository(ApplicationDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     public async Task<IEnumerable<DepartmentListModel>> GetAllAsync()
-    {
-        return await _dbContext
-            .Departments
-            .Select(
-                d =>
-                    new DepartmentListModel
-                    {
-                        Id = d.Id,
-                        Name = d.Name,
-                        Slug = d.Slug
-                    }
-            )
-            .ToListAsync();
-    }
+        => await cache.SetOrFetchAsync(
+            "GetAllDepartments",
+            async () => await dbContext
+                .Departments
+                .Select(
+                    d =>
+                        new DepartmentListModel
+                        {
+                            Id = d.Id,
+                            Name = d.Name,
+                            Slug = d.Slug
+                        }
+                )
+                .ToArrayAsync()
+        );
 
     public async Task<UpdateDepartmentModel?> GetForEditAsync(int id)
     {
-        return await _dbContext
+        return await dbContext
             .Departments
             .Where(d => d.Id == id)
             .Select(
@@ -53,12 +49,12 @@ internal class DepartmentRepository : IDepartmentRepository
             Description = model.Description
         };
 
-        await _dbContext.Departments.AddAsync(department);
+        await dbContext.Departments.AddAsync(department);
     }
 
     public async Task UpdateAsync(UpdateDepartmentModel model)
     {
-        var department = await _dbContext.Departments.FindAsync(model.Id);
+        var department = await dbContext.Departments.FindAsync(model.Id);
 
         if (department is null)
             return;
@@ -70,9 +66,9 @@ internal class DepartmentRepository : IDepartmentRepository
 
     public async Task DeleteAsync(int id)
     {
-        var department = await _dbContext.Departments.FindAsync(id);
+        var department = await dbContext.Departments.FindAsync(id);
 
         if (department is not null)
-            _dbContext.Remove(department);
+            dbContext.Remove(department);
     }
 }
