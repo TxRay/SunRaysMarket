@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.Extensions.Logging;
-using SunRaysMarket.Server.Components.Enums;
-using SunRaysMarket.Server.Components.Enums.Mappings;
+using SunRaysMarket.Shared.Components.Enums;
+using SunRaysMarket.Shared.Components.Enums.Mappings;
 
-namespace SunRaysMarket.Server.Components;
+namespace SunRaysMarket.Shared.Components;
 
 public class PageLayout : ComponentBase
 {

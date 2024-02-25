@@ -1,53 +1,34 @@
 @page "/shopping-cart"
-@using SunRaysMarket.Server.Components.Enums
-@inherits OwningComponentBase<ICartService>
+@*@attribute [StreamRendering]*@
+@inherits OwningComponentBase
+
 
 <PageLayout CssClasses="shopping-cart" ContentWidth="ContentWidth.PageContent">
     <h3 class="cart-title">Shopping Cart</h3>
-
-    @if (CartItems.Any())
-    {
-        <div class="cart-item-display">
-            @foreach (var item in CartItems)
-            {
-                <div class="cart-item">
-                    <img src="@item.ProductPhotoUrl" alt="Product photo" class="cart-item__product-img">
-                    <h5 class="cart-item__product-name">@item.ProductName</h5>
-                    <p class="cart-item__product-price">@FormatHelpers.ToCurrencyString(item.ProductPrice)</p>
-                    <p class="cart-item__product-quantity">@item.Quantity</p>
-                </div>
-            }
-        </div>
-        
-        var cartSummary = CartItems.GetCartSummary(); 
-
-        <div class="cart-summary">
-            <h4 class="cart-summary__title">Cart Summary</h4>
-            <p class="cart-summary__item">Subtotal: @cartSummary.Subtotal</p>
-            <p class="cart-summary__item">Savings: @cartSummary.Discount</p>
-            <p class="cart-summary__item">Tax: @cartSummary.Tax</p>
-            <p class="cart-summary__item">Total: @cartSummary.TotalPrice</p>
-        </div>
-        <NavLink href="/checkout" class="btn btn--md btn--primary cart-btn">Checkout</NavLink>
-    }
-    else
-    {
-        <p class="cart__empty">Your cart is empty</p>
-    }
-
-
+    <CartPageContent CartItems="@CartItems" CartItemInfoList="@CartItemInfoList" ComponentUiState="@_uiState"/>
 </PageLayout>
 
 @code {
+    private UiState _uiState = UiState.Loading;
+ 
 
-    [CascadingParameter] private HttpContext? Context { get; set; }
+#nullable disable
+    private ICartControlsService CartControlsService { get; set; }
+#nullable enable
 
-    private IEnumerable<CartItemListModel> CartItems { get; set; } = new List<CartItemListModel>();
+    private IEnumerable<CartItemListModel> CartItems { get; set; } = [];
+    private IEnumerable<CartItemControlModel> CartItemInfoList { get; set; } = [];
     
+
     protected override async Task OnInitializedAsync()
     {
-        CartItems = await Service.GetActiveCartItemsAsync();
+        var cartService = ScopedServices.GetRequiredService<ICartService>();
+        var cartControlsService = ScopedServices.GetRequiredService<ICartControlsService>();
+
+        CartItems = await cartService.GetActiveCartItemsAsync();
+        CartItemInfoList = await cartControlsService.GetAllCartItemInfoAsync();
+        
+        _uiState = UiState.Loaded;
     }
 
 }
-

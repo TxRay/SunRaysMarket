@@ -13,12 +13,46 @@ internal static class CartEndpoints
             .WithGroupName("Cart")
             .WithDescription("Endpoints for managing shopping carts.");
 
+        cartGroup.MapDelete("/", DeleteCartHandler);
+        cartGroup.MapGet("/items/{cartId:int}", GetCartItemsHandler)
+            .Produces<IEnumerable<CartItemListModel>>();
+        cartGroup.MapGet("/items", GetActiveCartItemsHandler)
+            .Produces<IEnumerable<CartItemListModel>>();
+        cartGroup.MapGet("/items/streamed", GetActiveCartItemsEnumerableHandler)
+            .Produces<IAsyncEnumerable<CartItemListModel>>();
+
         cartGroup.MapCreateCartEndpoint();
         //cartGroup.MapGetCartEndpoint();
         cartGroup.MapAddCartItemEndpoints();
+        cartGroup.MapCartItemInfoEndpoints();
 
         return endpoints;
     }
+
+    private static async Task<IResult> GetCartItemsHandler(int cartId, ICartService cartService)
+        => Results.Json(
+            await cartService.GetCartItemsAsync(cartId)
+        );
+
+    private static async Task<IResult> GetActiveCartItemsHandler(ICartService cartService)
+        => Results.Json(
+            await cartService.GetActiveCartItemsAsync()
+        );
+
+    private static async Task<IResult> DeleteCartHandler(ICartControlsService cartControlsService)
+    { 
+        await cartControlsService.DeleteCartAsync();
+        return Results.Ok();
+    }
+
+    private static async IAsyncEnumerable<IResult> GetActiveCartItemsEnumerableHandler(ICartService cartService)
+    {
+        await foreach(var item in cartService.GetActiveCartItemsAsyncEnumerable())
+        {
+            yield return Results.Json(item);
+        }
+    }
+
 
     private static IEndpointRouteBuilder MapCreateCartEndpoint(this IEndpointRouteBuilder endpoints)
     {
@@ -129,14 +163,15 @@ internal static class CartEndpoints
         );
 
         itemInfoGroup.MapGet(
-            "/",
-            async (ICartControlsService cartService) =>
-                Results.Json(
-                    new GetCartItemInfoListResponse
-                    {
-                        CartItemInfoList = await cartService.GetAllCartItemInfoAsync()
-                    }
-                )
-        );
+                "/",
+                async (ICartControlsService cartService) =>
+                    Results.Json(
+                        new GetCartItemInfoListResponse
+                        {
+                            CartItemInfoList = await cartService.GetAllCartItemInfoAsync()
+                        }
+                    )
+            )
+            .Produces<IEnumerable<CartItemControlModel>>();
     }
 }

@@ -30,10 +30,13 @@ internal class CartControlsProxyService(HttpClient client) : ICartControlsServic
             })
             .Unwrap();
 
+    public async Task DeleteCartAsync()
+        => await client.DeleteAsync("/api/cart");
+
     public async Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync()
     {
         var cartItemInfoListModel = await client
-            .GetAsync("/api/cart/cart-info")
+            .GetAsync("/api/cart/item-info")
             .ContinueWith(messageTask =>
             {
                 var message = messageTask.Result;

@@ -79,7 +79,6 @@
     font-weight: 300;
     color: var.$color-grey-light-1;
     border: none;
-    padding: 0 1rem;
 
     text-align: center;
     appearance: textfield;
@@ -92,12 +91,13 @@
 
   &--sm {
     button svg {
-      width: var.$fs-s;
+      width: var.$fs-xs;
     }
 
     input {
-      width: var.$spacing-2xl;
-      font-size: var.$fs-l;
+      padding: 0 var.$spacing-2xs;
+      width: var.$spacing-m;
+      font-size: var.$fs-xs;
     }
 
   }
@@ -109,6 +109,7 @@
     }
 
     input {
+      padding: 0 var.$spacing-xs;
       width: var.$spacing-xl;
       font-size: var.$fs-m;
     }
@@ -123,8 +124,9 @@
     }
 
     input {
-      width: var.$spacing-l;
-      font-size: var.$fs-s;
+      padding: 0 var.$spacing-s;
+      width: var.$spacing-2xl;
+      font-size: var.$fs-l;
     }
 
   }

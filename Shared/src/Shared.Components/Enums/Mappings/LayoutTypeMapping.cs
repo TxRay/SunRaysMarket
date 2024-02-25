@@ -1,4 +1,4 @@
-namespace SunRaysMarket.Server.Components.Enums.Mappings;
+namespace SunRaysMarket.Shared.Components.Enums.Mappings;
 
 internal static class LayoutTypeMapping
 {

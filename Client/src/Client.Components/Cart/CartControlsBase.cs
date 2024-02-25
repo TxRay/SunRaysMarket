@@ -11,6 +11,7 @@ public abstract class CartControlsBase : OwningComponentBase<ICartControlsServic
     [Parameter] public CartItemControlModel? CartItemInfo { get; set; }
     [Parameter] public string CssClasses { get; set; } = string.Empty;
     [Parameter] public int ProductId { get; set; }
+    [Parameter] public EventCallback<int> OnItemDeleted { get; set; }
 
 
     protected static string UniqueIdSuffix => Convert.ToBase64String(Guid.NewGuid().ToByteArray());
@@ -54,13 +55,16 @@ public abstract class CartControlsBase : OwningComponentBase<ICartControlsServic
 
     protected async Task OnRemoveFromCartClick()
     {
-        Console.WriteLine("OnRemoveFromCartClick called for cart item id: " + CartItemInfo?.Id ?? "null");
+        if (CartItemInfo is not { Id: > 0 })
+            return;
+
         await Service.RemoveItemAsync(
             new RemoveCartItemCommand
             {
-                ItemId = CartItemInfo?.Id ?? 0
+                ItemId = CartItemInfo.Id
             });
-
+        
+        await OnItemDeleted.InvokeAsync(CartItemInfo.Id);
         CartItemInfo = null;
     }
 
@@ -95,7 +99,7 @@ public abstract class CartControlsBase : OwningComponentBase<ICartControlsServic
         );
     }
 
-   private async Task<UpdateCartItemQuantityResponse> UpdateQuantityAsync(
+    private async Task<UpdateCartItemQuantityResponse> UpdateQuantityAsync(
         int cartItemId,
         int oldQuantity,
         int newQuantity

@@ -1,4 +1,4 @@
-namespace SunRaysMarket.Server.Components.Enums;
+namespace SunRaysMarket.Shared.Components.Enums;
 
 public enum ContentWidth
 {

@@ -24,6 +24,8 @@ public interface ICartControlsService
     /// </returns>
     Task<CartItemControlModel?> GetCartItemInfoAsync(int cartItemId);
 
+    Task DeleteCartAsync();
+
     /// <summary>
     /// Fetches a the initial state of all cart controls.
     /// </summary>

@@ -67,6 +67,19 @@
       background-color: var.$color-primary-light;
     }
   }
+  
+  &--danger {
+    background-color: var.$color-danger;
+    color: #fff;
+    
+    &:hover {
+      background-color: lighten(var.$color-danger, 10%);
+    }
+    
+    &:active {
+      bottom: lighten(var.$color-danger, 20%);
+    }
+  }
 
   &--pill {
     border-radius: 10rem;

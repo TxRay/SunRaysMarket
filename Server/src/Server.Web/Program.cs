@@ -16,7 +16,6 @@ builder
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.Cookie.HttpOnly = true;
@@ -61,7 +60,7 @@ app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(IClientIdentifier).Assembly);
 
-app.UseStatusCodePages(context =>
+/*app.UseStatusCodePages(context =>
 {
     var redirectRoute = context.HttpContext.Response.StatusCode switch
     {
@@ -73,6 +72,6 @@ app.UseStatusCodePages(context =>
     context.HttpContext.Response.Redirect(redirectRoute);
 
     return Task.CompletedTask;
-});
+});*/
 
 app.Run();

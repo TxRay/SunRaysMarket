@@ -1,17 +1,21 @@
 using SunRaysMarket.Server.Application.Services;
 using SunRaysMarket.Server.Application.UnitOfWork;
+using SunRaysMarket.Shared.Services.Interfaces;
 
 namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 
-public class CartService(IUnitOfWork unitOfWork, ICustomerService customerService, ICookieService cookieService)
+public class CartService(IUnitOfWork unitOfWork, ICookieService cookieService)
     : ICartService
 {
-    public Task<IEnumerable<CartItemListModel>> GetCartItemsAsync(int cartId)
-        => unitOfWork.CartRepository.GetCartItemsAsync(cartId);
+    public async Task<IEnumerable<CartItemListModel>> GetCartItemsAsync(int cartId)
+        => await unitOfWork.CartRepository.GetCartItemsAsync(cartId);
 
     public async Task<IEnumerable<CartItemListModel>> GetActiveCartItemsAsync()
-    {
-        var cartId = cookieService.CartId;
-        return cartId is not null ? await GetCartItemsAsync(cartId.Value) : [];
-    }
+        => cookieService.CartId is { } cartId
+            ? await GetCartItemsAsync(cartId)
+            : [];
+    public IAsyncEnumerable<CartItemListModel> GetActiveCartItemsAsyncEnumerable()
+        => cookieService.CartId is { } cartId
+            ? unitOfWork.CartRepository.GetCartItemsAsyncEnumerable(cartId)
+            : AsyncEnumerable.Empty<CartItemListModel>();
 }

@@ -4,6 +4,7 @@ public interface ICartRepository
 {
     Task<CartDetailsModel?> GetCartDetailsAsync(int cartId, bool persist = false);
     Task<IEnumerable<CartItemListModel>> GetCartItemsAsync(int cartId);
+    IAsyncEnumerable<CartItemListModel> GetCartItemsAsyncEnumerable(int cartId);
     Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync(int cartId);
     Task<CartItemControlModel?> GetCartItemControlInfoAsync(int cartId, int productId);
     Task<bool> CartExistsAsync(int cartId);
