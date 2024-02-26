@@ -13,6 +13,16 @@ public static class AppExtensions
         return app;
     }
 
+    public static IApplicationBuilder ApplyMigrations(this IApplicationBuilder app)
+    {
+        using var scope = app.ApplicationServices.CreateScope();
+        using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        dbContext.Database.Migrate();
+
+        return app;
+    }
+
     private static async Task SeedAsync(this IApplicationBuilder app)
     {
         using var scope = app.ApplicationServices.CreateScope();
