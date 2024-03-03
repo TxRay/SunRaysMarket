@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  postgres.db:
+    image: postgres:latest
+    container_name: srm.postgres.dev.db
+    environment:
+      - POSTGRES_DB=srm_db
+      - POSTGRES_USER=srm_user
+      - POSTGRES_PASSWORD=BadPass@123*
+    ports:
+      - "5500:5432"
+    volumes:
+      - ./.containers/srm-db:/var/lib/postgres/data

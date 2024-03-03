@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  srm.app:
+    image: srm_app
+    container_name: srm.app
+    build:
+      context: .
+      dockerfile: srm.test.dockerfile
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=5000
+      - ASPNETCORE_HTTPS_PORTS=5001
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=BadPass@321*
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - SUNRAYSMARKET_DbConnection__Server=srm.postgres.db
+      - SUNRAYSMARKET_DbConnection__Database=srm_db
+      - SUNRAYSMARKET_DbConnection__Id=srm_user
+      - SUNRAYSMARKET_DbConnection__Password=BadPass@123*
+      - SUNRAYSMARKET_DbConnection__Port=5432
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  
+  postgres.db:
+    image: postgres:latest
+    container_name: srm.postgres.db
+    environment:
+      - POSTGRES_DB=srm_test_db
+      - POSTGRES_USER=srm_user
+      - POSTGRES_PASSWORD=BadPass@123*
+    expose:
+      - 5432
+    volumes:
+      - ./.containers/srm-db:/var/lib/postgres/data
