@@ -1,15 +1,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SunRaysMarket.Server.Application.Configuration;
 
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal interface ISuperAdminSeeder : ISeeder
+internal class SuperAdminSeeder : ISeeder
 {
-}
-
-internal class SuperAdminSeeder : ISuperAdminSeeder
-{
-    private readonly IConfiguration _configuration;
+    private readonly SuperAdminConfig _superAdminConfig;
     private readonly ILogger<SuperAdminSeeder> _logger;
     private readonly UserManager<User> _userManager;
 
@@ -19,40 +16,27 @@ internal class SuperAdminSeeder : ISuperAdminSeeder
         UserManager<User> userManager
     )
     {
-        _configuration = configuration;
+        _superAdminConfig = configuration
+            .GetSection(SuperAdminConfig.GroupName)
+            .Get<SuperAdminConfig>()!;
+        ;
         _logger = logger;
         _userManager = userManager;
     }
 
     public async Task SeedAsync()
     {
-        var superAdminEmail =
-            _configuration["SuperAdmin:Email"] ?? throw new Exception("SuperAdmin email not found");
-        var superAdminPassword =
-            _configuration["SuperAdmin:Password"]
-            ?? throw new Exception("SuperAdmin password not found");
-        var superAdminFirstName =
-            _configuration["SuperAdmin:FirstName"]
-            ?? throw new Exception("SuperAdmin first name not found");
-        var superAdminLastName =
-            _configuration["SuperAdmin:LastName"]
-            ?? throw new Exception("SuperAdmin last name not found");
-
-        var superAdminUser = await _userManager.FindByEmailAsync(superAdminEmail);
-
-        if (superAdminUser is not null)
-            return;
-
-        superAdminUser = new User
+        
+        var superAdminUser = new User
         {
-            UserName = superAdminEmail,
-            Email = superAdminEmail,
+            UserName = _superAdminConfig.Email,
+            Email = _superAdminConfig.Email,
             EmailConfirmed = false,
-            FirstName = superAdminFirstName,
-            LastName = superAdminLastName
+            FirstName = _superAdminConfig.FirstName,
+            LastName = _superAdminConfig.LastName
         };
 
-        var result = await _userManager.CreateAsync(superAdminUser, superAdminPassword);
+        var result = await _userManager.CreateAsync(superAdminUser, _superAdminConfig.Password);
 
         if (!result.Succeeded)
             throw new Exception("SuperAdmin user creation failed");
@@ -62,4 +46,6 @@ internal class SuperAdminSeeder : ISuperAdminSeeder
         if (!roleResult.Succeeded)
             throw new Exception("SuperAdmin role assignment failed");
     }
+
+    public bool ShouldSeed() => _userManager.FindByEmailAsync(_superAdminConfig.Email).Result is not null;
 }

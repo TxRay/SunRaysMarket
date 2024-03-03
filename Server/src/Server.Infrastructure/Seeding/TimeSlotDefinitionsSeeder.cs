@@ -1,34 +1,25 @@
+using Microsoft.Extensions.Logging;
+
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal interface ITimeSlotDefinitionsSeeder : ISeeder
-{
-}
-
-internal class TimeSlotDefinitionsSeeder : ITimeSlotDefinitionsSeeder
+internal sealed class TimeSlotDefinitionsSeeder(
+    ApplicationDbContext dbContext,
+    ILogger<SeederBase<TimeSlotDefinition>> logger)
+    : SeederBase<TimeSlotDefinition>(dbContext, logger)
 {
     private const int StartHour = 8;
     private const int EndHour = 20;
-    private readonly ApplicationDbContext _dbContext;
 
-    public TimeSlotDefinitionsSeeder(ApplicationDbContext dbContext)
+    protected override SeederData RenderSeederData()
     {
-        _dbContext = dbContext;
-    }
-
-    public async Task SeedAsync()
-    {
-        if (_dbContext.TimeSlotDefinitions.Any())
-            return;
-
         var timeSlotDefinitions = new List<TimeSlotDefinition>();
         timeSlotDefinitions.AddRange(GenerateTimeSlots(OrderType.Delivery, 60));
         timeSlotDefinitions.AddRange(GenerateTimeSlots(OrderType.Pickup, 30));
 
-        await _dbContext.TimeSlotDefinitions.AddRangeAsync(timeSlotDefinitions);
-        await _dbContext.SaveChangesAsync();
+        return new SeederData.EnumerableSeederData(timeSlotDefinitions);
     }
 
-    private List<TimeSlotDefinition> GenerateTimeSlots(OrderType orderType, int duration)
+    private static IEnumerable<TimeSlotDefinition> GenerateTimeSlots(OrderType orderType, int duration)
     {
         var timeSlots = new List<TimeSlotDefinition>();
         var startMinutes = StartHour * 60;

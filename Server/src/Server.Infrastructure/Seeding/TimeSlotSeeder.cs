@@ -1,20 +1,16 @@
+using Microsoft.Extensions.Logging;
+
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal interface ITimeSlotSeeder : ISeeder
+internal sealed class TimeSlotSeeder(ApplicationDbContext dbContext, ILogger<TimeSlotSeeder> logger)
+    : SeederBase<TimeSlot>(dbContext, logger)
 {
-}
-
-internal class TimeSlotSeeder(ApplicationDbContext dbContext) : ITimeSlotSeeder
-{
-    public async Task SeedAsync()
+    protected override SeederData RenderSeederData()
     {
-        if (dbContext.TimeSlots.Any())
-            return;
-
         var rnd = new Random();
 
-        var stores = dbContext.Stores.ToList();
-        var timeSlotDefinitions = dbContext.TimeSlotDefinitions.ToList();
+        var stores = DbContext.Stores.ToList();
+        var timeSlotDefinitions = DbContext.TimeSlotDefinitions.ToList();
 
         var timeSlots = stores.SelectMany(
             store =>
@@ -31,7 +27,6 @@ internal class TimeSlotSeeder(ApplicationDbContext dbContext) : ITimeSlotSeeder
                 )
         );
 
-        await dbContext.TimeSlots.AddRangeAsync(timeSlots);
-        await dbContext.SaveChangesAsync();
+        return new SeederData.EnumerableSeederData(timeSlots);
     }
 }

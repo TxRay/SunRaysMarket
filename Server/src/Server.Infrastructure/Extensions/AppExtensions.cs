@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using SunRaysMarket.Server.Infrastructure.Seeding;
@@ -6,7 +7,7 @@ namespace SunRaysMarket.Server.Infrastructure.Extensions;
 
 public static class AppExtensions
 {
-    public static IApplicationBuilder UseDbConfiguration(this IApplicationBuilder app)
+    public static IApplicationBuilder SeedDatabase(this IApplicationBuilder app)
     {
         app.SeedAsync().Wait();
 
@@ -25,25 +26,22 @@ public static class AppExtensions
 
     private static async Task SeedAsync(this IApplicationBuilder app)
     {
-        using var scope = app.ApplicationServices.CreateScope();
-        var services = scope.ServiceProvider;
+        using var seederFactory = ISeederFactory.CreateSeederFactory(app.ApplicationServices);
 
-        var departmentSeeder = scope.ServiceProvider.GetRequiredService<IDepartmentSeeder>();
-        var superAdminSeeder = scope.ServiceProvider.GetRequiredService<ISuperAdminSeeder>();
-        var timeSlotDefinitionsSeeder = scope
-            .ServiceProvider
-            .GetRequiredService<ITimeSlotDefinitionsSeeder>();
-        var unitOfMeasureSeeder = scope.ServiceProvider.GetRequiredService<IUnitsOfMeasureSeeder>();
-        var userRolesSeeder = scope.ServiceProvider.GetRequiredService<IUserRolesSeeder>();
-        var storeSeeder = scope.ServiceProvider.GetRequiredService<IStoreSeeder>();
-        var timeSlotSeeder = scope.ServiceProvider.GetRequiredService<ITimeSlotSeeder>();
+        var seederImplementations = Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .Where(type =>
+                type is { Namespace: "SunRaysMarket.Server.Infrastructure.Seeding", IsAbstract: false } &&
+                type.IsAssignableTo(typeof(ISeeder)));
 
-        await superAdminSeeder.SeedAsync();
-        await departmentSeeder.SeedAsync();
-        await userRolesSeeder.SeedAsync();
-        await timeSlotDefinitionsSeeder.SeedAsync();
-        await storeSeeder.SeedAsync();
-        await timeSlotSeeder.SeedAsync();
-        await unitOfMeasureSeeder.SeedAsync();
+        foreach (var seederType in seederImplementations)
+        {
+            var seeder = seederFactory.CreateSeeder(seederType)!;
+
+            if (seeder.ShouldSeed())
+            {
+                await seeder.SeedAsync();
+            }
+        }
     }
 }

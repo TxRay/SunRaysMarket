@@ -1,10 +1,6 @@
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal interface IUserRolesSeeder : ISeeder
-{
-}
-
-internal class UserRolesSeeder : IUserRolesSeeder
+internal class UserRolesSeeder : ISeeder
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly RoleManager<IdentityRole<int>> _roleManager;
@@ -45,4 +41,6 @@ internal class UserRolesSeeder : IUserRolesSeeder
         )
             await _roleManager.CreateAsync(role);
     }
+
+    public bool ShouldSeed() => !_dbContext.Roles.Any();
 }

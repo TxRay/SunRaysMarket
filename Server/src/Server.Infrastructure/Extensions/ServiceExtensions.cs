@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Stripe;
 using SunRaysMarket.Server.Application.UnitOfWork;
+using SunRaysMarket.Server.Infrastructure.Configuration;
 using SunRaysMarket.Server.Infrastructure.PaymentServices;
 using SunRaysMarket.Server.Infrastructure.Seeding;
 using SunRaysMarket.Server.Infrastructure.UnitOfWorkImplementation;
@@ -22,9 +23,8 @@ public static class ServiceExtensions
         services.AddAuthentication();
         services.AddRepositoryServices();
         services.AddUnitOfWorkServices();
-        services.AddSeederServices();
         services.AddStripe(configuration);
-        services.AddServiceImplementations(); 
+        services.AddServiceImplementations();
         services.AddDistributedMemoryCache();
 
         return services;
@@ -37,8 +37,12 @@ public static class ServiceExtensions
     {
         services.AddDbContextFactory<ApplicationDbContext>(options =>
         {
+            var dbConnectionOptions = configuration.GetSection(DbConnectionOptions.DbConnection)
+                                          .Get<DbConnectionOptions>()
+                                      ?? new DbConnectionOptions();
+
             options.UseNpgsql(
-                "Host=localhost; Database=srm_db;  User Id=srm_user; Password=Pass@123!"
+                dbConnectionOptions.ToString()
             );
         });
 
@@ -87,19 +91,7 @@ public static class ServiceExtensions
 
         return services;
     }
-
-    private static IServiceCollection AddSeederServices(this IServiceCollection services)
-    {
-        services.AddScoped<IDepartmentSeeder, DepartmentSeeder>();
-        services.AddScoped<ISuperAdminSeeder, SuperAdminSeeder>();
-        services.AddScoped<ITimeSlotDefinitionsSeeder, TimeSlotDefinitionsSeeder>();
-        services.AddScoped<IUnitsOfMeasureSeeder, UnitsOfMeasureSeeder>();
-        services.AddScoped<IUserRolesSeeder, UserRolesSeeder>();
-        services.AddScoped<IStoreSeeder, StoreSeeder>();
-        services.AddScoped<ITimeSlotSeeder, TimeSlotSeeder>();
-
-        return services;
-    }
+    
 
     private static IServiceCollection AddStripe(
         this IServiceCollection services,
