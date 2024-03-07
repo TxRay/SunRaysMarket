@@ -2,6 +2,7 @@
 @using System.Runtime.InteropServices
 @using SunRaysMarket.Client.Components.Checkout
 @using SunRaysMarket.Libraries.Components.State
+@using SunRaysMarket.Shared.Core.DomainModels.Checkout
 @using SunRaysMarket.Shared.Core.Structs
 
 @namespace SunRaysMarket.Client.Components
@@ -96,7 +97,10 @@
     {
         try
         {
-            await CheckoutService.CheckoutAsync(Model.ToSubmitModel());
+            if (Model.ToSubmitModel() is CheckoutSubmitModel.ValidModel validSubmitModel)
+            {
+                await CheckoutService.CheckoutAsync(validSubmitModel);
+            }
         }
         catch
         {

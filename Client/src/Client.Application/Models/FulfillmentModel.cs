@@ -31,7 +31,7 @@ public abstract record FulfillmentModel
 
         [JsonIgnore]
         public override bool IsValid =>
-            TimeSlotId > 0 && DeliveryAddressId is not null && OrderType is OrderType.Delivery;
+            this is { TimeSlotId: > 0, DeliveryAddressId: > 0, OrderType: OrderType.Delivery, StoreId: > 0 };
     }
 
     public record PickupModel(int TimeSlotId, int? StoreId = null)
@@ -48,7 +48,8 @@ public abstract record FulfillmentModel
         }
 
         [JsonIgnore]
-        public override bool IsValid => TimeSlotId > 0 && StoreId is not null && OrderType is OrderType.Pickup;
+        public override bool IsValid => 
+            this is { TimeSlotId: > 0,  OrderType: OrderType.Delivery, StoreId: > 0 };
     }
 
     public static bool IsNullOrEmpty(FulfillmentModel? model) => model is null or EmptyModel;

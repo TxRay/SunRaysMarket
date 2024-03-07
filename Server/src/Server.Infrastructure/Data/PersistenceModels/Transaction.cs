@@ -6,7 +6,7 @@ internal class Transaction : TimeStampModelBase
 {
     public int OrderId { get; set; }
 
-    public int BillingAddressId { get; set; }
+    public int? BillingAddressId { get; set; }
     public long TransactionNumber { get; set; }
 
     public string ChargeNumber { get; set; }

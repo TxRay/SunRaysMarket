@@ -44,6 +44,18 @@ internal class UserService(
         return user is null ? AuthResult.Failure("Invalid credentials.") : AuthResult.Success(user);
     }
 
+    public async Task<AuthResult> LoginAdminAsync(LoginModel loginModel)
+    {
+        var user = await userRepository.AuthenticateAsync(loginModel);
+
+        if (user is null)
+            return AuthResult.Failure("Bad username or password.");
+
+        return (await userRepository.HasRoleAsync(user.Id, Role.Admin))
+            ? AuthResult.Success(user)
+            : AuthResult.Failure("The user is not admin");
+    }
+
     public async Task<AuthResult> SignUpAsync(SignUpModel signUpModel, IEnumerable<Role> roles)
     {
         var user = await userRepository.CreateUserAsync(signUpModel);

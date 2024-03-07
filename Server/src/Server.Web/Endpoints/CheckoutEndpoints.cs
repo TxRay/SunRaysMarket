@@ -1,4 +1,8 @@
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using Microsoft.AspNetCore.Mvc;
+using SunRaysMarket.Server.Application.Checkout;
+using SunRaysMarket.Shared.Core.Checkout;
 using SunRaysMarket.Shared.Core.DomainModels.Checkout;
 using SunRaysMarket.Shared.Core.DomainModels.Responses;
 
@@ -39,15 +43,21 @@ internal static class CheckoutEndpoints
                 )
         );
 
-        checkoutGroup.MapPost(
-            "/",
-            (
-                [FromBody] CheckoutSubmitModel checkoutSubmission,
-                HttpContext context,
-                ICheckoutService checkoutService
-            ) => checkoutService.CheckoutAsync(checkoutSubmission)
-        );
+        checkoutGroup.MapPost("/", CheckoutHandler);
 
         return endpoints;
+    }
+
+    private static async Task<IResult> CheckoutHandler([FromBody] CheckoutSubmitModel checkoutSubmission,
+        ICheckoutService checkoutService)
+    {
+        var response = await checkoutService.CheckoutAsync(checkoutSubmission);
+        var typeInfo =
+            JsonTypeInfo.CreateJsonTypeInfo(response.GetType(), new JsonSerializerOptions(JsonSerializerDefaults.Web));
+
+        return Results.Json(
+            response,
+            typeInfo
+        );
     }
 }

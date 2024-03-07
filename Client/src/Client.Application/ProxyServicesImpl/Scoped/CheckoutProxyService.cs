@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using SunRaysMarket.Shared.Core.Checkout;
 using SunRaysMarket.Shared.Core.DomainModels;
 using SunRaysMarket.Shared.Core.DomainModels.Checkout;
 using SunRaysMarket.Shared.Core.DomainModels.Responses;
@@ -8,9 +9,7 @@ using SunRaysMarket.Shared.Services.Interfaces;
 namespace SunRaysMarket.Client.Application.ProxyServicesImpl.Scoped;
 
 internal class CheckoutProxyService(
-    HttpClient httpClient,
-    IAddressService addressService,
-    IPaymentService paymentService
+    HttpClient httpClient
 ) : ICheckoutService
 {
     public async Task<IEnumerable<TimeSlotListModel>> GetCheckoutTimeSlotsAsync(
@@ -21,17 +20,22 @@ internal class CheckoutProxyService(
         var result = await httpClient.GetAsync($"api/checkout/timeslots/{storeId}/{orderType}");
 
         return await result.Content.ReadFromJsonAsync<IEnumerable<TimeSlotListModel>>()
-            ?? new List<TimeSlotListModel>();
+               ?? new List<TimeSlotListModel>();
     }
 
     public async Task<IEnumerable<StoreListModel>> GetStoreLocationsAsync() =>
-        (
-            await httpClient.GetFromJsonAsync<StoreLocationsResponse>("api/checkout/locations")
-        )?.StoreLocations ?? [];
+    (
+        await httpClient.GetFromJsonAsync<StoreLocationsResponse>("api/checkout/locations")
+    )?.StoreLocations ?? [];
 
     public Task<TimeSlotModel?> GetCheckoutTimeSlotAsync(int id) =>
         httpClient.GetFromJsonAsync<TimeSlotModel>($"api/checkout/timeslot/{id}");
 
-    public async Task CheckoutAsync(CheckoutSubmitModel model) =>
-        await httpClient.PostAsJsonAsync("api/checkout", model);
+    public async Task<CheckoutResponse> CheckoutAsync(CheckoutSubmitModel model)
+    {
+        var httpResponseMessage = await httpClient.PostAsJsonAsync("api/checkout", model);
+
+        return await httpResponseMessage.Content.ReadFromJsonAsync<CheckoutResponse>()
+               ?? new CheckoutResponse.Warning("Something went wrong. No response was returned by the server.");
+    }
 }

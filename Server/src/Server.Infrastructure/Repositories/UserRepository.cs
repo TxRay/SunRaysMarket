@@ -10,6 +10,7 @@ internal class UserRepository(
 ) : IUserRepository
 {
     private readonly RoleManager<IdentityRole<int>> _roleManager = roleManager;
+    private User? _persistedUser;
 
     public async Task<UserDetailsModel?> GetUserByIdAsync(int id)
     {
@@ -107,6 +108,23 @@ internal class UserRepository(
         if (user is not null)
             await userManager.DeleteAsync(user);
     }
+
+    public async Task<bool> HasRolesAsync(int userId, Role[] roles)
+    {
+        var roleStrings = roles.Select(r => r.ToString()).ToArray();
+        var user = _persistedUser ?? await userManager.FindByIdAsync(userId.ToString());
+
+        if (user is null)
+            return false;
+        
+        var userRoles = await userManager.GetRolesAsync(user);
+
+        return roleStrings.All(rs => userRoles.Contains(rs));
+
+    }
+    
+    public async Task<bool> HasRoleAsync(int userId, Role role)
+        => await HasRolesAsync(userId, [role]);
 
     public async Task<UserDetailsModel?> AuthenticateAsync(LoginModel model)
     {

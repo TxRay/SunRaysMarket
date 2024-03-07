@@ -1,3 +1,4 @@
+using SunRaysMarket.Shared.Core.Checkout;
 using SunRaysMarket.Shared.Core.DomainModels.Checkout;
 using SunRaysMarket.Shared.Core.Enums;
 
@@ -11,5 +12,5 @@ public interface ICheckoutService
     );
     Task<IEnumerable<StoreListModel>> GetStoreLocationsAsync();
     Task<TimeSlotModel?> GetCheckoutTimeSlotAsync(int id);
-    Task CheckoutAsync(CheckoutSubmitModel model);
+    Task<CheckoutResponse> CheckoutAsync(CheckoutSubmitModel model);
 }

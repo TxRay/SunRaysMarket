@@ -1,114 +1,62 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using SunRaysMarket.Server.Application.Services;
+using SunRaysMarket.Server.Application.Checkout;
+using SunRaysMarket.Server.Application.Checkout.CheckoutHandlers;
+using SunRaysMarket.Server.Application.Checkout.Results;
 using SunRaysMarket.Server.Application.UnitOfWork;
+using SunRaysMarket.Shared.Core.Checkout;
 using SunRaysMarket.Shared.Core.DomainModels.Checkout;
-using SunRaysMarket.Shared.Core.DomainModels.Payment;
-using SunRaysMarket.Shared.Services.Builders;
 using SunRaysMarket.Shared.Services.Interfaces;
 
 namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 
-internal class CheckoutService(
-    IHttpContextAccessor httpContextAccessor,
-    IUnitOfWork unitOfWork,
-    ICustomerService customerService,
-    IOrderService orderService,
-    IPaymentService paymentService,
-    ITransactionService transactionService
-) : ICheckoutService
+internal class CheckoutService : ICheckoutService
 {
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public CheckoutService(IServiceProvider serviceProvider, IUnitOfWork unitOfWork)
+    {
+        _serviceProvider = serviceProvider;
+        _unitOfWork = unitOfWork;
+    }
+
     public async Task<IEnumerable<TimeSlotListModel>> GetCheckoutTimeSlotsAsync(
         int storeId,
         OrderType orderType
-    ) => await unitOfWork.TimeSlotRepository.GetAllTimeSlotsAsync(storeId, orderType);
+    ) => await _unitOfWork.TimeSlotRepository.GetAllTimeSlotsAsync(storeId, orderType);
 
     public Task<IEnumerable<StoreListModel>> GetStoreLocationsAsync() =>
-        unitOfWork.StoreRepository.GetAllStoresAsync();
+        _unitOfWork.StoreRepository.GetAllStoresAsync();
 
     public Task<TimeSlotModel?> GetCheckoutTimeSlotAsync(int id) =>
-        unitOfWork.TimeSlotRepository.GetTimeSlotAsync(id);
+        _unitOfWork.TimeSlotRepository.GetTimeSlotAsync(id);
 
-    public async Task CheckoutAsync(CheckoutSubmitModel model)
+    public async Task<CheckoutResponse> CheckoutAsync(CheckoutSubmitModel model)
     {
-        var user = httpContextAccessor.HttpContext?.User;
+        var checkoutPipeline = ICheckoutPipelineBuilder.Create()
+            .AddHandler<CreateOrderHandler>()
+            .WithReturnTypeCheck<CreateOrderResult>()
+            .AddHandler<PopulateOrderHandler>()
+            .AddHandler<UpdateOrderAmountHandler>()
+            .WithReturnTypeCheck<UpdateOrderAmountResult>()
+            .AddHandler<CreateChargeHandler>()
+            .WithReturnTypeCheck<CreateChargeResult>()
+            .AddHandler<CreateTransactionHandler>()
+            .AddResponseGenerator(GenerateResponse)
+            .Build(_serviceProvider);
 
-        if (user is null)
-            return;
-
-        var (orderId, orderAmount) = await orderService.CreateOrderAsync(
-            user,
-            model.TimeSlotId,
-            model.OrderType,
-            model.DeliveryAddressId
-        );
-
-        if (orderId is null)
-            return;
-
-        var customerPaymentId = await customerService.GetCustomerPaymentIdAsync(user);
-
-        if (orderAmount is null || customerPaymentId is null)
-            return;
-
-        var chargeInfo = new CreateChargeModel
+        if (model is CheckoutSubmitModel.ValidModel validModel)
         {
-            Amount = (long)(100 * orderAmount.Value),
-            Currency = "usd",
-            CustomerPaymentId = customerPaymentId,
-            Source = model.PaymentMethodId
-        };
+            return await checkoutPipeline.ExecuteAsync(validModel);
+        }
 
-        var chargeResponse = await paymentService.CreateCharge(chargeInfo);
-
-        await transactionService.CreateTransactionAsync(
-            orderId.Value,
-            orderAmount.Value,
-            model.BillingAddressId,
-            chargeResponse.Id
-        );
+        return new CheckoutResponse.Failure("An invalid checkout request was sent to the server.");
     }
 
-    public Task CheckoutAsync(
-        int timeSlotId,
-        OrderType orderType,
-        Action<IAddressBuilder> billingAddressBuilder,
-        Action<IPaymentMethodBuilder> paymentMethodBuilder,
-        Action<IAddressBuilder>? deliveryAddressBuilder
-    ) => Task.CompletedTask;
-
-    public async Task CheckoutAsync(ClaimsPrincipal user, CheckoutSubmitModel checkoutSubmitModel)
-    {
-        var (orderId, orderAmount) = await orderService.CreateOrderAsync(
-            user,
-            checkoutSubmitModel.TimeSlotId,
-            checkoutSubmitModel.OrderType,
-            checkoutSubmitModel.DeliveryAddressId
+    private static CheckoutResponse GenerateResponse(CheckoutContext context)
+        => new CheckoutResponse.Success(
+            OrderNumber: ((CreateOrderResult)context.HandlerResults[typeof(CreateOrderHandler)]).OrderNumber
+            .ToString(),
+            OrderAmount: FormatHelpers.ToCurrencyString(
+                ((UpdateOrderAmountResult)context.HandlerResults[typeof(CreateOrderHandler)]).Amount)
         );
-
-        if (orderId is null)
-            return;
-
-        var customerPaymentId = await customerService.GetCustomerPaymentIdAsync(user);
-
-        if (orderId is null || orderAmount is null || customerPaymentId is null)
-            return;
-
-        var chargeInfo = new CreateChargeModel
-        {
-            Amount = (long)(100 * orderAmount.Value),
-            Currency = "usd",
-            CustomerPaymentId = customerPaymentId,
-            Source = checkoutSubmitModel.PaymentMethodId
-        };
-
-        var chargeResponse = await paymentService.CreateCharge(chargeInfo);
-
-        await transactionService.CreateTransactionAsync(
-            orderId.Value,
-            orderAmount.Value,
-            checkoutSubmitModel.BillingAddressId,
-            chargeResponse.Id
-        );
-    }
 }
