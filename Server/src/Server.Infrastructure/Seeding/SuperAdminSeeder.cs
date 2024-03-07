@@ -47,5 +47,5 @@ internal class SuperAdminSeeder : ISeeder
             throw new Exception("SuperAdmin role assignment failed");
     }
 
-    public bool ShouldSeed() => _userManager.FindByEmailAsync(_superAdminConfig.Email).Result is not null;
+    public bool ShouldSeed() => _userManager.FindByEmailAsync(_superAdminConfig.Email).Result is null;
 }
