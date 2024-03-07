@@ -49,7 +49,7 @@ public abstract record FulfillmentModel
 
         [JsonIgnore]
         public override bool IsValid => 
-            this is { TimeSlotId: > 0,  OrderType: OrderType.Delivery, StoreId: > 0 };
+            this is { TimeSlotId: > 0,  OrderType: OrderType.Pickup, StoreId: > 0 };
     }
 
     public static bool IsNullOrEmpty(FulfillmentModel? model) => model is null or EmptyModel;
