@@ -6,9 +6,11 @@ namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
 internal class DepartmentRepository(ApplicationDbContext dbContext, IDistributedCache cache) : IDepartmentRepository
 {
+    private const string GetAllCacheKey = "GetAllDepartments";
+    
     public async Task<IEnumerable<DepartmentListModel>> GetAllAsync()
         => await cache.SetOrFetchAsync(
-            "GetAllDepartments",
+            GetAllCacheKey,
             async () => await dbContext
                 .Departments
                 .Select(
@@ -42,6 +44,8 @@ internal class DepartmentRepository(ApplicationDbContext dbContext, IDistributed
 
     public async Task CreateAsync(CreateDepartmentModel model)
     {
+        await cache.RemoveAsync(GetAllCacheKey);
+        
         var department = new Department
         {
             Name = model.Name,
@@ -54,6 +58,8 @@ internal class DepartmentRepository(ApplicationDbContext dbContext, IDistributed
 
     public async Task UpdateAsync(UpdateDepartmentModel model)
     {
+        await cache.RemoveAsync(GetAllCacheKey);
+        
         var department = await dbContext.Departments.FindAsync(model.Id);
 
         if (department is null)

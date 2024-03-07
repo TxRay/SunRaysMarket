@@ -1,100 +1,126 @@
+@using System.Reflection
+@using Microsoft.AspNetCore.Mvc
+@using BlazorPageScript
 @inherits OwningComponentBase
+@attribute [StreamRendering]
 @page "/admin/products/{action}/{id:int?}"
 
 <SectionContent SectionName="page-title">@PageTitle</SectionContent>
 
-<EditForm Model="Model" class="form--admin" method="post" OnInvalidSubmit="OnValidSubmitAsync">
-    <div class="form__admin-group">
+<DisplayByUiState State="_uiState">
+    <UiLoading>
+        <RingSpinner/>
+    </UiLoading>
+    <UiLoaded>
+        <PageScript Src="./Components/Pages/Admin/ProductActions.razor.js"/>
 
-        <div>
-            <InputText class="form__input"
-                       placeholder="Enter product name"
-                       id="name"
-                       @bind-Value="Model.Product.Name"/>
-            <label for="name" class="form__label form__label--input">Name</label>
+        <EditForm
+            Model="Product"
+            class="form--admin"
+            method="post"
+            OnValidSubmit="OnValidSubmitAsync"
+            FormName="ProductActions"
+            enctype="multipart/form-data">
+            <div class="form__admin-group">
 
-        </div>
-        <div>
-            <InputText class="form__input"
-                       placeholder="Enter product description"
-                       id="description"
-                       @bind-Value="Model.Product.Description"/>
-            <label for="description" class="form__label form__label--input">Description</label>
+                <div>
+                    <InputText class="form__input"
+                               placeholder="Enter product name"
+                               id="name"
+                               @bind-Value="Product.Name"/>
+                    <label for="name" class="form__label form__label--input">Name</label>
 
-        </div>
-        <div>
-            <InputFile
-                class="form__input"
-                placeholder="Upload a product photo"
-                id="photoFile"
-                @bind-Value="Model.Image"/>
-            <input type="hidden" id="photoUrl">
-            <label for="photoFile" class="form__label form__label--input">ProductPhoto</label>
-        </div>
-        <div>
-            <InputNumber class="form__input"
-                         placeholder="Price = $0.00"
-                         id="price"
-                         @bind-Value="@Model.Product.Price"/>
-            <label for="price" class="form__label form__label--input">Price</label>
-        </div>
-        <div>
-            <InputNumber class="form__input"
-                         placeholder="Discount = 0%"
-                         id="discount"
-                         @bind-Value="Model.Product.DiscountPercent"/>
-            <label for="discount" class="form__label form__label--input">Discount</label>
-        </div>
-        <div>
-            <InputNumber class="form__input"
-                         placeholder="Enter the measure"
-                         id="measure"
-                         TValue="float"
-                         @bind-Value="@Model.Product.Measure"/>
-            <label for="measure" class="form__label form__label--input">Discount</label>
-        </div>
-    </div>
+                </div>
+                <div>
+                    <InputText class="form__input"
+                               placeholder="Enter product description"
+                               id="description"
+                               @bind-Value="Product.Description"/>
+                    <label for="description" class="form__label form__label--input">Description</label>
 
-    <div class="form__admin-group">
-        <div>
-            <InputSelect class="form__select"
-                         id="unitOfMeasurement"
-                         @bind-Value="@Model.Product.UnitOfMeasureId">
-                @foreach (var unitOfMeasure in UnitsOfMeasure)
-                {
-                    <option value="@unitOfMeasure.Id">@unitOfMeasure.Name</option>
-                }
-            </InputSelect>
-            <label for="unitOfMeasurement" class="form__label">Unit of Measure</label>
-        </div>
-        <div>
-            <InputSelect class="form__select"
-                         id="productType"
-                         @bind-Value="@Model.Product.ProductTypeId">
-                @foreach (var productType in ProductTypes)
-                {
-                    <option value="@productType.Id">@productType.Name</option>
-                }
-            </InputSelect>
-            <label for="productType" class="form__label">Unit of Measure</label>
-        </div>
-    </div>
+                </div>
+                <div>
+                    <InputFile
+                        class="form__input"
+                        placeholder="Upload a product photo"
+                        id="photoFile"
+                        name="Model.Image"/>
+                    <InputText type="hidden" id="photoUrl" @bind-Value="Product.PhotoUrl"/>
+                    <label for="photoFile" class="form__label form__label--input">ProductPhoto</label>
+                </div>
+                <div>
+                    <InputNumber class="form__input"
+                                 placeholder="Price = $0.00"
+                                 id="price"
+                                 @bind-Value="Product.Price"/>
+                    <label for="price" class="form__label form__label--input">Price</label>
+                </div>
+                <div>
+                    <InputNumber class="form__input"
+                                 placeholder="Discount = 0%"
+                                 id="discount"
+                                 @bind-Value="Product.DiscountPercent"/>
+                    <label for="discount" class="form__label form__label--input">Discount</label>
+                </div>
+                <div>
+                    <InputNumber class="form__input"
+                                 placeholder="Enter the measure"
+                                 id="measure"
+                                 TValue="float"
+                                 @bind-Value="Product.Measure"/>
+                    <label for="measure" class="form__label form__label--input">Measure</label>
+                </div>
+            </div>
 
-    <div>
-        <button type="submit" class="btn btn--primary">
-            Submit
-        </button>
-    </div>
-</EditForm>
+            <div class="form__admin-group">
+                <div>
+                    <InputSelect class="form__select"
+                                 id="unitOfMeasurement"
+                                 @bind-Value="Product.UnitOfMeasureId">
+                        @foreach (var unitOfMeasure in UnitsOfMeasure)
+                        {
+                            <option value="@unitOfMeasure.Id">@unitOfMeasure.Name</option>
+                        }
+                    </InputSelect>
+                    <label for="unitOfMeasurement" class="form__label">Unit of Measure</label>
+                </div>
+                <div>
+                    <InputSelect class="form__select"
+                                 id="productType"
+                                 @bind-Value="Product.ProductTypeId">
+                        @foreach (var productType in ProductTypes)
+                        {
+                            <option value="@productType.Id">@productType.Name</option>
+                        }
+                    </InputSelect>
+                    <label for="productType" class="form__label">Product Type</label>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn--primary">
+                    Submit
+                </button>
+            </div>
+        </EditForm>
+
+    </UiLoaded>
+</DisplayByUiState>
+
 
 @code {
-    [Parameter] public string Action { get; set; } = null!;
+    private UiState _uiState = UiState.Loading;
+
+#nullable disable
+    [Inject] private NavigationManager NavManager { get; set; }
+#nullable enable
+
+    [Parameter] public string Action { get; set; } = default!;
     [Parameter] public int? Id { get; set; }
 
     private IUnitOfWork? UnitOfWork { get; set; }
-    [Inject] private NavigationManager? NavManager { get; set; }
 
-    private ProductModel Model { get; set; } = new();
+    [SupplyParameterFromForm] private CreateProductModel? Product { get; set; }
     private IEnumerable<UnitOfMeasureListModel> UnitsOfMeasure { get; set; } = new List<UnitOfMeasureListModel>();
     private IEnumerable<ProductTypeDetailsModel> ProductTypes { get; set; } = new List<ProductTypeDetailsModel>();
 
@@ -109,16 +135,20 @@
     protected override async Task OnInitializedAsync()
     {
         UnitsOfMeasure = await UnitOfWork!.UnitOfMeasureRepository.GetAllAsync();
+        ProductTypes = await UnitOfWork!.ProductTypeRepository.GetAllAsync();
 
         switch (Action, Id.HasValue)
         {
             case ("create", false):
                 ActionName = "Create";
+                Product ??= new CreateProductModel();
+                _uiState = UiState.Loaded;
                 break;
             case ("edit", true):
                 ActionName = "Edit";
-                Model.Product = await UnitOfWork!.ProductRepository.GetForEditAsync(Id!.Value)
-                                ?? new CreateProductModel();
+                Product ??= await UnitOfWork!.ProductRepository.GetForEditAsync(Id!.Value)
+                            ?? new CreateProductModel();
+                _uiState = UiState.Loaded;
                 break;
             case ("delete", true):
                 await DeleteProductAsync();
@@ -130,51 +160,36 @@
         }
     }
 
-    private class ProductModel
-    {
-        public FormFile? Image { get; set; }
-        public CreateProductModel Product { get; set; } = new();
-    }
-
     private async Task OnValidSubmitAsync()
     {
         if (Id.HasValue)
-            await AddProductAsync();
-        else
             await UpdateProductAsync();
+        else
+            await AddProductAsync();
     }
 
-    private async Task<string> AddImageAsync()
-    {
-        if (Model.Image is null) return string.Empty;
-
-        var imageIdentifier = await UnitOfWork!.ImageRepository.UploadAsync(Model.Image);
-        await UnitOfWork!.SaveChangesAsync();
-
-        return await UnitOfWork!.ImageRepository.GetUrlAsync(Guid.Parse(imageIdentifier)) ?? string.Empty;
-    }
 
     private async Task AddProductAsync()
     {
-        Model.Product.PhotoUrl = await AddImageAsync();
-        await UnitOfWork!.ProductRepository.CreateAsync(Model.Product);
+        await UnitOfWork!.ProductRepository.CreateAsync(Product!);
         await UnitOfWork!.SaveChangesAsync();
+
+        NavManager.NavigateTo("admin/products");
     }
 
     private async Task UpdateProductAsync()
     {
-        var photoUrl = await AddImageAsync();
         var product = new UpdateProductModel
         {
             Id = Id!.Value,
-            Name = Model.Product.Name,
-            Description = Model.Product.Description,
-            DiscountPercent = Model.Product.DiscountPercent,
-            Measure = Model.Product.DiscountPercent,
-            PhotoUrl = photoUrl,
-            Price = Model.Product.Price,
-            ProductTypeId = Model.Product.ProductTypeId,
-            UnitOfMeasureId = Model.Product.UnitOfMeasureId
+            Name = Product!.Name,
+            Description = Product.Description,
+            DiscountPercent = Product.DiscountPercent,
+            Measure = Product.Measure,
+            PhotoUrl = Product.PhotoUrl ?? string.Empty,
+            Price = Product.Price,
+            ProductTypeId = Product.ProductTypeId,
+            UnitOfMeasureId = Product.UnitOfMeasureId
         };
 
         await UnitOfWork!.ProductRepository.UpdateAsync(product);

@@ -1,0 +1,43 @@
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using System.Runtime.InteropServices
+@using SunRaysMarket.Server.Application.Results
+@inherits OwningComponentBase<SunRaysMarket.Server.Application.Services.Auth.IUserService>
+@layout EmptyLayout
+@page "/admin/login"
+
+<PageLayout ContentWidth="ContentWidth.PageFull" Element="main">
+    <EditForm EditContext="@LoginEditContext" FormName="AdminLogin" OnValidSubmit="OnLoginAsync">
+        <div>
+            <label for="email">Email</label>
+            <InputText id="email" @bind-Value="@Model!.Email"/>
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <InputText id="password" type="password" @bind-Value="@Model.Password"/>
+        </div>
+        <button type="submit">Login</button>
+    </EditForm>
+</PageLayout>
+
+@code {
+#nullable disable
+    [Inject] private NavigationManager NavManager { get; set; }
+#nullable enable
+
+    [SupplyParameterFromForm] private LoginModel? Model { get; set; }
+    private EditContext LoginEditContext { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        Model ??= new LoginModel();
+        LoginEditContext = new EditContext(Model);
+    }
+
+    private async Task OnLoginAsync()
+    {
+        var authResult = await Service.LoginAdminAsync(Model!);
+
+        NavManager.NavigateTo("/admin");
+    }
+
+}

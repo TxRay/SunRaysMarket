@@ -4,7 +4,12 @@
 
 <SectionContent SectionName="page-title">@PageTitle</SectionContent>
 
-<EditForm Model="NewDepartment" OnInvalidSubmit="OnValidSubmitAsync" FormName="AddDepartment" class="form--admin" method="post">
+<EditForm 
+    Model="NewDepartment" 
+    OnValidSubmit="OnValidSubmitAsync" 
+    FormName="DepartmentActionsForm" 
+    class="form--admin" 
+    method="post">
     <div class="form__admin-group">
         <div>
             <InputText class="form__input"
@@ -36,7 +41,7 @@
     [Parameter] public int? Id { get; set; }
 
     [Inject] private NavigationManager Navigation { get; set; } = default!;
-    private CreateDepartmentModel NewDepartment { get; set; } = new();
+    [SupplyParameterFromForm] private CreateDepartmentModel NewDepartment { get; set; } = new();
 
     private string ActionName { get; set; } = string.Empty;
     private string PageTitle => $"{ActionName} Department";
@@ -69,7 +74,12 @@
                 break;
         }
     }
-
+    
+    private Task OnSubmitAsync()
+    {
+        return Task.CompletedTask;
+    }
+    
     private async Task OnValidSubmitAsync()
     {
         if (Id.HasValue)
@@ -86,6 +96,8 @@
     {
         await Service.DepartmentRepository.CreateAsync(NewDepartment);
         await Service.SaveChangesAsync();
+        
+        Navigation.NavigateTo("admin/departments/");
     }
 
     private async Task UpdateDepartment()

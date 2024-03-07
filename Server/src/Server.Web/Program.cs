@@ -16,6 +16,16 @@ builder
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddAntiforgery(options =>
+    {
+        options.FormFieldName = "RequestVerificationTokenField";
+        options.HeaderName = "X-CSRF-TOKEN";
+        options.Cookie.Name = "SunRaysMarket.X-CSRF-TOKEN";
+        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Cookie.HttpOnly = true;
+    }
+);
+
 builder.Services.AddSession(options =>
 {
     options.Cookie.HttpOnly = true;
@@ -48,10 +58,10 @@ else
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-app.UseAntiforgery();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseAntiforgery();
 
 app.UseSession();
 
