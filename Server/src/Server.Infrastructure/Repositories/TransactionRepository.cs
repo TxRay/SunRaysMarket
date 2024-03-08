@@ -9,7 +9,6 @@ internal class TransactionRepository(ApplicationDbContext dbContext) : ITransact
         var newTransaction = new Transaction
         {
             OrderId = model.OrderId,
-            BillingAddressId = model.BillingAddressId,
             Status = model.Status,
             ChargeNumber = model.ChargeNumber,
             PaymentMethod = model.PaymentMethod!,

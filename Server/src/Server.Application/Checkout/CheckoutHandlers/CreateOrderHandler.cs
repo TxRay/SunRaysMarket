@@ -40,12 +40,14 @@ public class CreateOrderHandler : ICheckoutHandler
             {
                 CustomerId = customerId.Value,
                 DeliveryAddressId = deliveryModel.DeliveryAddressId,
+                StoreId = deliveryModel.StoreId,
                 OrderType = OrderType.Delivery,
                 TimeSlotId = deliveryModel.TimeSlotId
             },
             CheckoutSubmitModel.PickupModel pickupModel => new CreateOrderModel
             {
                 CustomerId = customerId.Value,
+                StoreId = pickupModel.StoreId,
                 OrderType = OrderType.Pickup,
                 TimeSlotId = pickupModel.TimeSlotId
             },

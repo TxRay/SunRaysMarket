@@ -29,6 +29,7 @@ public class CheckoutModel
                 => new CheckoutSubmitModel.DeliveryModel
                 (
                     TimeSlotId: deliveryModel.TimeSlotId,
+                    StoreId: deliveryModel.StoreId!.Value,
                     PaymentMethodId =
                         PaymentMethodId
                         ?? throw new InvalidOperationException("No payment method was set."),
@@ -40,6 +41,7 @@ public class CheckoutModel
                 => new CheckoutSubmitModel.PickupModel
                 (
                     TimeSlotId: pickupModel.TimeSlotId,
+                    StoreId: pickupModel.StoreId!.Value,
                     ContactNumber: ContactNumber,
                     PaymentMethodId: PaymentMethodId!
                 ),

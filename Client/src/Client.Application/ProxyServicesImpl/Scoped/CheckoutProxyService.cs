@@ -1,4 +1,7 @@
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using SunRaysMarket.Shared.Core.Checkout;
 using SunRaysMarket.Shared.Core.DomainModels;
 using SunRaysMarket.Shared.Core.DomainModels.Checkout;

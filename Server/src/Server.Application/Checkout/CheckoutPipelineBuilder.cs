@@ -7,7 +7,7 @@ namespace SunRaysMarket.Server.Application.Checkout;
 
 internal sealed class CheckoutPipelineBuilder : ICheckoutPipelineBuilder
 {
-    private ICollection<ObjectFactory<ICheckoutHandler>> _handlerFactories = [];
+    private ICollection<ObjectFactory> _handlerFactories = [];
 
     public Func<CheckoutContext, CheckoutResponse>? ResponseGenerator { get; set; }
 
@@ -28,6 +28,10 @@ internal sealed class CheckoutPipelineBuilder : ICheckoutPipelineBuilder
             throw new InvalidOperationException($"The type '{handlerType.FullName}'" +
                                                 $"is not assignable to '{typeof(ICheckoutHandler).FullName}'");
         }
+        
+        _handlerFactories.Add(
+            ActivatorUtilities.CreateFactory(handlerType, [])
+            );
 
         return new HandlerConfigCheckoutPipelineBuilder(this, handlerType);
     }
@@ -51,7 +55,7 @@ internal sealed class CheckoutPipelineBuilder : ICheckoutPipelineBuilder
             HandlerResponseTypeCheckDelegates
         );
         
-        return ActivatorUtilities.CreateInstance<CheckoutPipeline>(provider, [_handlerFactories, pipelineDelegates]);
+        return ActivatorUtilities.CreateInstance<CheckoutPipeline>(provider, [_handlerFactories.ToArray(), pipelineDelegates]);
     }
 }
 

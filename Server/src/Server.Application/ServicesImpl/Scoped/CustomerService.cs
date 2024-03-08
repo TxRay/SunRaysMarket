@@ -1,11 +1,16 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using SunRaysMarket.Server.Application.Services;
 using SunRaysMarket.Server.Application.Services.Auth;
 using SunRaysMarket.Server.Application.UnitOfWork;
 
 namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 
-internal class CustomerService(IUnitOfWork unitOfWork, IUserService userService) : ICustomerService
+internal class CustomerService(
+    IHttpContextAccessor httpContextAccessor,
+    IUnitOfWork unitOfWork,
+    IUserService userService)
+    : ICustomerService
 {
     public async Task<int?> GetCurrentCustomerIdAsync(ClaimsPrincipal user)
     {
@@ -16,6 +21,11 @@ internal class CustomerService(IUnitOfWork unitOfWork, IUserService userService)
 
         return await unitOfWork.CustomerRepository.GetCustomerIdAsync(userDetailsModel.Id);
     }
+
+    public async Task<int?> GetCurrentCustomerIdAsync()
+        => httpContextAccessor.HttpContext?.User is not null
+            ? await GetCurrentCustomerIdAsync(httpContextAccessor.HttpContext.User)
+            : null;
 
     public async Task<int?> GetCustomerCartIdAsync(int customerId) =>
         await unitOfWork.CustomerRepository.GetCustomerCartIdAsync(customerId);
@@ -47,10 +57,20 @@ internal class CustomerService(IUnitOfWork unitOfWork, IUserService userService)
         await SaveCartAsync(customerId, cartId);
     }
 
+    public async Task RemoveCartFromCustomerAsync()
+    {
+        var customerId = await GetCurrentCustomerIdAsync();
+        
+        if(customerId is null )
+            return;
+        
+        await unitOfWork.CustomerRepository.RemoveCartFromCustomerAsync(customerId.Value);
+        await unitOfWork.SaveChangesAsync();
+    }
+
     public async Task RemoveCartFromCustomerAsync(int customerId)
     {
-        await unitOfWork.CustomerRepository.RemoveCartFromCustomerAsync(customerId);
-        await unitOfWork.SaveChangesAsync();
+
     }
 
     public async Task<string?> GetCustomerPaymentIdAsync(ClaimsPrincipal user)

@@ -52,12 +52,6 @@ internal static class CheckoutEndpoints
         ICheckoutService checkoutService)
     {
         var response = await checkoutService.CheckoutAsync(checkoutSubmission);
-        var typeInfo =
-            JsonTypeInfo.CreateJsonTypeInfo(response.GetType(), new JsonSerializerOptions(JsonSerializerDefaults.Web));
-
-        return Results.Json(
-            response,
-            typeInfo
-        );
+        return Results.Json(response);
     }
 }

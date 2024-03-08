@@ -27,10 +27,5 @@ internal class TransactionConfig : TimeStampConfigurationBase<PersistenceModels.
             .HasOne(transaction => transaction.Order)
             .WithMany(order => order.Transactions)
             .HasForeignKey(transaction => transaction.OrderId);
-
-        builder
-            .HasOne(transaction => transaction.BillingAddress)
-            .WithMany()
-            .HasForeignKey(transaction => transaction.BillingAddressId);
     }
 }

@@ -28,13 +28,14 @@ internal class CheckoutPipeline : ICheckoutPipeline
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<CheckoutPipeline> _logger;
     private readonly IServiceProvider _serviceProvider;
-    private readonly ObjectFactory<ICheckoutHandler>[] _handlerFactories;
+    private readonly ObjectFactory[] _handlerFactories;
     private readonly PipelineDelegates _pipelineDelegates;
 
 
-    public CheckoutPipeline(IHttpContextAccessor httpContextAccessor, ILogger<CheckoutPipeline> logger,
-        IServiceProvider serviceProvider, ObjectFactory<ICheckoutHandler>[] handlerFactories,
-        PipelineDelegates pipelineDelegates)
+    [ActivatorUtilitiesConstructor]
+    public CheckoutPipeline(
+        IHttpContextAccessor httpContextAccessor, ILogger<CheckoutPipeline> logger,
+        IServiceProvider serviceProvider, ObjectFactory[] handlerFactories, PipelineDelegates pipelineDelegates)
     {
         _httpContextAccessor = httpContextAccessor;
         _logger = logger;
@@ -48,7 +49,6 @@ internal class CheckoutPipeline : ICheckoutPipeline
         if (!_httpContextAccessor.HttpContext?.User.IsAuthenticated() ?? false)
             return new CheckoutResponse.Failure("The user is not logged in.");
 
-        IReadOnlyDictionary<Key, object> resultDictionary = new Dictionary<Key, object>();
         var context =
             new CheckoutContext(_httpContextAccessor.HttpContext!, submitModel, new Dictionary<Type, object>());
 
@@ -56,7 +56,7 @@ internal class CheckoutPipeline : ICheckoutPipeline
         {
             try
             {
-                var handlerInstance = factory.Invoke(_serviceProvider, []);
+                var handlerInstance = (ICheckoutHandler)factory.Invoke(_serviceProvider, []);
 
                 if (_pipelineDelegates.PreProcessors.TryGetValue(handlerInstance.GetType(), out var prepProc))
                 {
