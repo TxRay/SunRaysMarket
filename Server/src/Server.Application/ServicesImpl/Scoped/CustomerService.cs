@@ -90,6 +90,4 @@ internal class CustomerService(
         await unitOfWork.CustomerRepository.AddCartToCustomerAsync(customerId, cartId);
         await unitOfWork.SaveChangesAsync();
     }
-
-    public async Task RemoveCartFromCustomerAsync(int customerId) { }
 }
