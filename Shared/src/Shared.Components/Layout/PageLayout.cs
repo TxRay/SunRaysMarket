@@ -8,6 +8,8 @@ namespace SunRaysMarket.Shared.Components;
 
 public class PageLayout : ComponentBase
 {
+    private const string BaseClass = "layout";
+
     [Inject]
     private ILogger<PageLayout>? Logger { get; set; }
 
@@ -33,7 +35,6 @@ public class PageLayout : ComponentBase
     public RenderFragment? ChildContent { get; set; }
 
     private bool ClassesSet { get; set; }
-    private const string BaseClass = "layout";
 
     private string RenderBaseCssClasses()
     {
@@ -52,12 +53,10 @@ public class PageLayout : ComponentBase
     protected override void OnParametersSet()
     {
         if (!Attributes.TryAdd("class", RenderBaseCssClasses()) && !ClassesSet)
-        {
             throw new InvalidOperationException(
                 "The 'class' attribute should not be directly set."
                     + "Use the 'CssClasses' parameter to apply additional css classes."
             );
-        }
 
         ClassesSet = true;
     }

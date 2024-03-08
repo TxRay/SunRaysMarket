@@ -1,8 +1,6 @@
 namespace SunRaysMarket.Client.Components.Stores;
 
-public interface IModelStore
-{
-}
+public interface IModelStore { }
 
 public interface IModelStore<TKey> : IModelStore
 {

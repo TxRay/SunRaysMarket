@@ -1,11 +1,10 @@
 using SunRaysMarket.Server.Infrastructure.Data.Configurations.Base;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class CartItemConfig : TimeStampConfigurationBase<PersistenceModels.CartItem>
+internal class CartItemConfig : TimeStampConfigurationBase<CartItem>
 {
-    public override void Configure(EntityTypeBuilder<PersistenceModels.CartItem> builder)
+    public override void Configure(EntityTypeBuilder<CartItem> builder)
     {
         base.Configure(builder);
 

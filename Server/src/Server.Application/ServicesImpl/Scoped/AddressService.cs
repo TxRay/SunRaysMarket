@@ -15,6 +15,8 @@ internal class AddressService(IUnitOfWork unitOfWork) : IAddressService
         return unitOfWork.AddressRepository.GetPersistedId() ?? throw new NullReferenceException();
     }
 
-    public Task<AddressModel?> GetAddressAsync(int addressId) =>
-        unitOfWork.AddressRepository.GetAsync(addressId);
+    public Task<AddressModel?> GetAddressAsync(int addressId)
+    {
+        return unitOfWork.AddressRepository.GetAsync(addressId);
+    }
 }

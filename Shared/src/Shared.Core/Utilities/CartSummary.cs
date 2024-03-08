@@ -9,9 +9,9 @@ public static class CartSummary
     {
         var cartItemListModels = cartItems as CartItemListModel[] ?? cartItems.ToArray();
         var subtotal = cartItemListModels.Sum(
-            cartItem => (cartItem.ProductPrice * cartItem.Quantity)
+            cartItem => cartItem.ProductPrice * cartItem.Quantity
         );
-        var discount = cartItemListModels.Sum(cartItem => (cartItem.Discount * cartItem.Quantity));
+        var discount = cartItemListModels.Sum(cartItem => cartItem.Discount * cartItem.Quantity);
         var tax = subtotal * 0.07f;
         var totalPrice = subtotal + tax;
 

@@ -1,11 +1,10 @@
 using SunRaysMarket.Server.Infrastructure.Data.Configurations.Base;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class TransactionConfig : TimeStampConfigurationBase<PersistenceModels.Transaction>
+internal class TransactionConfig : TimeStampConfigurationBase<Transaction>
 {
-    public override void Configure(EntityTypeBuilder<PersistenceModels.Transaction> builder)
+    public override void Configure(EntityTypeBuilder<Transaction> builder)
     {
         base.Configure(builder);
 

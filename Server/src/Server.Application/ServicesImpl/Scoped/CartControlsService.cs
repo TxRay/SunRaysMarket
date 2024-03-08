@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SunRaysMarket.Server.Application.Exceptions;
@@ -23,7 +22,9 @@ internal class CartControlsService(
             httpContextAccessor.HttpContext
             ?? throw new InvalidOperationException("HttpContext is null");
         if (httpContext.User.IsAuthenticated())
+        {
             await customerService.CreateCustomerCartAsync(httpContext.User);
+        }
         else
         {
             await unitOfWork.CartRepository.CreateCartAsync(null, true);
@@ -37,9 +38,9 @@ internal class CartControlsService(
     }
 
     public async Task<CartItemControlModel?> GetCartItemInfoAsync(int cartItemId)
-        => (await GetAllCartItemInfoAsync()).FirstOrDefault(
-            ci => ci.Id == cartItemId
-        );
+    {
+        return (await GetAllCartItemInfoAsync()).FirstOrDefault(ci => ci.Id == cartItemId);
+    }
 
     public async Task DeleteCartAsync()
     {
@@ -50,7 +51,7 @@ internal class CartControlsService(
             var customerId = await customerService.GetCurrentCustomerIdAsync(user) ?? default;
             await unitOfWork.CustomerRepository.RemoveCartFromCustomerAsync(customerId);
         }
-        
+
         await unitOfWork.CartRepository.DeleteCartAsync(cartId);
         await unitOfWork.SaveChangesAsync();
         cookieService.DeleteCookie(cookies => cookies.CartId!);

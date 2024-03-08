@@ -6,7 +6,8 @@ namespace SunRaysMarket.Client.Components;
 
 public class InputCheckoutOption<TValue> : ComponentBase
 {
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public string IdBase { get; set; } = default!;
 
     [Parameter]

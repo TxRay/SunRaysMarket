@@ -11,8 +11,12 @@ public abstract record CheckoutHandlerResponse
     public abstract record Result(Type ValueType, object ValueObject) : Ok
     {
         internal object ValueObject { get; init; } = ValueObject;
-        public static Result<TValue> Create<TValue>(TValue value) => new(value);
-    };
+
+        public static Result<TValue> Create<TValue>(TValue value)
+        {
+            return new Result<TValue>(value);
+        }
+    }
 
     public record Result<TValue>(TValue Value) : Result(typeof(TValue), Value)
     {
@@ -25,6 +29,5 @@ public abstract record CheckoutHandlerResponse
                 ValueObject = value;
             }
         }
-
-    };
+    }
 }

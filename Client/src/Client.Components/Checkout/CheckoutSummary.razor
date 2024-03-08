@@ -1,4 +1,3 @@
-@using System.Runtime.InteropServices
 @namespace SunRaysMarket.Client.Components
 
 <div class="checkout-summary">
@@ -28,6 +27,6 @@
     [Inject] IStore Store { get; set; }
 #nullable enable
 
-    [Parameter, EditorRequired] public CheckoutContent.CheckoutCostSummary Summary { get; set; } = default!;
+    [Parameter] [EditorRequired] public CheckoutContent.CheckoutCostSummary Summary { get; set; } = default!;
     [Parameter] public string? FulfilmentChargeType { get; set; }
 }

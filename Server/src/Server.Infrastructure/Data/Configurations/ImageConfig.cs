@@ -1,12 +1,10 @@
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SunRaysMarket.Server.Infrastructure.Data.Configurations.Base;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class ImageConfig : TimeStampConfigurationBase<PersistenceModels.Image>
+internal class ImageConfig : TimeStampConfigurationBase<Image>
 {
-    public override void Configure(EntityTypeBuilder<PersistenceModels.Image> builder)
+    public override void Configure(EntityTypeBuilder<Image> builder)
     {
         base.Configure(builder);
 

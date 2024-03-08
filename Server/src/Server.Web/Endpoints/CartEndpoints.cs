@@ -14,11 +14,14 @@ internal static class CartEndpoints
             .WithDescription("Endpoints for managing shopping carts.");
 
         cartGroup.MapDelete("/", DeleteCartHandler);
-        cartGroup.MapGet("/items/{cartId:int}", GetCartItemsHandler)
+        cartGroup
+            .MapGet("/items/{cartId:int}", GetCartItemsHandler)
             .Produces<IEnumerable<CartItemListModel>>();
-        cartGroup.MapGet("/items", GetActiveCartItemsHandler)
+        cartGroup
+            .MapGet("/items", GetActiveCartItemsHandler)
             .Produces<IEnumerable<CartItemListModel>>();
-        cartGroup.MapGet("/items/streamed", GetActiveCartItemsEnumerableHandler)
+        cartGroup
+            .MapGet("/items/streamed", GetActiveCartItemsEnumerableHandler)
             .Produces<IAsyncEnumerable<CartItemListModel>>();
 
         cartGroup.MapCreateCartEndpoint();
@@ -30,35 +33,35 @@ internal static class CartEndpoints
     }
 
     private static async Task<IResult> GetCartItemsHandler(int cartId, ICartService cartService)
-        => Results.Json(
-            await cartService.GetCartItemsAsync(cartId)
-        );
+    {
+        return Results.Json(await cartService.GetCartItemsAsync(cartId));
+    }
 
     private static async Task<IResult> GetActiveCartItemsHandler(ICartService cartService)
-        => Results.Json(
-            await cartService.GetActiveCartItemsAsync()
-        );
+    {
+        return Results.Json(await cartService.GetActiveCartItemsAsync());
+    }
 
     private static async Task<IResult> DeleteCartHandler(ICartControlsService cartControlsService)
-    { 
+    {
         await cartControlsService.DeleteCartAsync();
         return Results.Ok();
     }
 
-    private static async IAsyncEnumerable<IResult> GetActiveCartItemsEnumerableHandler(ICartService cartService)
+    private static async IAsyncEnumerable<IResult> GetActiveCartItemsEnumerableHandler(
+        ICartService cartService
+    )
     {
-        await foreach(var item in cartService.GetActiveCartItemsAsyncEnumerable())
-        {
+        await foreach (var item in cartService.GetActiveCartItemsAsyncEnumerable())
             yield return Results.Json(item);
-        }
     }
-
 
     private static IEndpointRouteBuilder MapCreateCartEndpoint(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost(
             "/create",
-            async (ICartControlsService cartService) => Results.Json(await cartService.CreateCartAsync())
+            async (ICartControlsService cartService) =>
+                Results.Json(await cartService.CreateCartAsync())
         );
 
         return endpoints;
@@ -114,9 +117,7 @@ internal static class CartEndpoints
                 ICartControlsService cartService
             ) =>
             {
-                var cartId =
-                    cookieService.CartId
-                    ?? (await cartService.CreateCartAsync()).CartId;
+                var cartId = cookieService.CartId ?? (await cartService.CreateCartAsync()).CartId;
 
                 try
                 {
@@ -162,7 +163,8 @@ internal static class CartEndpoints
                 Results.Json(await cartService.GetCartItemInfoAsync(itemId))
         );
 
-        itemInfoGroup.MapGet(
+        itemInfoGroup
+            .MapGet(
                 "/",
                 async (ICartControlsService cartService) =>
                     Results.Json(

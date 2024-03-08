@@ -14,19 +14,22 @@ namespace Infrastructure.Migrations
                 name: "PreferredStoreId",
                 table: "Customers",
                 type: "integer",
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_PreferredStoreId",
                 table: "Customers",
-                column: "PreferredStoreId");
+                column: "PreferredStoreId"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Customers_Stores_PreferredStoreId",
                 table: "Customers",
                 column: "PreferredStoreId",
                 principalTable: "Stores",
-                principalColumn: "Id");
+                principalColumn: "Id"
+            );
         }
 
         /// <inheritdoc />
@@ -34,15 +37,12 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Customers_Stores_PreferredStoreId",
-                table: "Customers");
+                table: "Customers"
+            );
 
-            migrationBuilder.DropIndex(
-                name: "IX_Customers_PreferredStoreId",
-                table: "Customers");
+            migrationBuilder.DropIndex(name: "IX_Customers_PreferredStoreId", table: "Customers");
 
-            migrationBuilder.DropColumn(
-                name: "PreferredStoreId",
-                table: "Customers");
+            migrationBuilder.DropColumn(name: "PreferredStoreId", table: "Customers");
         }
     }
 }

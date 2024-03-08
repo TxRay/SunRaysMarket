@@ -10,7 +10,10 @@ public class UpdateOrderAmountHandler : ICheckoutHandler
     private readonly ILogger<UpdateOrderAmountHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateOrderAmountHandler(ILogger<UpdateOrderAmountHandler> logger, IUnitOfWork unitOfWork)
+    public UpdateOrderAmountHandler(
+        ILogger<UpdateOrderAmountHandler> logger,
+        IUnitOfWork unitOfWork
+    )
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
@@ -30,13 +33,13 @@ public class UpdateOrderAmountHandler : ICheckoutHandler
                     (orderSummary, orderItemAmounts) =>
                         orderSummary.CalculateAmounts(orderItemAmounts)
                 );
-            
+
             await _unitOfWork.SaveChangesAsync();
-            
+
             var persistedOrder = await _unitOfWork
                 .OrderRepository
                 .GetOrderDetailsAsync(createOrderResult.OrderId);
-            
+
             return persistedOrder is not null
                 ? new CheckoutHandlerResponse.Result<UpdateOrderAmountResult>(
                     new UpdateOrderAmountResult(persistedOrder.Total)
@@ -47,7 +50,9 @@ public class UpdateOrderAmountHandler : ICheckoutHandler
         {
             _logger.LogError("{}", e.Message);
 
-            return new CheckoutHandlerResponse.Error("Something went wrong while trying to update the order amount.");
+            return new CheckoutHandlerResponse.Error(
+                "Something went wrong while trying to update the order amount."
+            );
         }
     }
 }

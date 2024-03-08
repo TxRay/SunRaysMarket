@@ -11,18 +11,21 @@ public static class MapEndpointsExtensions
             .WithGroupName("Api")
             .WithDescription("Api endpoints");
 
-        var mappingMethods = Assembly.GetExecutingAssembly()
+        var mappingMethods = Assembly
+            .GetExecutingAssembly()
             .GetTypes()
-            .Where(type => type is { Namespace: "SunRaysMarket.Server.Web.Endpoints", IsClass: true }
-                           && type.FullName != "SunRaysMarket.Server.Web.Endpoints.MapEndpointsExtensions")
-            .SelectMany(type => type.GetMethods()
-                .Where(method => method is { IsPublic: true, IsStatic: true })
+            .Where(
+                type =>
+                    type is { Namespace: "SunRaysMarket.Server.Web.Endpoints", IsClass: true }
+                    && type.FullName != "SunRaysMarket.Server.Web.Endpoints.MapEndpointsExtensions"
+            )
+            .SelectMany(
+                type =>
+                    type.GetMethods().Where(method => method is { IsPublic: true, IsStatic: true })
             );
 
         foreach (var method in mappingMethods)
-        {
             method.Invoke(null, [apiGroup]);
-        }
 
         return endpoints;
     }

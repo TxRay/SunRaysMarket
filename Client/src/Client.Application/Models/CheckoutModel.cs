@@ -11,12 +11,11 @@ public class CheckoutModel
 
     public CheckoutSubmitModel ToSubmitModel()
     {
-        if (FulfillmentInfo is not FulfillmentModel.NonEmptyModel { IsValid: true } ||
-            this is { PaymentMethodId: null }
-           )
-        {
+        if (
+            FulfillmentInfo is not FulfillmentModel.NonEmptyModel { IsValid: true }
+            || this is { PaymentMethodId: null }
+        )
             return new CheckoutSubmitModel.InvalidModel();
-        }
 
         return FulfillmentInfo switch
         {
@@ -26,22 +25,20 @@ public class CheckoutModel
                     "The fulfillment model should not be empty."
                 ),
             FulfillmentModel.DeliveryModel deliveryModel
-                => new CheckoutSubmitModel.DeliveryModel
-                (
-                    TimeSlotId: deliveryModel.TimeSlotId,
-                    StoreId: deliveryModel.StoreId!.Value,
+                => new CheckoutSubmitModel.DeliveryModel(
+                    deliveryModel.TimeSlotId,
+                    deliveryModel.StoreId!.Value,
                     PaymentMethodId =
                         PaymentMethodId
                         ?? throw new InvalidOperationException("No payment method was set."),
-                    ContactNumber: ContactNumber,
-                    DeliveryAddressId: deliveryModel.DeliveryAddressId!.Value,
-                    DeliveryInstructions: DeliveryInstructions
+                    ContactNumber,
+                    deliveryModel.DeliveryAddressId!.Value,
+                    DeliveryInstructions
                 ),
             FulfillmentModel.PickupModel pickupModel
-                => new CheckoutSubmitModel.PickupModel
-                (
-                    TimeSlotId: pickupModel.TimeSlotId,
-                    StoreId: pickupModel.StoreId!.Value,
+                => new CheckoutSubmitModel.PickupModel(
+                    pickupModel.TimeSlotId,
+                    pickupModel.StoreId!.Value,
                     ContactNumber: ContactNumber,
                     PaymentMethodId: PaymentMethodId!
                 ),

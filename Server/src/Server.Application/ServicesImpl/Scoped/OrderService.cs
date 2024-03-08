@@ -41,8 +41,7 @@ public class OrderService(ICustomerService customerService, IUnitOfWork unitOfWo
             .OrderRepository
             .UpdateOrderAmountAsync(
                 persistedOrderId.Value,
-                (orderSummary, orderItemAmounts) =>
-                    orderSummary.CalculateAmounts(orderItemAmounts, 0.0f)
+                (orderSummary, orderItemAmounts) => orderSummary.CalculateAmounts(orderItemAmounts)
             );
         await unitOfWork.SaveChangesAsync();
         var persistedOrder = await unitOfWork

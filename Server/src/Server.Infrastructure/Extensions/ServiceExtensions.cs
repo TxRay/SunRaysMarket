@@ -5,7 +5,6 @@ using Stripe;
 using SunRaysMarket.Server.Application.UnitOfWork;
 using SunRaysMarket.Server.Infrastructure.Configuration;
 using SunRaysMarket.Server.Infrastructure.PaymentServices;
-using SunRaysMarket.Server.Infrastructure.Seeding;
 using SunRaysMarket.Server.Infrastructure.UnitOfWorkImplementation;
 using SunRaysMarket.Shared.Extensions.Reflection;
 using SunRaysMarket.Shared.Services.Interfaces;
@@ -37,13 +36,12 @@ public static class ServiceExtensions
     {
         services.AddDbContextFactory<ApplicationDbContext>(options =>
         {
-            var dbConnectionOptions = configuration.GetSection(DbConnectionOptions.DbConnection)
-                                          .Get<DbConnectionOptions>()
-                                      ?? new DbConnectionOptions();
+            var dbConnectionOptions =
+                configuration
+                    .GetSection(DbConnectionOptions.DbConnection)
+                    .Get<DbConnectionOptions>() ?? new DbConnectionOptions();
 
-            options.UseNpgsql(
-                dbConnectionOptions.ToString()
-            );
+            options.UseNpgsql(dbConnectionOptions.ToString());
         });
 
         return services;
@@ -91,7 +89,6 @@ public static class ServiceExtensions
 
         return services;
     }
-    
 
     private static IServiceCollection AddStripe(
         this IServiceCollection services,

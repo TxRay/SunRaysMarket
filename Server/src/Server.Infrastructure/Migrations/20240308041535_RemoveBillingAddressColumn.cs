@@ -12,15 +12,15 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Transactions_Addresses_BillingAddressId",
-                table: "Transactions");
+                table: "Transactions"
+            );
 
             migrationBuilder.DropIndex(
                 name: "IX_Transactions_BillingAddressId",
-                table: "Transactions");
+                table: "Transactions"
+            );
 
-            migrationBuilder.DropColumn(
-                name: "BillingAddressId",
-                table: "Transactions");
+            migrationBuilder.DropColumn(name: "BillingAddressId", table: "Transactions");
         }
 
         /// <inheritdoc />
@@ -31,12 +31,14 @@ namespace Infrastructure.Migrations
                 table: "Transactions",
                 type: "integer",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: 0
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_BillingAddressId",
                 table: "Transactions",
-                column: "BillingAddressId");
+                column: "BillingAddressId"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Transactions_Addresses_BillingAddressId",
@@ -44,7 +46,8 @@ namespace Infrastructure.Migrations
                 column: "BillingAddressId",
                 principalTable: "Addresses",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
     }
 }

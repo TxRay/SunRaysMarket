@@ -8,19 +8,22 @@ namespace SunRaysMarket.Client.Application.ProxyServicesImpl.Scoped;
 
 internal class CartControlsProxyService(HttpClient client) : ICartControlsService
 {
-    public async Task<CreateCartResponse> CreateCartAsync() =>
-        await client
-            .PostAsync("api/cart/create", null)
-            .ContinueWith(messageTask =>
-            {
-                var message = messageTask.Result;
-                message.EnsureSuccessStatusCode();
-                return message.Content.ReadFromJsonAsync<CreateCartResponse>();
-            })
-            .Unwrap() ?? throw new InvalidOperationException("CreateCartResponse was null");
+    public async Task<CreateCartResponse> CreateCartAsync()
+    {
+        return await client
+                .PostAsync("api/cart/create", null)
+                .ContinueWith(messageTask =>
+                {
+                    var message = messageTask.Result;
+                    message.EnsureSuccessStatusCode();
+                    return message.Content.ReadFromJsonAsync<CreateCartResponse>();
+                })
+                .Unwrap() ?? throw new InvalidOperationException("CreateCartResponse was null");
+    }
 
-    public async Task<CartItemControlModel?> GetCartItemInfoAsync(int cartItemId) =>
-        await client
+    public async Task<CartItemControlModel?> GetCartItemInfoAsync(int cartItemId)
+    {
+        return await client
             .GetAsync($"api/cart/item-info/{cartItemId}")
             .ContinueWith(messageTask =>
             {
@@ -29,9 +32,12 @@ internal class CartControlsProxyService(HttpClient client) : ICartControlsServic
                 return message.Content.ReadFromJsonAsync<CartItemControlModel>();
             })
             .Unwrap();
+    }
 
     public async Task DeleteCartAsync()
-        => await client.DeleteAsync("/api/cart");
+    {
+        await client.DeleteAsync("/api/cart");
+    }
 
     public async Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync()
     {
@@ -71,17 +77,19 @@ internal class CartControlsProxyService(HttpClient client) : ICartControlsServic
 
     public async Task<UpdateCartItemQuantityResponse> UpdateQuantityAsync(
         UpdateCartItemQuantityCommand command
-    ) =>
-        await client
-            .PostAsJsonAsync("api/cart/update-item-quantity", command)
-            .ContinueWith(messageTask =>
-            {
-                var message = messageTask.Result;
-                message.EnsureSuccessStatusCode();
-                return message.Content.ReadFromJsonAsync<UpdateCartItemQuantityResponse>();
-            })
-            .Unwrap()
-        ?? throw new InvalidOperationException("UpdateCartItemQuantityResponse was null");
+    )
+    {
+        return await client
+                .PostAsJsonAsync("api/cart/update-item-quantity", command)
+                .ContinueWith(messageTask =>
+                {
+                    var message = messageTask.Result;
+                    message.EnsureSuccessStatusCode();
+                    return message.Content.ReadFromJsonAsync<UpdateCartItemQuantityResponse>();
+                })
+                .Unwrap()
+            ?? throw new InvalidOperationException("UpdateCartItemQuantityResponse was null");
+    }
 
     public Task RemoveItemAsync(RemoveCartItemCommand command)
     {

@@ -14,7 +14,7 @@
 }
 
 @code {
-    [Parameter, EditorRequired] public UiState State { get; set; }
+    [Parameter] [EditorRequired] public UiState State { get; set; }
     [Parameter] public RenderFragment? UiLoading { get; set; }
     [Parameter] public RenderFragment? UiLoaded { get; set; }
     [Parameter] public RenderFragment? UiError { get; set; }

@@ -13,22 +13,6 @@ internal class CookieService(IHttpContextAccessor accessor) : ICookieService
     private const string PreferencesKey = Prefix + "Preferences";
     private List<string> _updatedCookieProperties = [];
 
-    private void SetCookie(string key, object value, CookieOptions options)
-        => accessor.HttpContext?.Response.Cookies.Append(key, JsonSerializer.Serialize(value), options);
-
-    private void DeleteCookie(string key)
-    {
-        if (string.IsNullOrEmpty(key))
-            return;
-
-        accessor.HttpContext?.Response.Cookies.Delete(key);
-    }
-
-    private TValue? GetCookie<TValue>(string key)
-        => accessor.HttpContext?.Request.Cookies.TryGetValue(key, out var value) ?? false
-            ? JsonSerializer.Deserialize<TValue>(value)
-            : default;
-
     public int? CartId
     {
         get => GetCookie<int?>(CartKey);
@@ -36,7 +20,9 @@ internal class CookieService(IHttpContextAccessor accessor) : ICookieService
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            SetCookie(CartKey, value,
+            SetCookie(
+                CartKey,
+                value,
                 new CookieOptions
                 {
                     Expires = DateTimeOffset.Now.AddDays(2),
@@ -57,13 +43,17 @@ internal class CookieService(IHttpContextAccessor accessor) : ICookieService
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            SetCookie(PreferencesKey, value, new CookieOptions
-            {
-                Expires = DateTimeOffset.Now.AddDays(30),
-                SameSite = SameSiteMode.Strict,
-                HttpOnly = true,
-                Secure = true
-            });
+            SetCookie(
+                PreferencesKey,
+                value,
+                new CookieOptions
+                {
+                    Expires = DateTimeOffset.Now.AddDays(30),
+                    SameSite = SameSiteMode.Strict,
+                    HttpOnly = true,
+                    Secure = true
+                }
+            );
 
             _updatedCookieProperties.Add(nameof(Preferences));
         }
@@ -95,5 +85,29 @@ internal class CookieService(IHttpContextAccessor accessor) : ICookieService
     public void Reset()
     {
         _updatedCookieProperties = [];
+    }
+
+    private void SetCookie(string key, object value, CookieOptions options)
+    {
+        accessor
+            .HttpContext
+            ?.Response
+            .Cookies
+            .Append(key, JsonSerializer.Serialize(value), options);
+    }
+
+    private void DeleteCookie(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+            return;
+
+        accessor.HttpContext?.Response.Cookies.Delete(key);
+    }
+
+    private TValue? GetCookie<TValue>(string key)
+    {
+        return accessor.HttpContext?.Request.Cookies.TryGetValue(key, out var value) ?? false
+            ? JsonSerializer.Deserialize<TValue>(value)
+            : default;
     }
 }

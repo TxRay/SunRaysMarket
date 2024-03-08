@@ -2,16 +2,16 @@
     <Heading>Delivery Instructions</Heading>
     <ChildContent>
         <EditForm FormName="DeliveryInstructionsForm">
-            <InputTextArea @bind-Value="@DeliveryInstructions" ></InputTextArea>
+            <InputTextArea @bind-Value="@DeliveryInstructions"></InputTextArea>
         </EditForm>
     </ChildContent>
 </CheckoutSection>
 
 @code {
-    #nullable disable
+#nullable disable
     [Inject] private IStore Store { get; set; }
-    #nullable enable
-    
+#nullable enable
+
     [Parameter] public string? DeliveryInstructions { get; set; }
     [Parameter] public EventCallback<string?> DeliveryInstructionsChanged { get; set; }
     [Parameter] public bool ShowSection { get; set; }
@@ -23,7 +23,6 @@
         DeliveryInstructions ??= string.Empty;
         DeliveryInstructionsEditContext = new EditContext(DeliveryInstructions);
         DeliveryInstructionsEditContext.OnFieldChanged += DeliveryInstructionsEditContext_OnFieldChanged;
-
     }
 
     private async void DeliveryInstructionsEditContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
@@ -31,4 +30,5 @@
         await Store.SetValueAsync("DeliveryInstructions", DeliveryInstructions);
         await DeliveryInstructionsChanged.InvokeAsync(DeliveryInstructions);
     }
+
 }

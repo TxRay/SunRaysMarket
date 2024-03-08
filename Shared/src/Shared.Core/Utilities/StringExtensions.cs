@@ -6,5 +6,8 @@ public static class StringExtensions
         this string baseString,
         string? suffix,
         string separator = "--"
-    ) => string.IsNullOrEmpty(suffix) ? baseString : $"{baseString}{separator}{suffix}";
+    )
+    {
+        return string.IsNullOrEmpty(suffix) ? baseString : $"{baseString}{separator}{suffix}";
+    }
 }

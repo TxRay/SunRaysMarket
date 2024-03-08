@@ -12,12 +12,17 @@ public class AuthResult
     public bool WasSuccessful => User is not null;
     public bool IsValidationFailure => ValidationResult is not null;
 
-    public static AuthResult Success(UserDetailsModel user) =>
-        new()
+    public static AuthResult Success(UserDetailsModel user)
+    {
+        return new AuthResult
         {
             User = user,
             Message = $"The user was successfully logged in as {user.FirstName}."
         };
+    }
 
-    public static AuthResult Failure(string message) => new() { Message = message };
+    public static AuthResult Failure(string message)
+    {
+        return new AuthResult { Message = message };
+    }
 }

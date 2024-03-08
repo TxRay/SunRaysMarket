@@ -19,8 +19,9 @@ public enum Role
 
 public static class RoleExtensions
 {
-    public static string ToRoleName(this Role role) =>
-        role switch
+    public static string ToRoleName(this Role role)
+    {
+        return role switch
         {
             Role.Admin => "Admin",
             Role.Customer => "Customer",
@@ -28,4 +29,5 @@ public static class RoleExtensions
             Role.Manager => "Manager",
             _ => throw new ArgumentOutOfRangeException(nameof(role), role, null)
         };
+    }
 }

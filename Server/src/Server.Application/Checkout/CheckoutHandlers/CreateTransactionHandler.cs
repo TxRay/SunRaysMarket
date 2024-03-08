@@ -9,7 +9,10 @@ public class CreateTransactionHandler : ICheckoutHandler
     private readonly ILogger<CreateTransactionHandler> _logger;
     private readonly ITransactionService _transactionService;
 
-    public CreateTransactionHandler(ILogger<CreateTransactionHandler> logger, ITransactionService transactionService)
+    public CreateTransactionHandler(
+        ILogger<CreateTransactionHandler> logger,
+        ITransactionService transactionService
+    )
     {
         _logger = logger;
         _transactionService = transactionService;
@@ -27,7 +30,11 @@ public class CreateTransactionHandler : ICheckoutHandler
                 "Could not create a transaction because the customer's account was never charged."
             );
 
-        if (!context.HandlerResults.TryGetValue<UpdateOrderAmountResult>(out var updateOrderAmountResult))
+        if (
+            !context
+                .HandlerResults
+                .TryGetValue<UpdateOrderAmountResult>(out var updateOrderAmountResult)
+        )
             return new CheckoutHandlerResponse.Error(
                 "Could not create a transaction because the total order amount could not be found."
             );

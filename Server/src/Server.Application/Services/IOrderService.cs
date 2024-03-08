@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using SunRaysMarket.Shared.Core.Enums;
 
 namespace SunRaysMarket.Server.Application.Services;
 

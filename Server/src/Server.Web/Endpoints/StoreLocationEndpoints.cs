@@ -4,7 +4,9 @@ namespace SunRaysMarket.Server.Web.Endpoints;
 
 internal static class StoreLocationEndpoints
 {
-    public static IEndpointRouteBuilder MapStoreLocationEndpoints(this IEndpointRouteBuilder endpoints)
+    public static IEndpointRouteBuilder MapStoreLocationEndpoints(
+        this IEndpointRouteBuilder endpoints
+    )
     {
         var storeLocationsGroup = endpoints.MapGroup("/store-locations");
 
@@ -13,11 +15,15 @@ internal static class StoreLocationEndpoints
         return endpoints;
     }
 
-    private static async Task<IResult> GetAllStoreLocationsHandler(IStoreLocationService storeLocationService)
-        => Results.Json(
+    private static async Task<IResult> GetAllStoreLocationsHandler(
+        IStoreLocationService storeLocationService
+    )
+    {
+        return Results.Json(
             new StoreLocationsResponse
             {
                 StoreLocations = await storeLocationService.GetStoreLocationsAsync()
             }
         );
+    }
 }

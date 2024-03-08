@@ -9,5 +9,9 @@
 
     private const string DefaultCssClasses = "layout layout__full";
 
-    private string RenderCssClasses() =>  (OverWriteCss ? string.Empty : DefaultCssClasses) + CssClasses;
+    private string RenderCssClasses()
+    {
+        return (OverWriteCss ? string.Empty : DefaultCssClasses) + CssClasses;
+    }
+
 }

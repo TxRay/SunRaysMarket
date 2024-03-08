@@ -5,7 +5,7 @@
     @*<ProductSection Heading="Search Results" FeaturedProducts="@Products"/>*@
 </main>
 
-@code { 
+@code {
     [SupplyParameterFromQuery] public string? Query { get; set; }
 
     private IEnumerable<ProductListModel> Products { get; set; } = [];

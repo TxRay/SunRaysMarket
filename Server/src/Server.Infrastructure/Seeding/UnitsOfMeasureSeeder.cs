@@ -2,11 +2,14 @@ using Microsoft.Extensions.Logging;
 
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal class UnitsOfMeasureSeeder(ApplicationDbContext dbContext, ILogger<UnitsOfMeasureSeeder> logger)
-    : SeederBase<UnitOfMeasure>(dbContext, logger)
+internal class UnitsOfMeasureSeeder(
+    ApplicationDbContext dbContext,
+    ILogger<UnitsOfMeasureSeeder> logger
+) : SeederBase<UnitOfMeasure>(dbContext, logger)
 {
     protected override SeederData RenderSeederData()
-        => new SeederData.EnumerableSeederData(
+    {
+        return new SeederData.EnumerableSeederData(
             new UnitOfMeasure[]
             {
                 new() { Name = "Gram", Symbol = "g" },
@@ -21,7 +24,5 @@ internal class UnitsOfMeasureSeeder(ApplicationDbContext dbContext, ILogger<Unit
                 new() { Name = "Count", Symbol = "ct" }
             }
         );
-    
-
-
+    }
 }

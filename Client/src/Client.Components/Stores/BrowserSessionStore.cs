@@ -17,8 +17,10 @@ public class BrowserSessionStore(IJSRuntime jsRuntime) : IStore
             var valueJson = await _accessor.Value.InvokeAsync<string>("get", PrefixKey(key));
             var obj = JsonSerializer.Deserialize<T>(valueJson);
 
-            Console.WriteLine($"Json data was successfully deserialized into type '{typeof(T).FullName}'");
-            
+            Console.WriteLine(
+                $"Json data was successfully deserialized into type '{typeof(T).FullName}'"
+            );
+
             return obj;
         }
         catch (Exception e)
@@ -49,14 +51,16 @@ public class BrowserSessionStore(IJSRuntime jsRuntime) : IStore
 
     public async Task ClearAllAsync()
     {
-        if (await InitializeAccessor()) await _accessor.Value.InvokeVoidAsync("clear");
+        if (await InitializeAccessor())
+            await _accessor.Value.InvokeVoidAsync("clear");
     }
 
     public event Action? OnChange;
 
     public async ValueTask DisposeAsync()
     {
-        if (_accessor.IsValueCreated) await _accessor.Value.DisposeAsync();
+        if (_accessor.IsValueCreated)
+            await _accessor.Value.DisposeAsync();
     }
 
     public string? KeyPrefix { get; } = "SunRaysMarket.SessionStore";

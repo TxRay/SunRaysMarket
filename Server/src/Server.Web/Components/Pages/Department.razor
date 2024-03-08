@@ -1,10 +1,9 @@
-@using SunRaysMarket.Server.Components.Enums
 @inherits OwningComponentBase<IProductService>
 @page "/Departments/{slug}/{id:int}"
 
 
 <PageLayout ContentWidth="ContentWidth.PageFull">
-    <ProductSection Heading="Featured Products" StreamedProducts="@StreamedProducts" />
+    <ProductSection Heading="Featured Products" StreamedProducts="@StreamedProducts"/>
 </PageLayout>
 
 @code {
@@ -17,6 +16,6 @@
     {
         StreamedProducts = Service.GetAllProductsAsync(Id)!;
     }
-    
+
 
 }

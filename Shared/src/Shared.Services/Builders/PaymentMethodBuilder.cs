@@ -16,8 +16,6 @@ public class PaymentMethodBuilder(IPaymentService paymentService) : IPaymentMeth
     public void Build()
     {
         if (_card is not null)
-        {
             PaymentMethodId = TestCards.GetCardPmTokenOrDefault(_card);
-        }
     }
 }

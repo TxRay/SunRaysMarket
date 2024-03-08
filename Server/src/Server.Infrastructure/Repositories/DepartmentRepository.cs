@@ -4,26 +4,30 @@ using SunRaysMarket.Server.Infrastructure.Cache;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
-internal class DepartmentRepository(ApplicationDbContext dbContext, IDistributedCache cache) : IDepartmentRepository
+internal class DepartmentRepository(ApplicationDbContext dbContext, IDistributedCache cache)
+    : IDepartmentRepository
 {
     private const string GetAllCacheKey = "GetAllDepartments";
-    
+
     public async Task<IEnumerable<DepartmentListModel>> GetAllAsync()
-        => await cache.SetOrFetchAsync(
+    {
+        return await cache.SetOrFetchAsync(
             GetAllCacheKey,
-            async () => await dbContext
-                .Departments
-                .Select(
-                    d =>
-                        new DepartmentListModel
-                        {
-                            Id = d.Id,
-                            Name = d.Name,
-                            Slug = d.Slug
-                        }
-                )
-                .ToArrayAsync()
+            async () =>
+                await dbContext
+                    .Departments
+                    .Select(
+                        d =>
+                            new DepartmentListModel
+                            {
+                                Id = d.Id,
+                                Name = d.Name,
+                                Slug = d.Slug
+                            }
+                    )
+                    .ToArrayAsync()
         );
+    }
 
     public async Task<UpdateDepartmentModel?> GetForEditAsync(int id)
     {
@@ -45,7 +49,7 @@ internal class DepartmentRepository(ApplicationDbContext dbContext, IDistributed
     public async Task CreateAsync(CreateDepartmentModel model)
     {
         await cache.RemoveAsync(GetAllCacheKey);
-        
+
         var department = new Department
         {
             Name = model.Name,
@@ -59,7 +63,7 @@ internal class DepartmentRepository(ApplicationDbContext dbContext, IDistributed
     public async Task UpdateAsync(UpdateDepartmentModel model)
     {
         await cache.RemoveAsync(GetAllCacheKey);
-        
+
         var department = await dbContext.Departments.FindAsync(model.Id);
 
         if (department is null)

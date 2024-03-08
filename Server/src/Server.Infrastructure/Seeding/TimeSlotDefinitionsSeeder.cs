@@ -4,8 +4,8 @@ namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
 internal sealed class TimeSlotDefinitionsSeeder(
     ApplicationDbContext dbContext,
-    ILogger<SeederBase<TimeSlotDefinition>> logger)
-    : SeederBase<TimeSlotDefinition>(dbContext, logger)
+    ILogger<SeederBase<TimeSlotDefinition>> logger
+) : SeederBase<TimeSlotDefinition>(dbContext, logger)
 {
     private const int StartHour = 8;
     private const int EndHour = 20;
@@ -19,7 +19,10 @@ internal sealed class TimeSlotDefinitionsSeeder(
         return new SeederData.EnumerableSeederData(timeSlotDefinitions);
     }
 
-    private static IEnumerable<TimeSlotDefinition> GenerateTimeSlots(OrderType orderType, int duration)
+    private static IEnumerable<TimeSlotDefinition> GenerateTimeSlots(
+        OrderType orderType,
+        int duration
+    )
     {
         var timeSlots = new List<TimeSlotDefinition>();
         var startMinutes = StartHour * 60;

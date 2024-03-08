@@ -149,11 +149,12 @@ internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRep
 
         foreach (var propertyInfo in model.GetType().GetProperties())
         {
-            var entityPropertyInfo = entity.GetType().GetProperty(propertyInfo.Name)
-                                     ?? throw new InvalidOperationException(
-                                         $"$The entity {typeof(Customer).FullName} does not contain " +
-                                         $"a property named '{propertyInfo}'."
-                                     );
+            var entityPropertyInfo =
+                entity.GetType().GetProperty(propertyInfo.Name)
+                ?? throw new InvalidOperationException(
+                    $"$The entity {typeof(Customer).FullName} does not contain "
+                        + $"a property named '{propertyInfo}'."
+                );
             object? value;
             if ((value = propertyInfo.GetValue(model)) != entityPropertyInfo.GetValue(entity))
                 entityPropertyInfo.SetValue(entity, value);
@@ -161,28 +162,27 @@ internal class CustomerRepository(ApplicationDbContext dbContext) : ICustomerRep
     }
 
     public Task<CustomerPreferences?> GetCustomerPreferences(int customerId)
-        => dbContext.Customers
-            .Where(c => c.Id == customerId)
-            .Select(
-                c => new CustomerPreferences
-                {
-                    PreferredStoreId = c.PreferredStoreId
-                }
-            ).FirstOrDefaultAsync();
-
-    public Task<object?> GetCustomerPreferences(int customerId, Func<CustomerPreferences, object?> selector)
     {
-        return dbContext.Customers.Where(c => c.Id == customerId)
-            .Select(c
-                =>
-                selector(new CustomerPreferences
-                    {
-                        PreferredStoreId = c.PreferredStoreId
-                    }
-                )
-            ).FirstOrDefaultAsync();
+        return dbContext
+            .Customers
+            .Where(c => c.Id == customerId)
+            .Select(c => new CustomerPreferences { PreferredStoreId = c.PreferredStoreId })
+            .FirstOrDefaultAsync();
     }
 
+    public Task<object?> GetCustomerPreferences(
+        int customerId,
+        Func<CustomerPreferences, object?> selector
+    )
+    {
+        return dbContext
+            .Customers
+            .Where(c => c.Id == customerId)
+            .Select(
+                c => selector(new CustomerPreferences { PreferredStoreId = c.PreferredStoreId })
+            )
+            .FirstOrDefaultAsync();
+    }
 
     public int? GetPersistedCustomerId()
     {

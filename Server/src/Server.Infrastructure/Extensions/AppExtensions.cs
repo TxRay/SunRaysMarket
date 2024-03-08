@@ -28,20 +28,25 @@ public static class AppExtensions
     {
         using var seederFactory = ISeederFactory.CreateSeederFactory(app.ApplicationServices);
 
-        var seederImplementations = Assembly.GetExecutingAssembly()
+        var seederImplementations = Assembly
+            .GetExecutingAssembly()
             .GetTypes()
-            .Where(type =>
-                type is { Namespace: "SunRaysMarket.Server.Infrastructure.Seeding", IsAbstract: false } &&
-                type.IsAssignableTo(typeof(ISeeder)));
+            .Where(
+                type =>
+                    type
+                        is {
+                            Namespace: "SunRaysMarket.Server.Infrastructure.Seeding",
+                            IsAbstract: false
+                        }
+                    && type.IsAssignableTo(typeof(ISeeder))
+            );
 
         foreach (var seederType in seederImplementations)
         {
             var seeder = seederFactory.CreateSeeder(seederType)!;
 
             if (seeder.ShouldSeed())
-            {
                 await seeder.SeedAsync();
-            }
         }
     }
 }

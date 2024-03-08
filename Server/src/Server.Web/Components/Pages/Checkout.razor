@@ -1,6 +1,5 @@
 @page "/checkout"
 @inherits OwningComponentBase<ICartService>
-@using SunRaysMarket.Server.Components.Enums
 
 <AuthorizeView Roles="Customer">
     <Authorized>
@@ -9,11 +8,11 @@
             <PageLayout CssClasses="checkout" ContentWidth="ContentWidth.PageFull" Element="div">
                 <h1 class="">Checkout</h1>
                 <CheckoutContent Summary="@Summary"/>
-            </PageLayout> 
+            </PageLayout>
         }
     </Authorized>
     <NotAuthorized>
-        <AutoNavigator Route="login" />
+        <AutoNavigator Route="login"/>
     </NotAuthorized>
 </AuthorizeView>
 

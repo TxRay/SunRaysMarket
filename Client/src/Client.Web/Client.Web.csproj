@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>SunRaysMarket.Client.Web</RootNamespace>
-       <!-- <BlazorCacheBootResources>false</BlazorCacheBootResources> -->
+        <!-- <BlazorCacheBootResources>false</BlazorCacheBootResources> -->
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Shared\src\Shared.Components\Shared.Components.csproj" />
+        <ProjectReference Include="..\..\..\Shared\src\Shared.Components\Shared.Components.csproj"/>
         <ProjectReference Include="..\Client.Components\Client.Components.csproj"/>
     </ItemGroup>
 
@@ -29,11 +29,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Pages\ShoppingCart.razor" />
+        <AdditionalFiles Include="Pages\ShoppingCart.razor"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Pages\" />
+        <Folder Include="Pages\"/>
     </ItemGroup>
 
 </Project>

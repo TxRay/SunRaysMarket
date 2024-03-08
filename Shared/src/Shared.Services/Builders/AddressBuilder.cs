@@ -4,9 +4,11 @@ namespace SunRaysMarket.Shared.Services.Builders;
 
 public class AddressBuilder(IAddressService addressService) : IAddressBuilder
 {
-    private int? _addressId;
     private CreateAddressModel? _address;
+    private int? _addressId;
     private bool _valueIsSet;
+
+    public int? AddressId { get; private set; }
 
     public void WithNewAddress(CreateAddressModel address)
     {
@@ -43,6 +45,4 @@ public class AddressBuilder(IAddressService addressService) : IAddressBuilder
         AddressId =
             await addressService.CreateAddressAsync(_address) ?? throw new NullReferenceException();
     }
-
-    public int? AddressId { get; private set; }
 }

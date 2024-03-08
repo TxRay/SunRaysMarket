@@ -11,9 +11,11 @@ internal class SeederFactory : ISeederFactory
         _serviceScope = serviceScopeFactory.CreateScope();
     }
 
-
-    public ISeeder CreateSeeder<TSeeder>() where TSeeder : ISeeder
-        => ActivatorUtilities.CreateInstance<TSeeder>(_serviceScope.ServiceProvider);
+    public ISeeder CreateSeeder<TSeeder>()
+        where TSeeder : ISeeder
+    {
+        return ActivatorUtilities.CreateInstance<TSeeder>(_serviceScope.ServiceProvider);
+    }
 
     public ISeeder CreateSeeder(Type seederType)
     {

@@ -1,7 +1,5 @@
 @using Blazored.FluentValidation
 @using SunRaysMarket.Server.Application.Enums
-@using SunRaysMarket.Server.Application.Services.Auth
-@using SunRaysMarket.Server.Components.Enums
 @inherits OwningComponentBase<SunRaysMarket.Server.Application.Services.Auth.IUserService>
 
 @page "/signup"
@@ -79,7 +77,10 @@
 
     private bool ShowConfirmation { get; set; }
 
-    protected override void OnInitialized() => SignUpModel ??= new SignUpModel();
+    protected override void OnInitialized()
+    {
+        SignUpModel ??= new SignUpModel();
+    }
 
     public async Task SignUpUser()
     {

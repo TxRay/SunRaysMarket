@@ -2,14 +2,10 @@ namespace SunRaysMarket.Server.Infrastructure.Data;
 
 internal class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
-    public ApplicationDbContext()
-    {
-    }
+    public ApplicationDbContext() { }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Cart> Carts { get; set; }
@@ -35,19 +31,40 @@ internal class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>,
         // Identity Entity Model configuration
         base.OnModelCreating(builder);
 
-        builder.Entity<User>(entity => { entity.ToTable("Users"); });
+        builder.Entity<User>(entity =>
+        {
+            entity.ToTable("Users");
+        });
 
-        builder.Entity<IdentityRole<int>>(entity => { entity.ToTable("Roles"); });
+        builder.Entity<IdentityRole<int>>(entity =>
+        {
+            entity.ToTable("Roles");
+        });
 
-        builder.Entity<IdentityUserRole<int>>(entity => { entity.ToTable("UserRoles"); });
+        builder.Entity<IdentityUserRole<int>>(entity =>
+        {
+            entity.ToTable("UserRoles");
+        });
 
-        builder.Entity<IdentityUserClaim<int>>(entity => { entity.ToTable("UserClaims"); });
+        builder.Entity<IdentityUserClaim<int>>(entity =>
+        {
+            entity.ToTable("UserClaims");
+        });
 
-        builder.Entity<IdentityUserLogin<int>>(entity => { entity.ToTable("UserLogins"); });
+        builder.Entity<IdentityUserLogin<int>>(entity =>
+        {
+            entity.ToTable("UserLogins");
+        });
 
-        builder.Entity<IdentityRoleClaim<int>>(entity => { entity.ToTable("RoleClaims"); });
+        builder.Entity<IdentityRoleClaim<int>>(entity =>
+        {
+            entity.ToTable("RoleClaims");
+        });
 
-        builder.Entity<IdentityUserToken<int>>(entity => { entity.ToTable("UserTokens"); });
+        builder.Entity<IdentityUserToken<int>>(entity =>
+        {
+            entity.ToTable("UserTokens");
+        });
 
         // Application Entity Model configuration
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

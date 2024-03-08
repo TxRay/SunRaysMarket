@@ -1,5 +1,4 @@
-@using SunRaysMarket.Libraries.Components.State
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
 
 <CheckoutSection
     ShowSection="true"
@@ -128,8 +127,7 @@
         Model = await Store!.TryGetValueAsync<FulfillmentModel.DeliveryModel>("FulfillmentData")
                 ?? await Store!.TryGetValueAsync<FulfillmentModel.PickupModel>("FulfillmentData")
                 ?? Model;
-        
-        
+
 
         if (Model is FulfillmentModel.NonEmptyModel { IsValid: true } nonEmptyModel)
         {

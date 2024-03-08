@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using SunRaysMarket.Shared.Core.Enums;
@@ -9,9 +8,15 @@ namespace SunRaysMarket.Client.Application.Models;
 [JsonDerivedType(typeof(PickupModel), "pickupModel")]
 public abstract record FulfillmentModel
 {
+    public static bool IsNullOrEmpty(FulfillmentModel? model)
+    {
+        return model is null or EmptyModel;
+    }
+
     public record EmptyModel : FulfillmentModel;
 
-    public abstract record NonEmptyModel(int TimeSlotId, OrderType OrderType, int? StoreId) : FulfillmentModel
+    public abstract record NonEmptyModel(int TimeSlotId, OrderType OrderType, int? StoreId)
+        : FulfillmentModel
     {
         public abstract bool IsValid { get; }
     }
@@ -20,18 +25,29 @@ public abstract record FulfillmentModel
         : NonEmptyModel(TimeSlotId, OrderType.Delivery, StoreId)
     {
         [JsonConstructor]
-        public DeliveryModel(int timeSlotId, int? StoreId, int? deliveryAddressId, OrderType orderType)
+        public DeliveryModel(
+            int timeSlotId,
+            int? StoreId,
+            int? deliveryAddressId,
+            OrderType orderType
+        )
             : this(timeSlotId, StoreId, deliveryAddressId)
         {
             if (orderType == OrderType.Pickup)
                 throw new SerializationException(
                     $"The order type for a delivery order cannot be '{orderType}'."
-                    );
+                );
         }
 
         [JsonIgnore]
         public override bool IsValid =>
-            this is { TimeSlotId: > 0, DeliveryAddressId: > 0, OrderType: OrderType.Delivery, StoreId: > 0 };
+            this
+                is {
+                    TimeSlotId: > 0,
+                    DeliveryAddressId: > 0,
+                    OrderType: OrderType.Delivery,
+                    StoreId: > 0
+                };
     }
 
     public record PickupModel(int TimeSlotId, int? StoreId = null)
@@ -48,9 +64,7 @@ public abstract record FulfillmentModel
         }
 
         [JsonIgnore]
-        public override bool IsValid => 
-            this is { TimeSlotId: > 0,  OrderType: OrderType.Pickup, StoreId: > 0 };
+        public override bool IsValid =>
+            this is { TimeSlotId: > 0, OrderType: OrderType.Pickup, StoreId: > 0 };
     }
-
-    public static bool IsNullOrEmpty(FulfillmentModel? model) => model is null or EmptyModel;
 }

@@ -60,11 +60,11 @@
     private SelectedStoreLocationModel StoreLocationModel { get; set; }
     private EditContext StoreLocationEditContext { get; set; }
 #nullable enable
-    private string? SelectedStoreName => 
+    private string? SelectedStoreName =>
         StoreLocations
-        .Where(sl => sl.Id == StoreLocationModel.SelectedStoreLocationId)
-        .Select(sl => sl.LocationName)
-        .FirstOrDefault();
+            .Where(sl => sl.Id == StoreLocationModel.SelectedStoreLocationId)
+            .Select(sl => sl.LocationName)
+            .FirstOrDefault();
 
     protected override void OnInitialized()
     {

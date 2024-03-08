@@ -4,5 +4,5 @@ public enum CheckoutSectionStatus
 {
     Invalid,
     Unset,
-    Valid,
+    Valid
 }

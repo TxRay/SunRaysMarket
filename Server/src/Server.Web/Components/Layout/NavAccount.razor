@@ -13,7 +13,7 @@
                 <use href="/img/icons/solid.svg#right-to-bracket"></use>
             </svg>
             <span>Login</span>
-        </NavLink> 
+        </NavLink>
     }
     else
     {
@@ -34,11 +34,9 @@
 </div>
 
 @code {
-    [CascadingParameter]
-    public HttpContext? Context { get; set; }
-    
-    [Parameter]
-    public bool? IsAuthenticated { get; set; }
+    [CascadingParameter] public HttpContext? Context { get; set; }
 
-    private bool UserIsAuthenticated => IsAuthenticated ?? Context is not null && Context.User.IsAuthenticated();
+    [Parameter] public bool? IsAuthenticated { get; set; }
+
+    private bool UserIsAuthenticated => IsAuthenticated ?? (Context is not null && Context.User.IsAuthenticated());
 }

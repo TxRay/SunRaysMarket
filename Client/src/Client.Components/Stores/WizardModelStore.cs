@@ -1,8 +1,6 @@
 namespace SunRaysMarket.Client.Components.Stores;
 
-public interface IWizardModelStore : IModelStore<string>
-{
-}
+public interface IWizardModelStore : IModelStore<string> { }
 
 public class WizardModelStore : IWizardModelStore
 {

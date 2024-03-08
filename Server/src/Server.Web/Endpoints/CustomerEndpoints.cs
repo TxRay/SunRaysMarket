@@ -17,22 +17,25 @@ internal static class CustomerEndpoints
         return endpoints;
     }
 
-    private static IResult HandleGetCustomerStorePreference(
-        ICookieService cookieService)
-        => Results.Json(
+    private static IResult HandleGetCustomerStorePreference(ICookieService cookieService)
+    {
+        return Results.Json(
             new CustomerStorePreferenceResponse
             {
                 PreferredStoreId = cookieService.Preferences?.PreferredStoreId
             }
         );
+    }
 
-    private static IResult HandleSetCustomerStorePreference([FromBody] SetCustomerPreferredStoreCommand command,
-        ICookieService cookieService)
+    private static IResult HandleSetCustomerStorePreference(
+        [FromBody] SetCustomerPreferredStoreCommand command,
+        ICookieService cookieService
+    )
     {
         var preferences = cookieService.Preferences ?? DefaultPreferences.Model;
         preferences.PreferredStoreId = command.PreferredStoreId;
         cookieService.Preferences = preferences;
-        
+
         return Results.StatusCode(201);
     }
 }

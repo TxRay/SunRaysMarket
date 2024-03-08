@@ -27,6 +27,8 @@ public class AddressProxyService(HttpClient client) : IAddressService
         return response?.AddressId;
     }
 
-    public async Task<AddressModel?> GetAddressAsync(int addressId) =>
-        await client.GetFromJsonAsync<AddressModel?>($"api/addresses/{addressId}");
+    public async Task<AddressModel?> GetAddressAsync(int addressId)
+    {
+        return await client.GetFromJsonAsync<AddressModel?>($"api/addresses/{addressId}");
+    }
 }

@@ -51,7 +51,7 @@ internal class UserService(
         if (user is null)
             return AuthResult.Failure("Bad username or password.");
 
-        return (await userRepository.HasRoleAsync(user.Id, Role.Admin))
+        return await userRepository.HasRoleAsync(user.Id, Role.Admin)
             ? AuthResult.Success(user)
             : AuthResult.Failure("The user is not admin");
     }

@@ -1,14 +1,13 @@
-@using Application.UnitOfWork
 @inherits OwningComponentBase<IUnitOfWork>
 @page "/admin/department/{action}/{id:int?}"
 
 <SectionContent SectionName="page-title">@PageTitle</SectionContent>
 
-<EditForm 
-    Model="NewDepartment" 
-    OnValidSubmit="OnValidSubmitAsync" 
-    FormName="DepartmentActionsForm" 
-    class="form--admin" 
+<EditForm
+    Model="NewDepartment"
+    OnValidSubmit="OnValidSubmitAsync"
+    FormName="DepartmentActionsForm"
+    class="form--admin"
     method="post">
     <div class="form__admin-group">
         <div>
@@ -74,12 +73,12 @@
                 break;
         }
     }
-    
+
     private Task OnSubmitAsync()
     {
         return Task.CompletedTask;
     }
-    
+
     private async Task OnValidSubmitAsync()
     {
         if (Id.HasValue)
@@ -96,7 +95,7 @@
     {
         await Service.DepartmentRepository.CreateAsync(NewDepartment);
         await Service.SaveChangesAsync();
-        
+
         Navigation.NavigateTo("admin/departments/");
     }
 

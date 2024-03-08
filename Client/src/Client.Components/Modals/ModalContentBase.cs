@@ -10,7 +10,8 @@ public abstract class ModalContentBase<TState> : ComponentBase, IDisposable
 
     private IModalController? _modalController;
 
-    [Inject] private IServiceProvider ServiceProvider { get; set; } = default!;
+    [Inject]
+    private IServiceProvider ServiceProvider { get; set; } = default!;
 
     protected bool IsDisposed { get; private set; }
 
@@ -56,9 +57,7 @@ public abstract class ModalContentBase<TState> : ComponentBase, IDisposable
         ModalContext.EventHandlers.OnUnloadedAsync += OnUnloadedAsync;
     }
 
-    protected virtual void OnUnloaded()
-    {
-    }
+    protected virtual void OnUnloaded() { }
 
     protected virtual Task OnUnloadedAsync()
     {
@@ -73,7 +72,11 @@ public abstract class ModalContentBase<TState> : ComponentBase, IDisposable
         where TComponent : IComponent, IDisposable
         where TNewState : class, new()
     {
-        return ModalController.DispatchAsync<TComponent, TNewState>(options, initialState, tempData);
+        return ModalController.DispatchAsync<TComponent, TNewState>(
+            options,
+            initialState,
+            tempData
+        );
     }
 
     protected Task CloseModal()
@@ -81,7 +84,5 @@ public abstract class ModalContentBase<TState> : ComponentBase, IDisposable
         return ModalController.Close();
     }
 
-    protected virtual void Dispose(bool disposing)
-    {
-    }
+    protected virtual void Dispose(bool disposing) { }
 }

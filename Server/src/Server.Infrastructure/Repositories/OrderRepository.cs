@@ -271,14 +271,16 @@ internal class OrderRepository(ApplicationDbContext dbContext) : IOrderRepositor
     {
         var order = await dbContext.Orders.FindAsync(orderId);
 
-        if (order is not null) dbContext.Orders.Remove(order);
+        if (order is not null)
+            dbContext.Orders.Remove(order);
     }
 
     public async Task DeleteOrderLineAsync(int orderLineId)
     {
         var orderLine = await dbContext.OrderLine.FindAsync(orderLineId);
 
-        if (orderLine is not null) dbContext.OrderLine.Remove(orderLine);
+        if (orderLine is not null)
+            dbContext.OrderLine.Remove(orderLine);
     }
 
     public int? GetPersistedOrderId()

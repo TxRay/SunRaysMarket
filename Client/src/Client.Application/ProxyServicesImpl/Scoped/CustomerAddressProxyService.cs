@@ -7,11 +7,13 @@ namespace SunRaysMarket.Client.Application.ProxyServicesImpl.Scoped;
 
 public class CustomerAddressProxyService(HttpClient client) : ICustomerAddressService
 {
-    public async Task<IEnumerable<AddressModel>> GetAddressesAsync() =>
-        (
+    public async Task<IEnumerable<AddressModel>> GetAddressesAsync()
+    {
+        return (
             await client.GetFromJsonAsync<GetAddressesResponse>("api/addresses/customer")
             ?? new GetAddressesResponse()
         ).Addresses;
+    }
 
     public async Task<int?> AddAddress(CreateAddressModel model)
     {

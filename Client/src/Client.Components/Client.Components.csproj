@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Libraries.Components\Libraries.Components.csproj" />
+        <ProjectReference Include="..\..\..\Libraries.Components\Libraries.Components.csproj"/>
         <ProjectReference Include="..\Client.Application\Client.Application.csproj"/>
     </ItemGroup>
 

@@ -1,5 +1,4 @@
 @namespace SunRaysMarket.Server.Components
-
 @using Microsoft.Extensions.Logging
 @inherits OwningComponentBase<ICartControlsService> 
 @attribute [StreamRendering]
@@ -24,9 +23,9 @@
 
 @code {
     [Inject] private ILogger<ProductSection>? Logger { get; set; }
-    
-    [Parameter, EditorRequired] public string Heading { get; set; } = string.Empty;
-    [Parameter, EditorRequired] public IAsyncEnumerable<ProductListModel> StreamedProducts { get; set; } = default!;
+
+    [Parameter] [EditorRequired] public string Heading { get; set; } = string.Empty;
+    [Parameter] [EditorRequired] public IAsyncEnumerable<ProductListModel> StreamedProducts { get; set; } = default!;
     [Parameter] public string FailureMessage { get; set; } = "No products found";
 
     private List<ProductListModel> Products { get; set; } = [];

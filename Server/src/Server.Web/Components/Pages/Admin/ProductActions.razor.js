@@ -1,6 +1,6 @@
 const photoUpload = document.getElementById("photoFile");
 const photoUrl = document.getElementById("photoUrl");
-const requestVerificationField = 
+const requestVerificationField =
     document.getElementsByName("RequestVerificationTokenField").item(0);
 
 export function onLoad() {

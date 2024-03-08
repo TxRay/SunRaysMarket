@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
 using SunRaysMarket.Server.Application.Repositories;
 using SunRaysMarket.Server.Infrastructure.Cache;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
-internal class CartRepository(ApplicationDbContext dbContext, IDistributedCache cache) : ICartRepository
+internal class CartRepository(ApplicationDbContext dbContext, IDistributedCache cache)
+    : ICartRepository
 {
     private Cart? CartPersistenceModel { get; set; }
     private CartItem? CartItemPersistenceModel { get; set; }
@@ -22,7 +22,8 @@ internal class CartRepository(ApplicationDbContext dbContext, IDistributedCache 
         if (cartPersistenceModel is null)
             return null;
 
-        if (persist) CartPersistenceModel = cartPersistenceModel;
+        if (persist)
+            CartPersistenceModel = cartPersistenceModel;
 
         return cartPersistenceModel.Customer is null
             ? new CartDetailsModel { Id = cartPersistenceModel.Id }
@@ -36,40 +37,26 @@ internal class CartRepository(ApplicationDbContext dbContext, IDistributedCache 
             };
     }
 
-    private IQueryable<CartItemListModel> QueryCartItems(int cartId)
-        => dbContext
-            .Carts
-            .Include(c => c.CartItems)
-            .ThenInclude(ci => ci.Product)
-            .Where(c => c.Id == cartId)
-            .SelectMany(c => c.CartItems)
-            .Select(
-                ci =>
-                    new CartItemListModel
-                    {
-                        Id = ci.Id,
-                        CartId = ci.CartId,
-                        ProductId = ci.ProductId,
-                        ProductName = ci.Product.Name,
-                        ProductSlug = ci.Product.Slug,
-                        ProductPhotoUrl = ci.Product.PhotoUrl,
-                        Quantity = ci.Quantity,
-                        RegularPrice = ci.Product.Price,
-                        DiscountDecimal = ci.Product.DiscountPercent
-                    }
-            );
-
     public async Task<IEnumerable<CartItemListModel>> GetCartItemsAsync(int cartId)
-        => await QueryCartItems(cartId).ToArrayAsync();
+    {
+        return await QueryCartItems(cartId).ToArrayAsync();
+    }
 
     public IAsyncEnumerable<CartItemListModel> GetCartItemsAsyncEnumerable(int cartId)
-        => QueryCartItems(cartId).AsAsyncEnumerable();
+    {
+        return QueryCartItems(cartId).AsAsyncEnumerable();
+    }
 
     public async Task<IEnumerable<CartItemControlModel>> GetAllCartItemInfoAsync(int cartId)
     {
         const string key = "GetCartInfoList";
 
-        if (cache.TryGetValue<IEnumerable<CartItemControlModel>>(key, out var cachedCartItemInfoList))
+        if (
+            cache.TryGetValue<IEnumerable<CartItemControlModel>>(
+                key,
+                out var cachedCartItemInfoList
+            )
+        )
             return cachedCartItemInfoList!;
 
         var fetchedCartItemInfoList = await dbContext
@@ -87,20 +74,18 @@ internal class CartRepository(ApplicationDbContext dbContext, IDistributedCache 
             .ToArrayAsync();
 
         await cache.SetValueAsync(
-            key, fetchedCartItemInfoList, 
+            key,
+            fetchedCartItemInfoList,
             new DistributedCacheEntryOptions
-        {
-            AbsoluteExpiration = DateTimeOffset.Now.Add(TimeSpan.FromSeconds(60))
-        });
+            {
+                AbsoluteExpiration = DateTimeOffset.Now.Add(TimeSpan.FromSeconds(60))
+            }
+        );
 
         return fetchedCartItemInfoList;
     }
 
-
-    public async Task<CartItemControlModel?> GetCartItemControlInfoAsync(
-        int cartId,
-        int productId
-    )
+    public async Task<CartItemControlModel?> GetCartItemControlInfoAsync(int cartId, int productId)
     {
         return await dbContext
             .CartItems
@@ -220,7 +205,7 @@ internal class CartRepository(ApplicationDbContext dbContext, IDistributedCache 
     public int GetPersistedCartItemId()
     {
         return CartItemPersistenceModel?.Id
-               ?? throw new NullReferenceException("No cart item is persisted");
+            ?? throw new NullReferenceException("No cart item is persisted");
     }
 
     public void ClearPersistedCart()
@@ -231,6 +216,31 @@ internal class CartRepository(ApplicationDbContext dbContext, IDistributedCache 
     public int? GetPersistedCartItemQuantity()
     {
         return CartItemPersistenceModel?.Quantity
-               ?? throw new NullReferenceException("No cart item is persisted");
+            ?? throw new NullReferenceException("No cart item is persisted");
+    }
+
+    private IQueryable<CartItemListModel> QueryCartItems(int cartId)
+    {
+        return dbContext
+            .Carts
+            .Include(c => c.CartItems)
+            .ThenInclude(ci => ci.Product)
+            .Where(c => c.Id == cartId)
+            .SelectMany(c => c.CartItems)
+            .Select(
+                ci =>
+                    new CartItemListModel
+                    {
+                        Id = ci.Id,
+                        CartId = ci.CartId,
+                        ProductId = ci.ProductId,
+                        ProductName = ci.Product.Name,
+                        ProductSlug = ci.Product.Slug,
+                        ProductPhotoUrl = ci.Product.PhotoUrl,
+                        Quantity = ci.Quantity,
+                        RegularPrice = ci.Product.Price,
+                        DiscountDecimal = ci.Product.DiscountPercent
+                    }
+            );
     }
 }

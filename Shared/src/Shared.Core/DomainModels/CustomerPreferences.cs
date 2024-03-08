@@ -7,9 +7,11 @@ public class CustomerPreferences
     public int? PreferredStoreId { get; set; }
 
     public static PropertyInfo GetPropertyInfo(string key)
-        => key switch
+    {
+        return key switch
         {
-            "store" => CustomerPreferences.GetPropertyInfo("PreferredStoreId"),
+            "store" => GetPropertyInfo("PreferredStoreId"),
             _ => throw new ArgumentOutOfRangeException(nameof(key), key, null)
         };
+    }
 }

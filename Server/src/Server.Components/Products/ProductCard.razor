@@ -28,7 +28,7 @@
 
 @code {
     [Inject] ILogger<ProductCard> Logger { get; set; } = default!;
-    
+
     [Parameter] public ProductListModel Product { get; set; } = default!;
     [Parameter] public IEnumerable<CartItemControlModel> CartItemInfoList { get; set; } = [];
 

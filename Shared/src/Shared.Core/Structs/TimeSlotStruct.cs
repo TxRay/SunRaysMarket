@@ -8,18 +8,6 @@ public class TimeSlotStruct
     public int Year { get; init; }
     public TimeSlotRange TimeSlotRange { get; init; }
 
-    public static TimeSlotStruct Create(DateOnly date, TimeSlotRange timeSlotRange) =>
-        new()
-        {
-            DayOfWeek = (int)date.DayOfWeek,
-            DayOfMonth = date.Day,
-            Month = date.Month,
-            Year = date.Year,
-            TimeSlotRange = timeSlotRange
-        };
-
-    public DateTime ToDateTime() => new(Year, Month, DayOfMonth);
-
     private string DayOfWeekName =>
         DayOfWeek switch
         {
@@ -74,6 +62,25 @@ public class TimeSlotStruct
             _ => $"{DayOfMonth}th"
         };
 
-    public override string ToString() =>
-        $"{DayOfWeekName}, {MonthName} {DayOfMonthOrdinal}, {Year} {TimeSlotRange}";
+    public static TimeSlotStruct Create(DateOnly date, TimeSlotRange timeSlotRange)
+    {
+        return new TimeSlotStruct
+        {
+            DayOfWeek = (int)date.DayOfWeek,
+            DayOfMonth = date.Day,
+            Month = date.Month,
+            Year = date.Year,
+            TimeSlotRange = timeSlotRange
+        };
+    }
+
+    public DateTime ToDateTime()
+    {
+        return new DateTime(Year, Month, DayOfMonth);
+    }
+
+    public override string ToString()
+    {
+        return $"{DayOfWeekName}, {MonthName} {DayOfMonthOrdinal}, {Year} {TimeSlotRange}";
+    }
 }

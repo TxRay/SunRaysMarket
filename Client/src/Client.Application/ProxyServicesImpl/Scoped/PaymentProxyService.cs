@@ -7,20 +7,6 @@ namespace SunRaysMarket.Client.Application.ProxyServicesImpl.Scoped;
 
 public class PaymentProxyService(HttpClient client) : IPaymentService
 {
-    public async Task<string> AddCard(CreateCardModel model)
-    {
-        var response = await client
-            .PostAsJsonAsync("api/payments/card", model)
-            .ContinueWith(message =>
-            {
-                message.Result.EnsureSuccessStatusCode();
-                return message.Result.Content.ReadFromJsonAsync<AddCardResponse>();
-            })
-            .Unwrap();
-
-        return response?.CardId ?? throw new InvalidOperationException("CardId was null");
-    }
-
     public Task<string> AddCard(string token)
     {
         throw new NotImplementedException();
@@ -53,5 +39,19 @@ public class PaymentProxyService(HttpClient client) : IPaymentService
             .Unwrap();
 
         return response ?? throw new InvalidOperationException("ChargeResponseModel was null");
+    }
+
+    public async Task<string> AddCard(CreateCardModel model)
+    {
+        var response = await client
+            .PostAsJsonAsync("api/payments/card", model)
+            .ContinueWith(message =>
+            {
+                message.Result.EnsureSuccessStatusCode();
+                return message.Result.Content.ReadFromJsonAsync<AddCardResponse>();
+            })
+            .Unwrap();
+
+        return response?.CardId ?? throw new InvalidOperationException("CardId was null");
     }
 }

@@ -10,7 +10,7 @@
 
 @code {
     private UiState _uiState = UiState.Loading;
- 
+
 
 #nullable disable
     private ICartControlsService CartControlsService { get; set; }
@@ -18,7 +18,7 @@
 
     private IEnumerable<CartItemListModel> CartItems { get; set; } = [];
     private IEnumerable<CartItemControlModel> CartItemInfoList { get; set; } = [];
-    
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -27,7 +27,7 @@
 
         CartItems = await cartService.GetActiveCartItemsAsync();
         CartItemInfoList = await cartControlsService.GetAllCartItemInfoAsync();
-        
+
         _uiState = UiState.Loaded;
     }
 

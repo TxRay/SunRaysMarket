@@ -5,6 +5,8 @@ public class ProductModalState : IModalState
     public int? ProductId { get; private set; }
     public bool ShowModal { get; private set; }
 
+    public event Action? OnChange;
+
     public void SetState(int? productId, bool? isOpen)
     {
         ShowModal = isOpen ?? ShowModal;
@@ -13,7 +15,8 @@ public class ProductModalState : IModalState
         NotifyStateChanged();
     }
 
-    public event Action? OnChange;
-
-    private void NotifyStateChanged() => OnChange?.Invoke();
+    private void NotifyStateChanged()
+    {
+        OnChange?.Invoke();
+    }
 }

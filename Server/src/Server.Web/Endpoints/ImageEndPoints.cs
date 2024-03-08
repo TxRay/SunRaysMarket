@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-
 namespace SunRaysMarket.Server.Web.Endpoints;
 
 internal static class ImageEndPoints
@@ -39,14 +37,15 @@ internal static class ImageEndPoints
         return endpoints;
     }
 
-    private static async Task<IResult> UploadImageHandler(IFormFile imageFile, IUnitOfWork unitOfWork)
+    private static async Task<IResult> UploadImageHandler(
+        IFormFile imageFile,
+        IUnitOfWork unitOfWork
+    )
     {
         var urlIdentifier = await unitOfWork.ImageRepository.UploadAsync(imageFile);
         await unitOfWork.SaveChangesAsync();
         var imageUrl = await unitOfWork.ImageRepository.GetUrlAsync(Guid.Parse(urlIdentifier));
 
-        return Results.Json(
-            new { ImageUrl = imageUrl }
-        );
+        return Results.Json(new { ImageUrl = imageUrl });
     }
 }

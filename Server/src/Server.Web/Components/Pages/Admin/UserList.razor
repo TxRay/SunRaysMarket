@@ -1,5 +1,4 @@
-@using Application.Repositories
-@inherits OwningComponentBase<IUserRepository>
+@inherits OwningComponentBase<SunRaysMarket.Server.Application.Repositories.IUserRepository>
 @page "/admin/users"
 
 <SectionContent SectionName="page-title">@PageTitle</SectionContent>
@@ -43,7 +42,7 @@
     private IEnumerable<UserListModel> Users { get; set; } = new UserListModel[] { };
 
     private const string PageTitle = "Users List";
-    
+
     protected override async Task OnInitializedAsync()
     {
         Users = await Service.GetUsersAsync();

@@ -3,8 +3,6 @@
 namespace SunRaysMarket.Server.Web.Endpoints;
 
 
-
-
 /*public static class ApplicationEndpoints
 {
     public static IEndpointRouteBuilder MapApplicationEndpoints(
@@ -15,7 +13,7 @@ namespace SunRaysMarket.Server.Web.Endpoints;
             .MapGroup("/app")
             .WithGroupName("Application")
             .WithDescription("Endpoints for managing applications.");
-        
+
         applicationGroup.MapSessionEndpoints();
 
         return endpoints;
@@ -33,12 +31,12 @@ namespace SunRaysMarket.Server.Web.Endpoints;
             (LoginFormSessionEndpointModel model, HttpContext context) =>
             {
                 var session = context.Session;
-                
+
                 if (!session.IsAvailable)
                 {
                     return Results.BadRequest();
                 }
-                
+
                 session.SetString("Email", model.Email);
 
                 return Results.Ok();

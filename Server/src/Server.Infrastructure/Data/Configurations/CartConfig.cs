@@ -1,11 +1,10 @@
 using SunRaysMarket.Server.Infrastructure.Data.Configurations.Base;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class CartConfig : TimeStampConfigurationBase<PersistenceModels.Cart>
+internal class CartConfig : TimeStampConfigurationBase<Cart>
 {
-    public override void Configure(EntityTypeBuilder<PersistenceModels.Cart> builder)
+    public override void Configure(EntityTypeBuilder<Cart> builder)
     {
         base.Configure(builder);
 
@@ -14,6 +13,6 @@ internal class CartConfig : TimeStampConfigurationBase<PersistenceModels.Cart>
         builder
             .HasOne(cart => cart.Customer)
             .WithOne(customer => customer.Cart)
-            .HasForeignKey<PersistenceModels.Customer>(customer => customer.CartId);
+            .HasForeignKey<Customer>(customer => customer.CartId);
     }
 }

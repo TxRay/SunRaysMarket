@@ -1,6 +1,4 @@
-﻿@using Application.UnitOfWork
-@using SunRaysMarket.Server.Components.Enums
-@inherits OwningComponentBase<IUnitOfWork>
+﻿@inherits OwningComponentBase<IUnitOfWork>
 
 @page "/"
 
@@ -22,4 +20,5 @@
         base.OnInitialized();
         StreamedProducts = Service.ProductRepository.GetAllAsync();
     }
+
 }

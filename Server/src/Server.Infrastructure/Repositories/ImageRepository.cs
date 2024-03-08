@@ -5,9 +5,9 @@ using SunRaysMarket.Server.Infrastructure.Cache;
 
 namespace SunRaysMarket.Server.Infrastructure.Repositories;
 
-internal class ImageRepository(ApplicationDbContext dbContext, IDistributedCache cache) : IImageRepository
+internal class ImageRepository(ApplicationDbContext dbContext, IDistributedCache cache)
+    : IImageRepository
 {
-
     public async Task<string> UploadAsync(IFormFile file)
     {
         using var memoryStream = new MemoryStream();
@@ -38,7 +38,8 @@ internal class ImageRepository(ApplicationDbContext dbContext, IDistributedCache
     }
 
     public async Task<ImageDownloadModel?> DownloadAsync(string urlHandle)
-        => await cache.SetOrFetchAsync(
+    {
+        return await cache.SetOrFetchAsync(
             $"Image_{urlHandle}",
             async () =>
             {
@@ -48,8 +49,11 @@ internal class ImageRepository(ApplicationDbContext dbContext, IDistributedCache
                 return await dbContext
                     .Images
                     .Where(i => i.UrlIdentifier == urlIdentifier)
-                    .Select(i => new ImageDownloadModel { ContentType = i.ContentType, Data = i.Data })
+                    .Select(
+                        i => new ImageDownloadModel { ContentType = i.ContentType, Data = i.Data }
+                    )
                     .FirstOrDefaultAsync();
             }
         );
+    }
 }

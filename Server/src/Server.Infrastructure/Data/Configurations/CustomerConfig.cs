@@ -1,11 +1,10 @@
 using SunRaysMarket.Server.Infrastructure.Data.Configurations.Base;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class CustomerConfig : ConfigurationBase<PersistenceModels.Customer>
+internal class CustomerConfig : ConfigurationBase<Customer>
 {
-    public override void Configure(EntityTypeBuilder<PersistenceModels.Customer> builder)
+    public override void Configure(EntityTypeBuilder<Customer> builder)
     {
         base.Configure(builder);
 
@@ -18,7 +17,7 @@ internal class CustomerConfig : ConfigurationBase<PersistenceModels.Customer>
         builder
             .HasOne(customer => customer.Cart)
             .WithOne(cart => cart.Customer)
-            .HasForeignKey<PersistenceModels.Customer>(customer => customer.CartId);
+            .HasForeignKey<Customer>(customer => customer.CartId);
 
         builder
             .HasOne(customer => customer.PreferredStore)

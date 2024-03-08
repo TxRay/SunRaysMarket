@@ -9,14 +9,17 @@ namespace SunRaysMarket.Server.Application.Checkout.CheckoutHandlers;
 
 public class CreateOrderHandler : ICheckoutHandler
 {
-    private readonly ICustomerService _customerService;
     private readonly IHttpContextAccessor _contextAccessor;
+    private readonly ICustomerService _customerService;
     private readonly ILogger<CreateOrderHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
 
-
-    public CreateOrderHandler(ICustomerService customerService, IHttpContextAccessor contextAccessor,
-        ILogger<CreateOrderHandler> logger, IUnitOfWork unitOfWork)
+    public CreateOrderHandler(
+        ICustomerService customerService,
+        IHttpContextAccessor contextAccessor,
+        ILogger<CreateOrderHandler> logger,
+        IUnitOfWork unitOfWork
+    )
     {
         _customerService = customerService;
         _contextAccessor = contextAccessor;
@@ -29,28 +32,34 @@ public class CreateOrderHandler : ICheckoutHandler
         if (_contextAccessor.HttpContext?.User is null)
             return new CheckoutHandlerResponse.Error("The customer is not currently logged in.");
 
-        var customerId = await _customerService.GetCurrentCustomerIdAsync(_contextAccessor.HttpContext.User);
+        var customerId = await _customerService.GetCurrentCustomerIdAsync(
+            _contextAccessor.HttpContext.User
+        );
 
         if (customerId is null)
-            return new CheckoutHandlerResponse.Error("No customer account was found for the logged in user.");
+            return new CheckoutHandlerResponse.Error(
+                "No customer account was found for the logged in user."
+            );
 
         var newOrder = context.SubmitModel switch
         {
-            CheckoutSubmitModel.DeliveryModel deliveryModel => new CreateOrderModel
-            {
-                CustomerId = customerId.Value,
-                DeliveryAddressId = deliveryModel.DeliveryAddressId,
-                StoreId = deliveryModel.StoreId,
-                OrderType = OrderType.Delivery,
-                TimeSlotId = deliveryModel.TimeSlotId
-            },
-            CheckoutSubmitModel.PickupModel pickupModel => new CreateOrderModel
-            {
-                CustomerId = customerId.Value,
-                StoreId = pickupModel.StoreId,
-                OrderType = OrderType.Pickup,
-                TimeSlotId = pickupModel.TimeSlotId
-            },
+            CheckoutSubmitModel.DeliveryModel deliveryModel
+                => new CreateOrderModel
+                {
+                    CustomerId = customerId.Value,
+                    DeliveryAddressId = deliveryModel.DeliveryAddressId,
+                    StoreId = deliveryModel.StoreId,
+                    OrderType = OrderType.Delivery,
+                    TimeSlotId = deliveryModel.TimeSlotId
+                },
+            CheckoutSubmitModel.PickupModel pickupModel
+                => new CreateOrderModel
+                {
+                    CustomerId = customerId.Value,
+                    StoreId = pickupModel.StoreId,
+                    OrderType = OrderType.Pickup,
+                    TimeSlotId = pickupModel.TimeSlotId
+                },
             _ => throw new ArgumentOutOfRangeException()
         };
 
@@ -62,9 +71,10 @@ public class CreateOrderHandler : ICheckoutHandler
         catch (Exception e)
         {
             _logger.LogError("{}", e.Message);
-            return new CheckoutHandlerResponse.Error("Something went wrong while trying to create an order");
+            return new CheckoutHandlerResponse.Error(
+                "Something went wrong while trying to create an order"
+            );
         }
-
 
         var persistedOrder = _unitOfWork.OrderRepository.GetPersistedOrderDetails();
 

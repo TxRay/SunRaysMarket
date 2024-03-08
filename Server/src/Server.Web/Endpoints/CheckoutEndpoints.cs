@@ -1,8 +1,4 @@
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 using Microsoft.AspNetCore.Mvc;
-using SunRaysMarket.Server.Application.Checkout;
-using SunRaysMarket.Shared.Core.Checkout;
 using SunRaysMarket.Shared.Core.DomainModels.Checkout;
 using SunRaysMarket.Shared.Core.DomainModels.Responses;
 
@@ -48,8 +44,10 @@ internal static class CheckoutEndpoints
         return endpoints;
     }
 
-    private static async Task<IResult> CheckoutHandler([FromBody] CheckoutSubmitModel checkoutSubmission,
-        ICheckoutService checkoutService)
+    private static async Task<IResult> CheckoutHandler(
+        [FromBody] CheckoutSubmitModel checkoutSubmission,
+        ICheckoutService checkoutService
+    )
     {
         var response = await checkoutService.CheckoutAsync(checkoutSubmission);
         return Results.Json(response);

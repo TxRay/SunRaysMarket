@@ -2,8 +2,8 @@ namespace SunRaysMarket.Shared.Core.Payment;
 
 public class TestCard
 {
-    #nullable disable
-    public string Id { get;  internal init; }
+#nullable disable
+    public string Id { get; internal init; }
     public string Title { get; internal init; }
     public CardDefinition Definition { get; internal init; }
 

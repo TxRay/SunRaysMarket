@@ -42,5 +42,8 @@ internal class UserRolesSeeder : ISeeder
             await _roleManager.CreateAsync(role);
     }
 
-    public bool ShouldSeed() => !_dbContext.Roles.Any();
+    public bool ShouldSeed()
+    {
+        return !_dbContext.Roles.Any();
+    }
 }

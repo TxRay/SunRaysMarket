@@ -1,11 +1,10 @@
 using SunRaysMarket.Server.Infrastructure.Data.Configurations.Base;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class StoreConfig : TimeStampConfigurationBase<PersistenceModels.Store>
+internal class StoreConfig : TimeStampConfigurationBase<Store>
 {
-    public override void Configure(EntityTypeBuilder<PersistenceModels.Store> builder)
+    public override void Configure(EntityTypeBuilder<Store> builder)
     {
         base.Configure(builder);
 
@@ -20,7 +19,7 @@ internal class StoreConfig : TimeStampConfigurationBase<PersistenceModels.Store>
         builder
             .HasOne(store => store.Address)
             .WithOne()
-            .HasForeignKey<PersistenceModels.Store>()
+            .HasForeignKey<Store>()
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

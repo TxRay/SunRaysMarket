@@ -16,24 +16,27 @@ builder
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddAntiforgery(options =>
+builder
+    .Services
+    .AddAntiforgery(options =>
     {
         options.FormFieldName = "RequestVerificationTokenField";
         options.HeaderName = "X-CSRF-TOKEN";
         options.Cookie.Name = "SunRaysMarket.X-CSRF-TOKEN";
         options.Cookie.SameSite = SameSiteMode.Strict;
         options.Cookie.HttpOnly = true;
-    }
-);
+    });
 
-builder.Services.AddSession(options =>
-{
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.Strict;
-    options.Cookie.Name = "SunRaysMarket.Session";
-    options.Cookie.IsEssential = true;
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-});
+builder
+    .Services
+    .AddSession(options =>
+    {
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Cookie.Name = "SunRaysMarket.Session";
+        options.Cookie.IsEssential = true;
+        options.IdleTimeout = TimeSpan.FromMinutes(30);
+    });
 
 builder.Services.AddServerInfrastructureAssembly(builder.Configuration);
 builder.Services.AddServerApplicationAssembly();
@@ -50,7 +53,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler("/Error", true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

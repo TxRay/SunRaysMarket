@@ -1,11 +1,7 @@
-@using SunRaysMarket.Shared.Core.Payment
-@using System.Runtime.InteropServices
 @using SunRaysMarket.Client.Components.Checkout
-@using SunRaysMarket.Libraries.Components.State
 @using SunRaysMarket.Shared.Core.Checkout
-@using SunRaysMarket.Shared.Core.DomainModels.Checkout
 @using SunRaysMarket.Shared.Core.Structs
-
+@using SunRaysMarket.Shared.Core.DomainModels.Checkout
 @namespace SunRaysMarket.Client.Components
 @rendermode InteractiveWebAssembly
 
@@ -67,7 +63,7 @@
     [Inject] private IServiceProvider ServiceProvider { get; set; }
 #nullable enable
 
-    [Parameter, EditorRequired] public CartSummaryModel Summary { get; set; } = default!;
+    [Parameter] [EditorRequired] public CartSummaryModel Summary { get; set; } = default!;
 
     private CheckoutModel Model { get; set; } = new();
     private PaymentSection.PaymentMethodModel? PaymentModel { get; set; }

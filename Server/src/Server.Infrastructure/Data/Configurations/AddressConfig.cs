@@ -1,12 +1,10 @@
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SunRaysMarket.Server.Infrastructure.Data.Configurations.Base;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels;
 
 namespace SunRaysMarket.Server.Infrastructure.Data.Configurations;
 
-internal class AddressConfig : ConfigurationBase<PersistenceModels.Address>
+internal class AddressConfig : ConfigurationBase<Address>
 {
-    public override void Configure(EntityTypeBuilder<PersistenceModels.Address> builder)
+    public override void Configure(EntityTypeBuilder<Address> builder)
     {
         base.Configure(builder);
 

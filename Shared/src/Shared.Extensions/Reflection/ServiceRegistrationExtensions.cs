@@ -5,23 +5,25 @@ using Microsoft.Extensions.DependencyInjection;
 namespace SunRaysMarket.Shared.Extensions.Reflection;
 
 /// <summary>
-///  Provides extension methods for the <see cref="IServiceCollection"/> interface to register services
-///  from a given namespace in an assembly.
+///     Provides extension methods for the <see cref="IServiceCollection" /> interface to register services
+///     from a given namespace in an assembly.
 /// </summary>
 public static class ServiceRegistrationExtensions
 {
+    private static readonly Regex Alphanumeric = new("^[a-zA-Z0-9]+$");
+
     /// <summary>
-    ///  Registers all classes from a given namespace in an assembly as services in the <see cref="IServiceCollection"/>.
+    ///     Registers all classes from a given namespace in an assembly as services in the <see cref="IServiceCollection" />.
     /// </summary>
     /// <param name="services">
-    /// The <see cref="IServiceCollection"/> to register the services in.
+    ///     The <see cref="IServiceCollection" /> to register the services in.
     /// </param>
     /// <param name="assembly">
-    /// The assembly containing the namespace.
+    ///     The assembly containing the namespace.
     /// </param>
     /// <param name="nameSpace">The namespace to register the services from.</param>
     /// <param name="lifetime">The lifetime of the registered services.</param>
-    /// <returns>The <see cref="IServiceCollection"/> with the services registered.</returns>
+    /// <returns>The <see cref="IServiceCollection" /> with the services registered.</returns>
     public static IServiceCollection AddImplementationsFromNamespace(
         this IServiceCollection services,
         Assembly assembly,
@@ -47,86 +49,89 @@ public static class ServiceRegistrationExtensions
             );
 
         foreach (var descriptor in serviceDescriptors)
-        {
             services.Add(descriptor);
-        }
 
         return services;
     }
 
     /// <summary>
-    ///  Registers all classes from a given namespace in an assembly as services in the <see cref="IServiceCollection"/>.
+    ///     Registers all classes from a given namespace in an assembly as services in the <see cref="IServiceCollection" />.
     /// </summary>
     /// <param name="services">
-    /// The <see cref="IServiceCollection"/> to register the services in.
+    ///     The <see cref="IServiceCollection" /> to register the services in.
     /// </param>
     /// <param name="namespaceDescriptor">
-    /// The <see cref="NamespaceDescriptor"/> containing the assembly and the namespace to register the services from.
+    ///     The <see cref="NamespaceDescriptor" /> containing the assembly and the namespace to register the services from.
     /// </param>
     /// <param name="lifetime">
-    /// The lifetime of the registered services.
+    ///     The lifetime of the registered services.
     /// </param>
     /// <returns></returns>
     public static IServiceCollection AddImplementationsFromNamespace(
         this IServiceCollection services,
         NamespaceDescriptor namespaceDescriptor,
         ServiceLifetime? lifetime
-    ) =>
-        services.AddImplementationsFromNamespace(
+    )
+    {
+        return services.AddImplementationsFromNamespace(
             namespaceDescriptor.Assembly,
             namespaceDescriptor.NameSpace,
             lifetime = null
         );
+    }
 
     /// <summary>
-    ///  Registers all classes from a given namespace in the calling assembly as services in the <see cref="IServiceCollection"/>.
+    ///     Registers all classes from a given namespace in the calling assembly as services in the
+    ///     <see cref="IServiceCollection" />.
     /// </summary>
     /// <param name="services">
-    /// The <see cref="IServiceCollection"/> to register the services in.
+    ///     The <see cref="IServiceCollection" /> to register the services in.
     /// </param>
     /// <param name="nameSpace">
-    /// The namespace to register the services from.
+    ///     The namespace to register the services from.
     /// </param>
     /// <param name="lifetime">
-    /// The lifetime of the registered services.
+    ///     The lifetime of the registered services.
     /// </param>
     /// <returns>
-    /// The <see cref="IServiceCollection"/> with the services registered.
+    ///     The <see cref="IServiceCollection" /> with the services registered.
     /// </returns>
     public static IServiceCollection AddImplementationsFromLocalNameSpace(
         this IServiceCollection services,
         string nameSpace,
         ServiceLifetime? lifetime = null
-    ) =>
-        services.AddImplementationsFromNamespace(
+    )
+    {
+        return services.AddImplementationsFromNamespace(
             Assembly.GetCallingAssembly(),
             nameSpace,
             lifetime
         );
+    }
 
     /// <summary>
-    ///  Registers all classes from a given namespace in an assembly as services in the <see cref="IServiceCollection"/>.
+    ///     Registers all classes from a given namespace in an assembly as services in the <see cref="IServiceCollection" />.
     /// </summary>
     /// <param name="services">
-    /// The <see cref="IServiceCollection"/> to register the services in.
+    ///     The <see cref="IServiceCollection" /> to register the services in.
     /// </param>
     /// <param name="interfaceNamespaces">
-    /// The namespaces containing the interfaces to be implemented.
+    ///     The namespaces containing the interfaces to be implemented.
     /// </param>
     /// <param name="implementationAssembly">
-    /// The assembly containing the implementation classes.
+    ///     The assembly containing the implementation classes.
     /// </param>
     /// <param name="implementationNameSpace">
-    /// The namespace containing the implementation classes.
+    ///     The namespace containing the implementation classes.
     /// </param>
     /// <param name="lifetime">
-    /// The lifetime of the registered services.
+    ///     The lifetime of the registered services.
     /// </param>
     /// <returns>
-    /// The <see cref="IServiceCollection"/> with the services registered.
+    ///     The <see cref="IServiceCollection" /> with the services registered.
     /// </returns>
     /// <exception cref="InvalidOperationException">
-    ///  Thrown when a service does not implement an interface from the given namespaces.
+    ///     Thrown when a service does not implement an interface from the given namespaces.
     /// </exception>
     public static IServiceCollection AddInterfacesWithImplementationsFromNamespace(
         this IServiceCollection services,
@@ -166,11 +171,12 @@ public static class ServiceRegistrationExtensions
                         + $"from the given namespaces."
                 );
 
-            var lifetimeValue = lifetime ?? MapServiceLifetime(implementationNameSpace, implType.Namespace!);
+            var lifetimeValue =
+                lifetime ?? MapServiceLifetime(implementationNameSpace, implType.Namespace!);
 
             var serviceDescriptor = new ServiceDescriptor(
                 interfaceType,
-                (serviceProvider) => ActivatorUtilities.CreateInstance(serviceProvider, implType),
+                serviceProvider => ActivatorUtilities.CreateInstance(serviceProvider, implType),
                 lifetimeValue
             );
 
@@ -181,67 +187,71 @@ public static class ServiceRegistrationExtensions
     }
 
     /// <summary>
-    ///  Registers all classes from a given namespace in an assembly as services in the <see cref="IServiceCollection"/>.
+    ///     Registers all classes from a given namespace in an assembly as services in the <see cref="IServiceCollection" />.
     /// </summary>
     /// <param name="services">
-    /// The <see cref="IServiceCollection"/> to register the services in.
+    ///     The <see cref="IServiceCollection" /> to register the services in.
     /// </param>
     /// <param name="interfaceNamespaces">
-    /// The namespaces containing the interfaces to be implemented.
+    ///     The namespaces containing the interfaces to be implemented.
     /// </param>
     /// <param name="implementationNamespaceDescriptor">
-    /// The <see cref="NamespaceDescriptor"/> containing the assembly and the namespace to register the services from.
+    ///     The <see cref="NamespaceDescriptor" /> containing the assembly and the namespace to register the services from.
     /// </param>
     /// <param name="lifetime">
-    /// The lifetime of the registered services.
+    ///     The lifetime of the registered services.
     /// </param>
     /// <returns>
-    /// The <see cref="IServiceCollection"/> with the services registered.
+    ///     The <see cref="IServiceCollection" /> with the services registered.
     /// </returns>
     public static IServiceCollection AddInterfacesWithImplementationsFromNamespace(
         this IServiceCollection services,
         IEnumerable<NamespaceDescriptor> interfaceNamespaces,
         NamespaceDescriptor implementationNamespaceDescriptor,
         ServiceLifetime? lifetime = null
-    ) =>
-        services.AddInterfacesWithImplementationsFromNamespace(
+    )
+    {
+        return services.AddInterfacesWithImplementationsFromNamespace(
             interfaceNamespaces,
             implementationNamespaceDescriptor.Assembly,
             implementationNamespaceDescriptor.NameSpace,
             lifetime
         );
+    }
 
     /// <summary>
-    /// Registers all classes from a given namespace in the calling assembly as services in the
-    /// <see cref="IServiceCollection"/>.
+    ///     Registers all classes from a given namespace in the calling assembly as services in the
+    ///     <see cref="IServiceCollection" />.
     /// </summary>
     /// <param name="services">
-    /// The <see cref="IServiceCollection"/> to register the services in.
+    ///     The <see cref="IServiceCollection" /> to register the services in.
     /// </param>
     /// <param name="interfaceNamespaces">
-    /// The namespaces containing the interfaces to be implemented.
+    ///     The namespaces containing the interfaces to be implemented.
     /// </param>
     /// <param name="implementationNamespace">
-    /// The namespace to register the services from.
+    ///     The namespace to register the services from.
     /// </param>
     /// <param name="lifetime">
-    /// The lifetime of the registered services.
+    ///     The lifetime of the registered services.
     /// </param>
     /// <returns>
-    /// The <see cref="IServiceCollection"/> with the services registered.
+    ///     The <see cref="IServiceCollection" /> with the services registered.
     /// </returns>
     public static IServiceCollection AddInterfacesWithImplementationsFromLocalNamespace(
         this IServiceCollection services,
         IEnumerable<NamespaceDescriptor> interfaceNamespaces,
         string implementationNamespace,
         ServiceLifetime? lifetime = null
-    ) =>
-        services.AddInterfacesWithImplementationsFromNamespace(
+    )
+    {
+        return services.AddInterfacesWithImplementationsFromNamespace(
             interfaceNamespaces,
             Assembly.GetCallingAssembly(),
             implementationNamespace,
             lifetime
         );
+    }
 
     private static ServiceLifetime MapServiceLifetime(string baseNamespace, string serviceNamespace)
     {
@@ -256,8 +266,6 @@ public static class ServiceRegistrationExtensions
 
         throw new InvalidOperationException(
             $"No service lifetime was indicated by the given namespace {serviceNamespace}."
-            );
+        );
     }
-    
-    private static readonly Regex Alphanumeric = new Regex("^[a-zA-Z0-9]+$");
 }

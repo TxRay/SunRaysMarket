@@ -55,7 +55,7 @@ else
     internal bool TabsLoaded { get; private set; }
 
     private int RenderCount { get; set; } = 0;
-    
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -95,8 +95,8 @@ else
         TabsLoaded = false;
         StateHasChanged();
         await OnTabUnloaded.InvokeAsync(CurrentIndex);
-  
-        
+
+
         await OnTabLoaded.InvokeAsync(index);
         CurrentIndex = index;
         TabsLoaded = true;

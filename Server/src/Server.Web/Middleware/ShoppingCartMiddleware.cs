@@ -1,6 +1,7 @@
 namespace SunRaysMarket.Server.Web.Middleware;
 
-public class ShoppingCartMiddleware(IServiceProvider serviceProvider, ICookieService cookieService) : IMiddleware
+public class ShoppingCartMiddleware(IServiceProvider serviceProvider, ICookieService cookieService)
+    : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
@@ -12,9 +13,9 @@ public class ShoppingCartMiddleware(IServiceProvider serviceProvider, ICookieSer
         if (context.User.IsAuthenticated())
         {
             var sessionCartId = context.Session.GetInt32("customerCartId");
-            var customerCartId = sessionCartId
-                                 ?? await customerService.GetCustomerCartIdAsync(context.User);
-            
+            var customerCartId =
+                sessionCartId ?? await customerService.GetCustomerCartIdAsync(context.User);
+
             if (sessionCartId is null && customerCartId is not null)
                 context.Session.SetInt32("customerCartId", customerCartId.Value);
 

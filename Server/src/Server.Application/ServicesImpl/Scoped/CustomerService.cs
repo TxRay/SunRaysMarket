@@ -9,8 +9,8 @@ namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 internal class CustomerService(
     IHttpContextAccessor httpContextAccessor,
     IUnitOfWork unitOfWork,
-    IUserService userService)
-    : ICustomerService
+    IUserService userService
+) : ICustomerService
 {
     public async Task<int?> GetCurrentCustomerIdAsync(ClaimsPrincipal user)
     {
@@ -23,12 +23,16 @@ internal class CustomerService(
     }
 
     public async Task<int?> GetCurrentCustomerIdAsync()
-        => httpContextAccessor.HttpContext?.User is not null
+    {
+        return httpContextAccessor.HttpContext?.User is not null
             ? await GetCurrentCustomerIdAsync(httpContextAccessor.HttpContext.User)
             : null;
+    }
 
-    public async Task<int?> GetCustomerCartIdAsync(int customerId) =>
-        await unitOfWork.CustomerRepository.GetCustomerCartIdAsync(customerId);
+    public async Task<int?> GetCustomerCartIdAsync(int customerId)
+    {
+        return await unitOfWork.CustomerRepository.GetCustomerCartIdAsync(customerId);
+    }
 
     public async Task CreateCustomerCartAsync(ClaimsPrincipal user)
     {
@@ -40,12 +44,6 @@ internal class CustomerService(
 
         var cartId = unitOfWork.CartRepository.GetPersistedCartId();
         await SaveCartAsync(customerId, cartId);
-    }
-
-    private async Task SaveCartAsync(int customerId, int cartId)
-    {
-        await unitOfWork.CustomerRepository.AddCartToCustomerAsync(customerId, cartId);
-        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task SaveCartAsync(ClaimsPrincipal user, int cartId)
@@ -60,17 +58,12 @@ internal class CustomerService(
     public async Task RemoveCartFromCustomerAsync()
     {
         var customerId = await GetCurrentCustomerIdAsync();
-        
-        if(customerId is null )
+
+        if (customerId is null)
             return;
-        
+
         await unitOfWork.CustomerRepository.RemoveCartFromCustomerAsync(customerId.Value);
         await unitOfWork.SaveChangesAsync();
-    }
-
-    public async Task RemoveCartFromCustomerAsync(int customerId)
-    {
-
     }
 
     public async Task<string?> GetCustomerPaymentIdAsync(ClaimsPrincipal user)
@@ -91,4 +84,12 @@ internal class CustomerService(
 
         return await unitOfWork.CustomerRepository.GetCustomerCartIdAsync(customerId.Value);
     }
+
+    private async Task SaveCartAsync(int customerId, int cartId)
+    {
+        await unitOfWork.CustomerRepository.AddCartToCustomerAsync(customerId, cartId);
+        await unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task RemoveCartFromCustomerAsync(int customerId) { }
 }

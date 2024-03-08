@@ -15,11 +15,10 @@
 </p>
 
 @code {
-    [Parameter, EditorRequired] public float RegularPrice { get; set; }
-    [Parameter, EditorRequired] public float DiscountPercent { get; set; }
+    [Parameter] [EditorRequired] public float RegularPrice { get; set; }
+    [Parameter] [EditorRequired] public float DiscountPercent { get; set; }
     [Parameter] public string ClassNames { get; set; } = string.Empty;
-    [Parameter] 
-    public SalePriceDisplayOrientation SalePriceOrientation { get; set; } = SalePriceDisplayOrientation.Row;
+    [Parameter] public SalePriceDisplayOrientation SalePriceOrientation { get; set; } = SalePriceDisplayOrientation.Row;
 
     private bool IsRegularPrice => DiscountPercent == 0;
     private float SalePrice => RegularPrice * (1 - DiscountPercent);

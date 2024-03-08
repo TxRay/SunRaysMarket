@@ -1,9 +1,6 @@
-using System.Collections.ObjectModel;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SunRaysMarket.Server.Application.Checkout.Results;
 using SunRaysMarket.Shared.Core.Checkout;
 using SunRaysMarket.Shared.Core.DomainModels.Checkout;
 
@@ -25,17 +22,20 @@ namespace SunRaysMarket.Server.Application.Checkout;
 
 internal class CheckoutPipeline : ICheckoutPipeline
 {
+    private readonly ObjectFactory[] _handlerFactories;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<CheckoutPipeline> _logger;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly ObjectFactory[] _handlerFactories;
     private readonly PipelineDelegates _pipelineDelegates;
-
+    private readonly IServiceProvider _serviceProvider;
 
     [ActivatorUtilitiesConstructor]
     public CheckoutPipeline(
-        IHttpContextAccessor httpContextAccessor, ILogger<CheckoutPipeline> logger,
-        IServiceProvider serviceProvider, ObjectFactory[] handlerFactories, PipelineDelegates pipelineDelegates)
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<CheckoutPipeline> logger,
+        IServiceProvider serviceProvider,
+        ObjectFactory[] handlerFactories,
+        PipelineDelegates pipelineDelegates
+    )
     {
         _httpContextAccessor = httpContextAccessor;
         _logger = logger;
@@ -49,19 +49,23 @@ internal class CheckoutPipeline : ICheckoutPipeline
         if (!_httpContextAccessor.HttpContext?.User.IsAuthenticated() ?? false)
             return new CheckoutResponse.Failure("The user is not logged in.");
 
-        var context =
-            new CheckoutContext(_httpContextAccessor.HttpContext!, submitModel, new Dictionary<Type, object>());
+        var context = new CheckoutContext(
+            _httpContextAccessor.HttpContext!,
+            submitModel,
+            new Dictionary<Type, object>()
+        );
 
         foreach (var factory in _handlerFactories)
-        {
             try
             {
                 var handlerInstance = (ICheckoutHandler)factory.Invoke(_serviceProvider, []);
 
-                if (_pipelineDelegates.PreProcessors.TryGetValue(handlerInstance.GetType(), out var prepProc))
-                {
+                if (
+                    _pipelineDelegates
+                        .PreProcessors
+                        .TryGetValue(handlerInstance.GetType(), out var prepProc)
+                )
                     context = prepProc.Invoke(context);
-                }
 
                 var response = await handlerInstance.HandleAsync(context);
 
@@ -76,19 +80,23 @@ internal class CheckoutPipeline : ICheckoutPipeline
                         newDictionary.Add(result.ValueType, result.ValueObject);
                         context = context with { HandlerResults = newDictionary };
 
-                        if (_pipelineDelegates.HandlerResponseTypeCheckDelegates.TryGetValue(handlerInstance.GetType(),
-                                out var typeCheckDelegate)
+                        if (
+                            _pipelineDelegates
+                                .HandlerResponseTypeCheckDelegates
+                                .TryGetValue(handlerInstance.GetType(), out var typeCheckDelegate)
                             && !typeCheckDelegate.Invoke(context)
-                           )
+                        )
                             throw new Exception(
-                                $"The the pipeline handler '{handlerInstance.GetType().FullName}'" +
-                                $"did not return the required type."
+                                $"The the pipeline handler '{handlerInstance.GetType().FullName}'"
+                                    + $"did not return the required type."
                             );
 
-                        if (_pipelineDelegates.PostProcessors.TryGetValue(handlerInstance.GetType(), out var postProc))
-                        {
+                        if (
+                            _pipelineDelegates
+                                .PostProcessors
+                                .TryGetValue(handlerInstance.GetType(), out var postProc)
+                        )
                             context = postProc.Invoke(context);
-                        }
 
                         break;
                 }
@@ -96,9 +104,10 @@ internal class CheckoutPipeline : ICheckoutPipeline
             catch (Exception e)
             {
                 _logger.LogError("{}", e.Message);
-                return new CheckoutResponse.Failure("An unknown error occured during the checkout process.");
+                return new CheckoutResponse.Failure(
+                    "An unknown error occured during the checkout process."
+                );
             }
-        }
 
         return _pipelineDelegates.ResponseGenerator.Invoke(context);
     }

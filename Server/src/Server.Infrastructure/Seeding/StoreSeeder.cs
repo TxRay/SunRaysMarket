@@ -2,10 +2,12 @@ using Microsoft.Extensions.Logging;
 
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal sealed class StoreSeeder(ApplicationDbContext dbContext, ILogger<StoreSeeder> logger) : SeederBase<Store>(dbContext, logger)
+internal sealed class StoreSeeder(ApplicationDbContext dbContext, ILogger<StoreSeeder> logger)
+    : SeederBase<Store>(dbContext, logger)
 {
     protected override SeederData RenderSeederData()
-        => new SeederData.EnumerableSeederData(
+    {
+        return new SeederData.EnumerableSeederData(
             new Store[]
             {
                 new()
@@ -38,4 +40,5 @@ internal sealed class StoreSeeder(ApplicationDbContext dbContext, ILogger<StoreS
                 }
             }
         );
+    }
 }

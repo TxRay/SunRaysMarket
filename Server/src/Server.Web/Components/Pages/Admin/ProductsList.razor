@@ -30,7 +30,7 @@
                 <td>@product.Id</td>
                 <td>@product.Name</td>
                 <td>@FormatHelpers.ToCurrencyString(product.Price)</td>
-                <td>@FormatHelpers.ToCurrencyString( product.SalePrice)</td>
+                <td>@FormatHelpers.ToCurrencyString(product.SalePrice)</td>
                 <td>@product.DepartmentName</td>
                 <td>
                     <NavLink href=@($"/admin/products/edit/{product.Id}")>Edit</NavLink> |
@@ -43,7 +43,7 @@
 </div>
 
 @code {
-    private List<ProductListModel> Products { get; set; } = [];
+    private List<ProductListModel> Products { get; } = [];
 
     private const string PageTitle = "Products List";
 
@@ -55,4 +55,5 @@
             StateHasChanged();
         }
     }
+
 }

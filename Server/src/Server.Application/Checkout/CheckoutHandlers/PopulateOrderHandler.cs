@@ -13,9 +13,12 @@ public class PopulateOrderHandler : ICheckoutHandler
     private readonly ILogger<PopulateOrderHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
 
-
-    public PopulateOrderHandler(ICustomerService customerService, IHttpContextAccessor httpContextAccessor,
-        ILogger<PopulateOrderHandler> logger, IUnitOfWork unitOfWork)
+    public PopulateOrderHandler(
+        ICustomerService customerService,
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<PopulateOrderHandler> logger,
+        IUnitOfWork unitOfWork
+    )
     {
         _customerService = customerService;
         _httpContextAccessor = httpContextAccessor;
@@ -25,10 +28,14 @@ public class PopulateOrderHandler : ICheckoutHandler
 
     public async Task<CheckoutHandlerResponse> HandleAsync(CheckoutContext context)
     {
-        var cartId = await _customerService.GetCustomerCartIdAsync(_httpContextAccessor.HttpContext!.User);
+        var cartId = await _customerService.GetCustomerCartIdAsync(
+            _httpContextAccessor.HttpContext!.User
+        );
 
         if (cartId is null)
-            return new CheckoutHandlerResponse.Error("No shopping cart was found for the current user.");
+            return new CheckoutHandlerResponse.Error(
+                "No shopping cart was found for the current user."
+            );
 
         if (!context.HandlerResults.TryGetValue<CreateOrderResult>(out var createOrderResult))
             return new CheckoutHandlerResponse.Error("No order was created.");
@@ -55,8 +62,11 @@ public class PopulateOrderHandler : ICheckoutHandler
         catch (Exception e)
         {
             _logger.LogError("{}", e.Message);
-            return new CheckoutHandlerResponse.Error("Something went wrong while trying populate the order.");
+            return new CheckoutHandlerResponse.Error(
+                "Something went wrong while trying populate the order."
+            );
         }
+
         return new CheckoutHandlerResponse.Empty();
     }
 }

@@ -13,6 +13,10 @@ public class CustomerAddressService(
     IUnitOfWork unitOfWork
 ) : ICustomerAddressService
 {
+    private HttpContext Context =>
+        contextAccessor.HttpContext
+        ?? throw new InvalidOperationException("No HttpContext is available.");
+
     public async Task<IEnumerable<AddressModel>> GetAddressesAsync()
     {
         var customerId = await customerService.GetCurrentCustomerIdAsync(Context.User);
@@ -36,7 +40,7 @@ public class CustomerAddressService(
             return null;
         }
 
-        if (!(await unitOfWork.AddressRepository.CreateAddressAsync(model)))
+        if (!await unitOfWork.AddressRepository.CreateAddressAsync(model))
         {
             logger.LogWarning("The requested address could not be added to the database.");
             return null;
@@ -71,8 +75,4 @@ public class CustomerAddressService(
 
         await unitOfWork.CustomerRepository.RemoveCustomerAddressAsync(customerId.Value, addressId);
     }
-
-    private HttpContext Context =>
-        contextAccessor.HttpContext
-        ?? throw new InvalidOperationException("No HttpContext is available.");
 }

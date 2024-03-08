@@ -8,18 +8,26 @@ namespace SunRaysMarket.Client.Application.ProxyServicesImpl.Scoped;
 public class StoreLocationProxyService(HttpClient client) : IStoreLocationService
 {
     public async Task<IEnumerable<StoreListModel>> GetStoreLocationsAsync()
-        => (await client.GetFromJsonAsync<StoreLocationsResponse>("/api/store-locations"))?
-            .StoreLocations ?? [];
+    {
+        return (
+                await client.GetFromJsonAsync<StoreLocationsResponse>("/api/store-locations")
+            )?.StoreLocations ?? [];
+    }
 
     public Task SetPreferredStoreAsync(int storeId)
-        => client.PostAsJsonAsync<SetCustomerPreferredStoreCommand>("/api/customer/preferences/store",
-            new SetCustomerPreferredStoreCommand
-            {
-                PreferredStoreId = storeId
-            }
+    {
+        return client.PostAsJsonAsync(
+            "/api/customer/preferences/store",
+            new SetCustomerPreferredStoreCommand { PreferredStoreId = storeId }
         );
+    }
 
     public async Task<int?> GetPreferredStoreAsync()
-        => (await client.GetFromJsonAsync<CustomerStorePreferenceResponse>("/api/customer/preferences/store"))
-            ?.PreferredStoreId;
+    {
+        return (
+            await client.GetFromJsonAsync<CustomerStorePreferenceResponse>(
+                "/api/customer/preferences/store"
+            )
+        )?.PreferredStoreId;
+    }
 }

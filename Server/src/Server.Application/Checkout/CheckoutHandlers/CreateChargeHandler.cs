@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SunRaysMarket.Server.Application.Checkout.Results;
 using SunRaysMarket.Server.Application.Services;
@@ -13,8 +12,11 @@ public class CreateChargeHandler : ICheckoutHandler
     private readonly ILogger<CreateChargeHandler> _logger;
     private readonly IPaymentService _paymentService;
 
-    public CreateChargeHandler(ICustomerService customerService, ILogger<CreateChargeHandler> logger,
-        IPaymentService paymentService)
+    public CreateChargeHandler(
+        ICustomerService customerService,
+        ILogger<CreateChargeHandler> logger,
+        IPaymentService paymentService
+    )
     {
         _customerService = customerService;
         _logger = logger;
@@ -23,19 +25,28 @@ public class CreateChargeHandler : ICheckoutHandler
 
     public async Task<CheckoutHandlerResponse> HandleAsync(CheckoutContext context)
     {
-        var customerPaymentId = await _customerService.GetCustomerPaymentIdAsync(context.HttpContext.User);
+        var customerPaymentId = await _customerService.GetCustomerPaymentIdAsync(
+            context.HttpContext.User
+        );
 
         if (customerPaymentId is null)
         {
-            const string message = "The customer's account does not have payment processing set up.";
+            const string message =
+                "The customer's account does not have payment processing set up.";
             _logger.LogError("{}", message);
         }
 
         if (!context.HandlerResults.TryGetValue<CreateOrderResult>(out var createOrderResult))
             return new CheckoutHandlerResponse.Error("No order was found.");
 
-        if (!context.HandlerResults.TryGetValue<UpdateOrderAmountResult>(out var updateOrderAmountResult))
-            return new CheckoutHandlerResponse.Error("The total order amount cannot be determined.");
+        if (
+            !context
+                .HandlerResults
+                .TryGetValue<UpdateOrderAmountResult>(out var updateOrderAmountResult)
+        )
+            return new CheckoutHandlerResponse.Error(
+                "The total order amount cannot be determined."
+            );
 
         var chargeInfo = new CreateChargeModel
         {
@@ -58,7 +69,9 @@ public class CreateChargeHandler : ICheckoutHandler
         catch (Exception e)
         {
             _logger.LogError("{}", e.Message);
-            return new CheckoutHandlerResponse.Error("Something went wrong while trying to process the payment.");
+            return new CheckoutHandlerResponse.Error(
+                "Something went wrong while trying to process the payment."
+            );
         }
     }
 }

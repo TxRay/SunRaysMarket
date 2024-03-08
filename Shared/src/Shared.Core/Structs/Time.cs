@@ -12,8 +12,13 @@ public class Time
         return new Time { Minutes = dateTime.Hour * 60 + dateTime.Minute };
     }
 
-    public TimeOnly ToTimeOnly() => new(Minutes / 60, Minutes % 60, 0);
+    public TimeOnly ToTimeOnly()
+    {
+        return new TimeOnly(Minutes / 60, Minutes % 60, 0);
+    }
 
-    public string ToString(bool showMeridian = true) =>
-        ToTimeOnly().ToString(showMeridian ? "h:mm tt" : "h:mm");
+    public string ToString(bool showMeridian = true)
+    {
+        return ToTimeOnly().ToString(showMeridian ? "h:mm tt" : "h:mm");
+    }
 }

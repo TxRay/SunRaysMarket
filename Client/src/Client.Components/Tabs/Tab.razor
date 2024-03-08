@@ -1,5 +1,4 @@
-@using System.Runtime.InteropServices
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
 
 @if (Tabs!.IsCurrentTab(Label) && Tabs.TabsLoaded)
 {
@@ -14,7 +13,7 @@
 
     [CascadingParameter] private Tabs? Tabs { get; set; }
 
-    [Parameter, EditorRequired] public string Label { get; set; } = null!;
+    [Parameter] [EditorRequired] public string Label { get; set; } = null!;
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
 

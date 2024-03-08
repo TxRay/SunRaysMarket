@@ -1,6 +1,9 @@
 namespace SunRaysMarket.Shared.Extensions.Streaming;
 
-public class StreamedDataReceiver<TData>(IAsyncEnumerable<TData> stream, ICollection<TData> accumulator)
+public class StreamedDataReceiver<TData>(
+    IAsyncEnumerable<TData> stream,
+    ICollection<TData> accumulator
+)
 {
     public async Task ReceiveAsync()
     {
@@ -11,7 +14,7 @@ public class StreamedDataReceiver<TData>(IAsyncEnumerable<TData> stream, ICollec
             await (OnItemReceivedAsync?.Invoke(item) ?? Task.CompletedTask);
         }
     }
-    
+
     public event Action? OnItemReceived;
     public event Func<TData, Task>? OnItemReceivedAsync;
 }

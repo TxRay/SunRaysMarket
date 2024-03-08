@@ -51,10 +51,10 @@
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     private IUnitOfWork? UnitOfWork { get; set; }
 
-    [SupplyParameterFromForm] private CreateProductTypeModel ProductType { get; set; } = new();
+    [SupplyParameterFromForm] private CreateProductTypeModel ProductType { get; } = new();
     private IEnumerable<DepartmentListModel> Departments { get; set; } = new DepartmentListModel[] { };
 
-    private string ActionName { get; set; } = string.Empty;
+    private string ActionName { get; } = string.Empty;
     private string PageTitle => $"{ActionName} Product Type";
 
     protected override async Task OnInitializedAsync()
@@ -81,12 +81,11 @@
 
     private async Task OnValidSubmitAsync()
     {
-
         if (!Id.HasValue)
         {
             await AddProductTypeAsync();
 
-           Navigation.NavigateTo("/admin/product-types");
+            Navigation.NavigateTo("/admin/product-types");
         }
         else
         {

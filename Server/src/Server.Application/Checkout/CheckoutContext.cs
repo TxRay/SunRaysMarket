@@ -6,4 +6,5 @@ namespace SunRaysMarket.Server.Application.Checkout;
 public record CheckoutContext(
     HttpContext HttpContext,
     CheckoutSubmitModel.ValidModel SubmitModel,
-    IReadOnlyDictionary<Type, object> HandlerResults);
+    IReadOnlyDictionary<Type, object> HandlerResults
+);

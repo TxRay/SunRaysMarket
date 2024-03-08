@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using static System.String;
 
 namespace SunRaysMarket.Server.Infrastructure.Configuration;
@@ -6,7 +5,7 @@ namespace SunRaysMarket.Server.Infrastructure.Configuration;
 public class DbConnectionOptions
 {
     public const string DbConnection = "DbConnection";
-    
+
     public string? Server { get; set; }
     public string? Host { get; set; }
     public string? Database { get; set; }
@@ -20,14 +19,8 @@ public class DbConnectionOptions
         List<string> expressions = [];
 
         foreach (var propertyInfo in GetType().GetProperties())
-        {
             if (propertyInfo.GetValue(this) is string value && !IsNullOrEmpty(value))
-            {
-                expressions.Add(
-                    $"{propertyInfo.Name}={value}"
-                );
-            }
-        }
+                expressions.Add($"{propertyInfo.Name}={value}");
 
         return Join(';', expressions);
     }

@@ -1,32 +1,30 @@
 using Microsoft.Extensions.Logging;
-using SunRaysMarket.Server.Infrastructure.Data.PersistenceModels.Base;
 
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
 #nullable disable
 
-internal abstract class SeederBase<TEntity> : ISeeder where TEntity : class
+internal abstract class SeederBase<TEntity> : ISeeder
+    where TEntity : class
 {
     private readonly ILogger _logger;
-    
+
     protected SeederBase(ApplicationDbContext dbContext, ILogger logger)
     {
         DbContext = dbContext;
         _logger = logger;
     }
-    
-    protected ApplicationDbContext DbContext { get; }
 
-    protected abstract SeederData RenderSeederData();
+    protected ApplicationDbContext DbContext { get; }
 
     public async Task SeedAsync()
     {
-        if(!ShouldSeed()) 
+        if (!ShouldSeed())
             return;
-        
+
         var seederData = RenderSeederData();
         var dbSet = DbContext.Set<TEntity>();
-        
+
         try
         {
             switch (seederData)
@@ -43,13 +41,20 @@ internal abstract class SeederBase<TEntity> : ISeeder where TEntity : class
         }
         catch (Exception)
         {
-            _logger.LogError("Data seeding for the entity '{ent}' failed.", typeof(TEntity).FullName);
+            _logger.LogError(
+                "Data seeding for the entity '{ent}' failed.",
+                typeof(TEntity).FullName
+            );
             throw;
         }
-        
     }
 
-    public virtual bool ShouldSeed() => !DbContext.Set<TEntity>().Any();
+    public virtual bool ShouldSeed()
+    {
+        return !DbContext.Set<TEntity>().Any();
+    }
+
+    protected abstract SeederData RenderSeederData();
 
     protected abstract record SeederData
     {
@@ -57,6 +62,7 @@ internal abstract class SeederBase<TEntity> : ISeeder where TEntity : class
 
         public record EntitySeederData(TEntity Data) : GenericSeederData<TEntity>(Data);
 
-        public record EnumerableSeederData(IEnumerable<TEntity> Data) : GenericSeederData<IEnumerable<TEntity>>(Data);
+        public record EnumerableSeederData(IEnumerable<TEntity> Data)
+            : GenericSeederData<IEnumerable<TEntity>>(Data);
     }
 }

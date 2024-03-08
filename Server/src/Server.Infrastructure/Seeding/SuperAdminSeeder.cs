@@ -6,8 +6,8 @@ namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
 internal class SuperAdminSeeder : ISeeder
 {
-    private readonly SuperAdminConfig _superAdminConfig;
     private readonly ILogger<SuperAdminSeeder> _logger;
+    private readonly SuperAdminConfig _superAdminConfig;
     private readonly UserManager<User> _userManager;
 
     public SuperAdminSeeder(
@@ -26,7 +26,6 @@ internal class SuperAdminSeeder : ISeeder
 
     public async Task SeedAsync()
     {
-        
         var superAdminUser = new User
         {
             UserName = _superAdminConfig.Email,
@@ -47,5 +46,8 @@ internal class SuperAdminSeeder : ISeeder
             throw new Exception("SuperAdmin role assignment failed");
     }
 
-    public bool ShouldSeed() => _userManager.FindByEmailAsync(_superAdminConfig.Email).Result is null;
+    public bool ShouldSeed()
+    {
+        return _userManager.FindByEmailAsync(_superAdminConfig.Email).Result is null;
+    }
 }

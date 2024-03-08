@@ -7,6 +7,8 @@ public class ModalState<TState> : IModalState
 
     public bool ShowModal { get; private set; }
 
+    public event Action? OnChange;
+
     public void UpdateState(Func<TState, TState> set)
     {
         Value = set.Invoke(Value);
@@ -32,9 +34,10 @@ public class ModalState<TState> : IModalState
         NotifyStateChanged();
     }
 
-    public event Action? OnChange;
-
-    private void NotifyStateChanged() => OnChange?.Invoke();
+    private void NotifyStateChanged()
+    {
+        OnChange?.Invoke();
+    }
 
     protected virtual void AfterStateUpdated() { }
 }

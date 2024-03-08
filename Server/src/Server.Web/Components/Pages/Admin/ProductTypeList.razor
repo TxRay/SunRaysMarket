@@ -42,7 +42,7 @@
     private IEnumerable<ProductTypeDetailsModel> ProductTypes { get; set; } = new ProductTypeDetailsModel[] { };
 
     private const string PageTitle = "Product Types List";
-    
+
     protected override async Task OnInitializedAsync()
     {
         ProductTypes = await Service.ProductTypeRepository.GetAllAsync();

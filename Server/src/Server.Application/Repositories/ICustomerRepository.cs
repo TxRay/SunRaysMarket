@@ -26,8 +26,11 @@ public interface ICustomerRepository
     Task SetCustomerPreferences(int customerId, UpdateCustomerPreferencesModel model);
 
     Task<CustomerPreferences?> GetCustomerPreferences(int customerId);
-    
-    Task<object?> GetCustomerPreferences(int customerId, Func<CustomerPreferences, object?> selector);
+
+    Task<object?> GetCustomerPreferences(
+        int customerId,
+        Func<CustomerPreferences, object?> selector
+    );
 
     int? GetPersistedCustomerId();
 }

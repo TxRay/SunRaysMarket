@@ -2,11 +2,14 @@ using Microsoft.Extensions.Logging;
 
 namespace SunRaysMarket.Server.Infrastructure.Seeding;
 
-internal class DepartmentSeeder(ApplicationDbContext dbContext, ILogger<SeederBase<Department>> logger)
-    : SeederBase<Department>(dbContext, logger)
+internal class DepartmentSeeder(
+    ApplicationDbContext dbContext,
+    ILogger<SeederBase<Department>> logger
+) : SeederBase<Department>(dbContext, logger)
 {
     protected override SeederData RenderSeederData()
-        => new SeederData.EnumerableSeederData(
+    {
+        return new SeederData.EnumerableSeederData(
             new Department[]
             {
                 new()
@@ -41,4 +44,5 @@ internal class DepartmentSeeder(ApplicationDbContext dbContext, ILogger<SeederBa
                 }
             }
         );
+    }
 }

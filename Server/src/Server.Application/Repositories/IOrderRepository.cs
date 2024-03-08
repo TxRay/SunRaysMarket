@@ -20,6 +20,7 @@ public interface IOrderRepository
         int orderId,
         Action<IOrderPriceSummary, IEnumerable<IOrderItemAmounts>> calculateAmounts
     );
+
     Task DeleteOrderAsync(int orderId);
 
     Task DeleteOrderLineAsync(int orderLineId);

@@ -1,5 +1,4 @@
 @using Microsoft.AspNetCore.Components.Sections
-@using SunRaysMarket.Server.Components.Enums
 @inherits LayoutComponentBase
 
 <AuthorizeView Roles="Admin, SuperAdmin">
@@ -42,7 +41,7 @@
         </PageLayout>
     </Authorized>
     <NotAuthorized>
-        <AutoNavigator Route="/admin/login" ForceLoad="true" />
+        <AutoNavigator Route="/admin/login" ForceLoad="true"/>
     </NotAuthorized>
 </AuthorizeView>
 

@@ -17,15 +17,11 @@ public static class AttributeUtilities
         };
 
         if (defaultAttributes is not null)
-        {
             foreach (var (key, attributeObject) in defaultAttributes)
-            {
                 if (!attributesDictionary.TryAdd(key, attributeObject.CombineWithDefault(null)))
                     attributesDictionary[key] = attributeObject.CombineWithDefault(
                         attributesDictionary[key]
                     );
-            }
-        }
 
         return attributesDictionary;
     }
@@ -54,7 +50,7 @@ public static class AttributeUtilities
             if (additionalValueTyped is null)
                 return ValueTyped!;
 
-            return (RenderAsType is null)
+            return RenderAsType is null
                 ? additionalValueTyped
                 : RenderAsType.Invoke(ValueTyped, additionalValueTyped);
         }

@@ -1,7 +1,6 @@
-@inherits OwningComponentBase
-@using Blazored.FluentValidation
 @using SunRaysMarket.Server.Application.Services.Auth
-@using SunRaysMarket.Server.Components.Enums
+@using Blazored.FluentValidation
+@inherits OwningComponentBase
 @inject IUserService UserService
 @page "/login"
 
@@ -18,7 +17,7 @@
             OnValidSubmit="LoginUserAsync"
             OnInvalidSubmit="OnInvalidSubmitAsync"
             FormName="loginForm">
-            <FluentValidationValidator />
+            <FluentValidationValidator/>
             <ValidationSummary/>
             <div>
                 <InputText
@@ -55,17 +54,17 @@
 @code {
     [Inject] NavigationManager Navigation { get; set; } = default!;
     [SupplyParameterFromForm] private LoginModel? Model { get; set; }
-    
+
     private EditContext? EditContext { get; set; }
-    
+
     protected override void OnInitialized()
     {
         Model ??= new LoginModel();
         EditContext = new EditContext(Model);
     }
 
-    private bool ShowLoginConfirmation { get; set; } = false;
-    
+    private bool ShowLoginConfirmation { get; } = false;
+
     private async Task LoginUserAsync()
     {
         var loginResult = await UserService.LoginAsync(Model!);
@@ -74,6 +73,6 @@
 
     private async Task OnInvalidSubmitAsync()
     {
-        
     }
+
 }

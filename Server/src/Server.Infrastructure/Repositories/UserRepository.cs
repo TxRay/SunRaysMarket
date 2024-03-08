@@ -116,15 +116,16 @@ internal class UserRepository(
 
         if (user is null)
             return false;
-        
+
         var userRoles = await userManager.GetRolesAsync(user);
 
         return roleStrings.All(rs => userRoles.Contains(rs));
-
     }
-    
+
     public async Task<bool> HasRoleAsync(int userId, Role role)
-        => await HasRolesAsync(userId, [role]);
+    {
+        return await HasRolesAsync(userId, [role]);
+    }
 
     public async Task<UserDetailsModel?> AuthenticateAsync(LoginModel model)
     {

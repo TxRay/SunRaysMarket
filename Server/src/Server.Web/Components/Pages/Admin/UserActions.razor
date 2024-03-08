@@ -1,5 +1,4 @@
-@using Application.Repositories
-@inherits OwningComponentBase<IUserRepository>
+@inherits OwningComponentBase<SunRaysMarket.Server.Application.Repositories.IUserRepository>
 @page "/admin/users/{action}/{id:int?}"
 
 <SectionContent SectionName="page-title">@PageTitle</SectionContent>
@@ -9,7 +8,7 @@
     [Parameter] public int? Id { get; set; }
 
     [Inject] NavigationManager Navigation { get; set; } = default!;
-    
+
     private string PageTitle { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
@@ -36,6 +35,6 @@
 
     private async Task UpdateUserRolesAsync()
     {
-        
     }
+
 }

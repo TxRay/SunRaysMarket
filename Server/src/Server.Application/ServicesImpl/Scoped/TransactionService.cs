@@ -5,11 +5,7 @@ namespace SunRaysMarket.Server.Application.ServicesImpl.Scoped;
 
 public class TransactionService(IUnitOfWork unitOfWork) : ITransactionService
 {
-    public async Task CreateTransactionAsync(
-        int orderId,
-        float amountPaid,
-        string chargeNumber
-    )
+    public async Task CreateTransactionAsync(int orderId, float amountPaid, string chargeNumber)
     {
         var newTransaction = new CreateTransactionModel
         {

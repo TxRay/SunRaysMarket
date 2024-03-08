@@ -38,9 +38,7 @@ internal static class ProductEndpoints
     )
     {
         await foreach (var product in productService.GetAllProductsAsync())
-        {
             yield return Results.Json(product);
-        }
     }
 
     private static async IAsyncEnumerable<IResult> GetDepartmentFeaturedProductsAsync(
@@ -49,8 +47,6 @@ internal static class ProductEndpoints
     )
     {
         await foreach (var product in productService.GetAllProductsAsync(departmentId))
-        {
             yield return Results.Json(product);
-        }
     }
 }
