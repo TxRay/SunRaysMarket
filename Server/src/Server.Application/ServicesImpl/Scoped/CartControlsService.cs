@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using SunRaysMarket.Server.Application.Exceptions;
 using SunRaysMarket.Server.Application.Services;
 using SunRaysMarket.Server.Application.UnitOfWork;
@@ -90,7 +89,7 @@ internal class CartControlsService(
         {
             await unitOfWork.SaveChangesAsync();
         }
-        catch (DbUpdateException exc)
+        catch (Exception exc)
         {
             throw new AddItemFailedException(
                 "Multiple items of the same product are not allowed in the same cart.",
