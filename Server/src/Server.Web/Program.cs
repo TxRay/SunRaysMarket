@@ -9,6 +9,9 @@ using SunRaysMarket.Shared.Extensions.RenderMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add configurations
+builder.Configuration.AddEnvironmentVariables(prefix: "SUNRAYSMARKET_");
+
 // Add services to the container.
 builder
     .Services
