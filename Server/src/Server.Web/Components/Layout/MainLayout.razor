@@ -1,4 +1,6 @@
 ﻿@using SunRaysMarket.Client.Components.Modals
+@using System.Runtime.InteropServices
+@using SunRaysMarket.Server.Components.Base
 @inherits LayoutComponentBase
 <div data-enhance-nav="false">
     <PageLayout LayoutType="LayoutType.Application" Element="div" xmlns="http://www.w3.org/1999/html">
@@ -19,7 +21,7 @@
                 <NavAccount/>
             </div>
         </nav>
-        <PageLayout LayoutType="LayoutType.Page">
+        <PageLayout CssClasses="@(StateProvider.State.LayoutClass ?? string.Empty)" LayoutType="LayoutType.Page">
             @Body
             <MainFooter/>
         </PageLayout>
@@ -27,3 +29,7 @@
 
     <Modal/>
 </div>
+
+@code {
+    [Inject] PageStateProvider StateProvider { get; set; } = default!;
+}

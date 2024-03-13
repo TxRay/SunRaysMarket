@@ -1,5 +1,6 @@
 using SunRaysMarket.Client.Web;
 using SunRaysMarket.Server.Application.Extensions;
+using SunRaysMarket.Server.Components.Extensions;
 using SunRaysMarket.Server.Infrastructure.Extensions;
 using SunRaysMarket.Server.Web.Components;
 using SunRaysMarket.Server.Web.Endpoints;
@@ -41,8 +42,11 @@ builder
         options.IdleTimeout = TimeSpan.FromMinutes(30);
     });
 
+// Add required services from local project assemblies
 builder.Services.AddServerInfrastructureAssembly(builder.Configuration);
 builder.Services.AddServerApplicationAssembly();
+builder.Services.AddServerComponentsAssembly();
+
 builder.Services.AddCustomMiddleware();
 builder.Services.AddSingleton<IRenderContext, ServerRenderContext>();
 
