@@ -3,6 +3,7 @@
 .footer {
   height: var.$footer-height;
   background-color: var.$color-primary-dark;
+  align-content: center;
 
   &__content {
     grid-column: layout-start / layout-end;

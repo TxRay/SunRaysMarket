@@ -1009,6 +1009,7 @@ body {
 .footer {
   height: 25rem;
   background-color: #1c2837;
+  align-content: center;
 }
 .footer__content {
   grid-column: layout-start/layout-end;
