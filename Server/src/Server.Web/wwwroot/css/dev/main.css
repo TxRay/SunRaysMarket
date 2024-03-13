@@ -1439,6 +1439,10 @@ body {
   font-weight: 700;
 }
 
+.layout-home {
+  row-gap: 9.6rem;
+}
+
 .main-home {
   margin: 6.4rem 0;
 }

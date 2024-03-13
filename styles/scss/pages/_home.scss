@@ -1,6 +1,10 @@
 @use "../abstracts/mixins" as mxn;
 @use '../abstracts/variables' as var;
 
+.layout-home {
+  row-gap: var.$spacing-5xl;
+}
+
 .main-home {
   margin: var.$spacing-3xl 0;
 }
