@@ -43,7 +43,7 @@ public class PageLayout : ComponentBase
             BaseClass,
             LayoutType?.ToStyleString(),
             ContentWidth?.ToStyleString(),
-            FitVerticalContent ? "layout__content-vertical" : string.Empty,
+            FitVerticalContent && LayoutType == Enums.LayoutType.Page ? "layout__content-vertical" : string.Empty,
             CssClasses.Trim()
         ];
 

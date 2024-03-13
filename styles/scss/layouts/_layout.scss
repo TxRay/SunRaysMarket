@@ -12,6 +12,7 @@
     grid-template-rows: [navigation-start topbar-start] var.$topbar-height
   [topbar-end nav-start] var.$navbar-height
   [navigation-end nav-end content-start] 1fr [content-end];
+    min-height: 100vh;
   }
 
   &--admin {
@@ -35,5 +36,6 @@
   
   &__content-vertical {
     min-height: var.$vertical-content-height;
+    overflow-y: auto;
   }
 }
