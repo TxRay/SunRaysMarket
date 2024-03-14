@@ -6,6 +6,4 @@ public interface IProductService
     IAsyncEnumerable<ProductListModel?> GetAllProductsAsync();
 
     IAsyncEnumerable<ProductListModel?> GetAllProductsAsync(int departmentId);
-
-    Task<IEnumerable<ProductListModel>> SearchForProductsAsync(string? queryString);
 }

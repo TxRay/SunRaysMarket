@@ -31,20 +31,5 @@ public class ProductProxyService(HttpClient httpClient) : IProductService
             $"/api/products/{departmentId}"
         );
     }
-
-    public async Task<IEnumerable<ProductListModel>> SearchForProductsAsync(string? queryString)
-    {
-        var command = new ProductSearchCommand { Query = queryString };
-        var productListModel = await httpClient
-            .PostAsJsonAsync("/api/products/search", command)
-            .ContinueWith(messageTask =>
-            {
-                var message = messageTask.Result;
-                message.EnsureSuccessStatusCode();
-                return message.Content.ReadFromJsonAsync<GetProductListResponse>();
-            })
-            .Unwrap();
-
-        return productListModel?.Products ?? [];
-    }
+    
 }

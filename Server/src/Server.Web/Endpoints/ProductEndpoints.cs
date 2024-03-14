@@ -18,35 +18,22 @@ internal static class ProductEndpoints
 
         allProductsGroup.MapGet("/", GetFeatureProductsAsync);
         allProductsGroup.MapGet("/{departmentId:int}", GetDepartmentFeaturedProductsAsync);
-
-        allProductsGroup.MapPost(
-            "/search",
-            async ([FromBody] ProductSearchCommand searchCommand, IProductService productService) =>
-                Results.Json(
-                    new GetProductListResponse
-                    {
-                        Products = await productService.SearchForProductsAsync(searchCommand.Query)
-                    }
-                )
-        );
+        allProductsGroup.MapPost("/search", ProductSearchHandler);
 
         return endpoints;
     }
 
-    private static async IAsyncEnumerable<IResult> GetFeatureProductsAsync(
-        IProductService productService
-    )
-    {
-        await foreach (var product in productService.GetAllProductsAsync())
-            yield return Results.Json(product);
-    }
+    private static IAsyncEnumerable<IResult> ProductSearchHandler([FromBody] ProductSearchCommand searchCommand,
+        IProductSearchService productSearchService)
+    => productSearchService.GetSearchResults(searchCommand.Query).Select(product => Results.Json(product));
 
-    private static async IAsyncEnumerable<IResult> GetDepartmentFeaturedProductsAsync(
+    private static IAsyncEnumerable<IResult> GetFeatureProductsAsync(
+        IProductService productService
+    ) => productService.GetAllProductsAsync().Select(product => Results.Json(product));
+
+
+    private static IAsyncEnumerable<IResult> GetDepartmentFeaturedProductsAsync(
         int departmentId,
         IProductService productService
-    )
-    {
-        await foreach (var product in productService.GetAllProductsAsync(departmentId))
-            yield return Results.Json(product);
-    }
+    ) => productService.GetAllProductsAsync(departmentId).Select(product => Results.Json(product));
 }

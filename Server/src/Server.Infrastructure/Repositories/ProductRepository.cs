@@ -51,10 +51,10 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
             .AsProductAsyncEnumerable();
     }
 
-    public async Task<IEnumerable<ProductListModel>> GetAllSearchAsync(string? queryString)
+    public IAsyncEnumerable<ProductListModel> GetAllSearchAsync(string? queryString)
     {
         if (queryString is null)
-            return [];
+            return AsyncEnumerable.Empty<ProductListModel>();
 
         var queryStringLowered = queryString.ToLower();
 
@@ -69,7 +69,7 @@ internal class ProductRepository(ApplicationDbContext context, ILogger<ProductRe
                     || p.ProductType!.Department!.Name.ToLower().Contains(queryStringLowered)
             );
 
-        return await query.ToProductListAsync();
+        return query.AsProductAsyncEnumerable();
     }
 
     public async Task<ProductDetailsModel?> GetAsync(int id)

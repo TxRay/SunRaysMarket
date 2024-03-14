@@ -1,18 +1,19 @@
+@inherits OwningComponentBase<IProductSearchService>
+@attribute [StreamRendering]
 @page "/Search"
-@inherits OwningComponentBase<IProductService>
 
-<main class="layout layout__full">
-    @*<ProductSection Heading="Search Results" FeaturedProducts="@Products"/>*@
-</main>
+<PageLayout ContentWidth="ContentWidth.PageFull">
+    <ProductSection Heading="Search Results" StreamedProducts="@Products"/>
+</PageLayout>
 
 @code {
     [SupplyParameterFromQuery] public string? Query { get; set; }
 
-    private IEnumerable<ProductListModel> Products { get; set; } = [];
+    private IAsyncEnumerable<ProductListModel> Products { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        Products = await Service.SearchForProductsAsync(Query);
+        Products = Service.GetSearchResults(Query);
     }
 
 }
