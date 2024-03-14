@@ -12,13 +12,17 @@ public class PageLayout : ComponentBase
 
     [Inject]
     private ILogger<PageLayout>? Logger { get; set; }
-
+    
+    
     [Parameter]
     public string Element { get; set; } = "div";
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> Attributes { get; set; } = new();
-
+    
+    [Parameter]
+    public bool UseDefaultPadding { get; set; }
+    
     [Parameter]
     public string CssClasses { get; set; } = string.Empty;
 
@@ -32,17 +36,28 @@ public class PageLayout : ComponentBase
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-
+    
     private bool ClassesSet { get; set; }
 
-    private string VerticalLayoutClass
+    private string? VerticalLayoutClass
     {
         get
         {
             if (!FitVerticalContent || LayoutType != Enums.LayoutType.Page)
-                return string.Empty;
+                return null;
 
             return "layout__content-vertical" + (Element == "main" ? "--main" : string.Empty);
+        }
+    }
+
+    private string? DefaultPaddingClass
+    {
+        get
+        {
+            if (!UseDefaultPadding && (LayoutType != LayoutType.Page || Element == "main"))
+                return null;
+
+            return "layout__content--p-default";
         }
     }
     
@@ -54,10 +69,11 @@ public class PageLayout : ComponentBase
             LayoutType.ToStyleString(),
             ContentWidth?.ToStyleString(),
             VerticalLayoutClass,
+            DefaultPaddingClass,
             CssClasses.Trim()
         ];
 
-        return string.Join(" ", classList);
+        return string.Join(" ", classList).Trim();
     }
 
     protected override void OnParametersSet()

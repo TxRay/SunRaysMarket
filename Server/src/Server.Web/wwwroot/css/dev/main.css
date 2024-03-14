@@ -588,6 +588,9 @@ body {
 .layout__content-vertical--main {
   min-height: calc(100vh - 15rem);
 }
+.layout__content--p-default {
+  padding: 6.4rem 0;
+}
 
 .search {
   flex: 0 1 40rem;

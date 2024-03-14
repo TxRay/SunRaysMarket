@@ -22,10 +22,10 @@
     //padding-bottom: var.$spacing-3xl;
   }
 
-  &--page{
+  &--page {
     @include mxn.layout-page;
   }
-  
+
   &__full {
     @include mxn.layout-full;
   }
@@ -33,13 +33,17 @@
   &__content {
     @include mxn.layout-content;
   }
-  
+
   &__content-vertical {
     min-height: var.$vertical-content-height;
     overflow-y: auto;
   }
-  
+
   &__content-vertical--main {
     min-height: var.$vertical-content-height-main;
+  }
+
+  &__content--p-default {
+    padding: var.$spacing-3xl 0;
   }
 }
