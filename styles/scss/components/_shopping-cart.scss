@@ -1,14 +1,25 @@
+@use "../abstracts/mixins" as mxn;
 @use "../abstracts/variables" as var;
 
 .shopping-cart {
   display: grid;
-  grid-template-columns:  1fr 40rem;
-  column-gap: var.$spacing-8xl;
+  grid-template-columns:  1fr max-content;
+  column-gap: var.$spacing-6xl;
   grid-template-rows:  repeat(3, min-content) 1fr;
   row-gap: var.$spacing-xl;
-  height: 100%;
 
   margin: var.$spacing-3xl 0;
+  
+  @include mxn.media(tab-land)
+  {
+    column-gap: var.$spacing-4xl;
+  }
+  
+  @include mxn.media(tab-port)
+  {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .cart-title {
@@ -47,16 +58,21 @@
   &__product-name {
     font-size: var.$fs-s;
     margin-left: var.$spacing-s;
+    display: inline-block;
+    width: 50%;
   }
 
   &__product-price {
     font-size: var.$fs-xs;
-    margin-left: var.$spacing-2xl;
   }
 
   &__product-quantity {
     margin-left: auto;
     margin-right: var.$spacing-l;
+  }
+  
+  @include mxn.media(tab-port) {
+    margin: 0 1rem;
   }
 }
 
