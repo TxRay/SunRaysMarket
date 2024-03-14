@@ -21,7 +21,11 @@
                 <NavAccount/>
             </div>
         </nav>
-        <PageLayout CssClasses="@(StateProvider.State.LayoutClass ?? string.Empty)" LayoutType="LayoutType.Page">
+        <PageLayout
+            CssClasses="@(StateProvider.State.LayoutClass ?? string.Empty)"
+            Element="main"
+            FitVerticalContent="true"
+            LayoutType="LayoutType.Page">
             @Body
             <MainFooter/>
         </PageLayout>

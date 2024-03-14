@@ -582,8 +582,11 @@ body {
   grid-column: layout;
 }
 .layout__content-vertical {
-  min-height: calc(100vh - 15rem);
+  min-height: calc(100vh - 15rem - 25rem);
   overflow-y: auto;
+}
+.layout__content-vertical--main {
+  min-height: calc(100vh - 15rem);
 }
 
 .search {
@@ -1463,7 +1466,7 @@ body {
   grid-column: page;
   grid-row: hero;
   display: block;
-  max-height: calc(100vh - 15rem);
+  max-height: calc(100vh - 15rem - 25rem);
   width: 100%;
   object-fit: cover;
   object-position: top;

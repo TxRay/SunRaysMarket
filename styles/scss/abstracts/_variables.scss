@@ -75,7 +75,8 @@ $navbar-height: 6.5rem;
 $footer-height: 25rem;
 
 // vertical content span
-$vertical-content-height: calc(100vh - ($topbar-height + $navbar-height));
+$vertical-content-height-main: calc(100vh - ($topbar-height + $navbar-height));
+$vertical-content-height: calc($vertical-content-height-main - $footer-height);
 
 // box shadows
 $shadow-light: 0 2rem 4rem rgba(0, 0, 0, .1);

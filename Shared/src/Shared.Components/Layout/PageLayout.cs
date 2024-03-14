@@ -14,7 +14,7 @@ public class PageLayout : ComponentBase
     private ILogger<PageLayout>? Logger { get; set; }
 
     [Parameter]
-    public string Element { get; set; } = "main";
+    public string Element { get; set; } = "div";
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> Attributes { get; set; } = new();
@@ -22,8 +22,7 @@ public class PageLayout : ComponentBase
     [Parameter]
     public string CssClasses { get; set; } = string.Empty;
 
-    [Parameter]
-    public LayoutType? LayoutType { get; set; }
+    [Parameter] public LayoutType LayoutType { get; set; } = LayoutType.Page;
 
     [Parameter]
     public ContentWidth? ContentWidth { get; set; }
@@ -36,14 +35,25 @@ public class PageLayout : ComponentBase
 
     private bool ClassesSet { get; set; }
 
+    private string VerticalLayoutClass
+    {
+        get
+        {
+            if (!FitVerticalContent || LayoutType != Enums.LayoutType.Page)
+                return string.Empty;
+
+            return "layout__content-vertical" + (Element == "main" ? "--main" : string.Empty);
+        }
+    }
+    
     private string RenderBaseCssClasses()
     {
         string[] classList =
         [
             BaseClass,
-            LayoutType?.ToStyleString(),
+            LayoutType.ToStyleString(),
             ContentWidth?.ToStyleString(),
-            FitVerticalContent && LayoutType == Enums.LayoutType.Page ? "layout__content-vertical" : string.Empty,
+            VerticalLayoutClass,
             CssClasses.Trim()
         ];
 

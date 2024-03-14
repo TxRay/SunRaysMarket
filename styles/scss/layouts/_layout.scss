@@ -38,4 +38,8 @@
     min-height: var.$vertical-content-height;
     overflow-y: auto;
   }
+  
+  &__content-vertical--main {
+    min-height: var.$vertical-content-height-main;
+  }
 }
