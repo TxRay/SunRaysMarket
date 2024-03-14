@@ -849,10 +849,6 @@ body {
   border-radius: 10px;
   transition: all 200ms ease-in-out;
 }
-.store-btn:hover {
-  background-color: #3e5876;
-  cursor: pointer;
-}
 @media only screen and (max-width: 610px) {
   .store-btn {
     grid-template-columns: repeat(2, max-content);
@@ -933,10 +929,18 @@ body {
   border: 1.5px solid transparent;
   border-radius: 1rem;
   text-align: center;
+  cursor: pointer;
+  transition-property: border-color, background-color;
+  transition-duration: 150ms;
+  transition-timing-function: ease-in;
 }
-.store-menu__radio:checked + .store-menu__option {
+.store-menu__option:hover, .store-menu__radio:checked + .store-menu__option {
   border: 1.5px solid #339900;
   background-color: #eeffe6;
+}
+.store-menu__option:hover ~ .store-menu__radio:checked + .store-menu__option, .store-menu__radio:checked + .store-menu__option:has(~ .store-menu__option:hover) {
+  border: 1.5px solid transparent;
+  background-color: transparent;
 }
 
 .table {
@@ -1138,7 +1142,7 @@ body {
   justify-content: space-between;
 }
 .topbar__brand {
-  flex: 0 0 23rem;
+  flex: 0 0 20rem;
   display: inline-flex;
 }
 .topbar__brand img {
@@ -1163,18 +1167,6 @@ body {
   width: 3.6rem;
   aspect-ratio: 1/1;
   fill: #d6d6d6;
-}
-.cart__count {
-  position: absolute;
-  top: 1.3rem;
-  right: -1.2rem;
-  background-color: #ffc62d;
-  width: 2.5rem;
-  aspect-ratio: 1/1;
-  font-size: 1.35rem;
-  color: #fff7e0;
-  text-align: center;
-  border-radius: 50%;
 }
 
 .nav {

@@ -17,10 +17,6 @@
   border-radius: 10px;
   transition: all 200ms ease-in-out;
 
-  &:hover {
-    background-color: var.$color-primary-light;
-    cursor: pointer;
-  }
 
   @include mxn.media(phone-sm) {
     grid-template-columns: repeat(2, max-content);
@@ -93,37 +89,48 @@
   --top: 0;
   --min-width: 0;
   --scaleY: 0;
-  
+
   position: absolute;
   top: var(--top);
   right: 0;
-  
+
   min-width: var(--min-width);
   padding: var.$spacing-m;
   background-color: var.$color-background;
   border-radius: 1rem;
   box-shadow: var.$shadow-dark;
-  
+
   transform: scaleY(var(--scaleY));
   transform-origin: top;
   transition: 250ms ease-in-out;
-  
+
   &__list {
     display: flex;
     flex-direction: column;
   }
-  
+
   &__option {
     padding: var.$spacing-xs;
     min-width: max-content;
     border: 1.5px solid transparent;
     border-radius: 1rem;
     text-align: center;
-    
+    cursor: pointer;
+    transition-property: border-color, background-color;
+    transition-duration: 150ms;
+    transition-timing-function: ease-in;
   }
   
+  &__option:hover,
   &__radio:checked + &__option {
     border: 1.5px solid var.$color-success;
     background-color: var.$color-success-light;
   }
+  
+  &__option:hover ~ &__radio:checked + &__option,
+  &__radio:checked + &__option:has(~ &__option:hover) {
+    border: 1.5px solid transparent;
+    background-color: transparent;
+  }
+
 }
