@@ -18,6 +18,7 @@
 }
 
 $_media-breakpoints: (
+                (phone-xs, 560px),
                 (phone-sm, 610px),
                 (phone-lg, 725px),
                 (tab-port, 925px),
@@ -51,7 +52,7 @@ $_media-breakpoints: (
 }
 
 // layout mixins
-@mixin layout($columns: 12, $max-width: 144rem) {
+@mixin layout($columns: 1, $max-width: 144rem) {
   display: grid;
 
   grid-template-columns:

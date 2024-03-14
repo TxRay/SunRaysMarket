@@ -348,6 +348,54 @@ body {
   gap: 1.6rem;
   margin: 9.6rem;
 }
+.form--signup {
+  display: grid;
+  grid-template-columns: [form-start] repeat(2, [col-start] max-content [col-start]) [form-end];
+  grid-template-rows: repeat(4, [row-start] min-content);
+  column-gap: 1.6rem;
+  row-gap: 2.4rem;
+  justify-self: center;
+  margin: 8rem 0;
+}
+.form--signup__email {
+  grid-column: form;
+  grid-row: row-start 1/span 1;
+}
+.form--signup__password, .form--signup__confirm-password {
+  grid-row: row-start 2/span 1;
+}
+.form--signup__password {
+  grid-column: col-start 1/span 1;
+}
+.form--signup__password-confirm {
+  grid-column: col-start 2/span 1;
+}
+.form--signup__first-name, .form--signup__last-name {
+  grid-row: row-start 3/span 1;
+}
+.form--signup__first-name {
+  grid-column: col-start 1/span 1;
+}
+.form--signup__last-name {
+  grid-column: col-start 2/span 1;
+}
+.form--signup__submit {
+  grid-column: form;
+  grid-row: row-start 4/span 1;
+}
+@media only screen and (max-width: 610px) {
+  .form--signup {
+    grid-template-columns: [form-start] repeat(2, [col-start] 1fr [col-start]) [form-end];
+    justify-self: stretch;
+  }
+}
+@media only screen and (max-width: 560px) {
+  .form--signup {
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+  }
+}
 .form--admin {
   grid-column: col-start 3/span 8;
   display: flex;
@@ -555,7 +603,7 @@ body {
 
 .layout {
   display: grid;
-  grid-template-columns: [page-start] minmax(5rem, 1fr) [layout-start] repeat(12, [col-start] minmax(min-content, 12rem) [col-end]) [layout-end] minmax(5rem, 1fr) [page-end];
+  grid-template-columns: [page-start] minmax(5rem, 1fr) [layout-start] repeat(1, [col-start] minmax(min-content, 144rem) [col-end]) [layout-end] minmax(5rem, 1fr) [page-end];
   grid-auto-rows: min-content;
 }
 .layout--application, .layout--admin {
@@ -601,7 +649,7 @@ body {
 @media only screen and (max-width: 725px) {
   .search {
     display: grid;
-    grid-template-columns: [page-start] minmax(5rem, 1fr) [layout-start] repeat(12, [col-start] minmax(min-content, 12rem) [col-end]) [layout-end] minmax(5rem, 1fr) [page-end];
+    grid-template-columns: [page-start] minmax(5rem, 1fr) [layout-start] repeat(1, [col-start] minmax(min-content, 144rem) [col-end]) [layout-end] minmax(5rem, 1fr) [page-end];
     grid-auto-rows: min-content;
     grid-column: page;
     align-content: center;
@@ -1455,7 +1503,7 @@ body {
 
 .hero-home {
   display: grid;
-  grid-template-columns: [page-start] minmax(5rem, 1fr) [layout-start] repeat(12, [col-start] minmax(min-content, 12rem) [col-end]) [layout-end] minmax(5rem, 1fr) [page-end];
+  grid-template-columns: [page-start] minmax(5rem, 1fr) [layout-start] repeat(1, [col-start] minmax(min-content, 144rem) [col-end]) [layout-end] minmax(5rem, 1fr) [page-end];
   grid-auto-rows: min-content;
   grid-column: page;
   grid-template-rows: [hero-start] 1fr [hero-end];

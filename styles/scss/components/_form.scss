@@ -1,3 +1,4 @@
+@use "../abstracts/mixins" as mxn;
 @use "../abstracts/variables" as var;
 
 .form {
@@ -10,6 +11,64 @@
     gap: var.$spacing-s;
     
     margin: var.$spacing-5xl;
+  }
+  
+  &--signup {
+    display: grid;
+    grid-template-columns: [form-start] repeat(2, [col-start] max-content [col-start]) [form-end];
+    grid-template-rows: repeat(4, [row-start] min-content);
+    column-gap: var.$spacing-s;
+    row-gap: var.$spacing-m;
+    
+    justify-self: center;
+    margin: var.$spacing-4xl 0;
+    
+    &__email {
+      grid-column: form;
+      grid-row: row-start 1 / span 1;
+    }
+    
+    &__password, &__confirm-password {
+      grid-row: row-start 2 / span 1;
+    }
+    
+    &__password{
+      grid-column: col-start 1 / span 1;
+    }
+    
+    &__password-confirm {
+      grid-column: col-start 2 / span 1;
+    }
+    
+    &__first-name, &__last-name {
+      grid-row: row-start 3 / span 1;
+    }
+    
+    &__first-name {
+      grid-column: col-start 1 / span 1;
+    }
+    
+    &__last-name {
+      grid-column: col-start 2 / span 1;
+    }
+    
+    &__submit {
+      grid-column: form;
+      grid-row: row-start 4 / span 1;
+    }
+
+    @include mxn.media(phone-sm)
+    {
+      grid-template-columns: [form-start] repeat(2, [col-start] 1fr [col-start]) [form-end];
+      justify-self: stretch;
+    }
+    
+    @include mxn.media(phone-xs)
+    {
+      display: flex;
+      flex-direction: column;
+      gap: var.$spacing-m;
+    }
   }
   
   &--admin {
