@@ -63,25 +63,25 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error", true);
+    app.UseExceptionHandler("error/500/internal-server-error", true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
-
 app.UseSession();
 
+/*** Custom middleware ***/
 app.UseTrackedCookies();
 app.UseCustomerPreferences();
 app.UseShoppingCart();
 app.UseSessionState();
+app.UseStatusCodeRedirect();
+/************************/
 
 app.MapApiEndpoints();
 app.MapRazorComponents<App>()
@@ -90,18 +90,5 @@ app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(IClientIdentifier).Assembly);
 
-/*app.UseStatusCodePages(context =>
-{
-    var redirectRoute = context.HttpContext.Response.StatusCode switch
-    {
-        404 => "/error/404/not-found",
-        500 => "error/500/internal-server-error",
-        _ => $"error/{context.HttpContext.Response.StatusCode}"
-    };
-
-    context.HttpContext.Response.Redirect(redirectRoute);
-
-    return Task.CompletedTask;
-});*/
 
 app.Run();

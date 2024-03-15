@@ -8,6 +8,7 @@ public static class RegisterMiddleware
         services.AddSingleton<CustomerPreferencesMiddleware>();
         services.AddSingleton<TrackedCookiesMiddleware>();
         services.AddSingleton<SessionStateMiddleware>();
+        services.AddSingleton<StatusCodeRedirectMiddleware>();
 
         return services;
     }

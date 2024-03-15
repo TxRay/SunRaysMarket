@@ -25,4 +25,10 @@ public static class MiddlewareAppExtensions
         app.UseMiddleware<SessionStateMiddleware>();
         return app;
     }
+    
+    public static IApplicationBuilder UseStatusCodeRedirect(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<StatusCodeRedirectMiddleware>();
+        return app;
+    }
 }
