@@ -7,6 +7,7 @@ public static class RegisterMiddleware
         services.AddSingleton<ShoppingCartMiddleware>();
         services.AddSingleton<CustomerPreferencesMiddleware>();
         services.AddSingleton<TrackedCookiesMiddleware>();
+        services.AddSingleton<SessionStateMiddleware>();
 
         return services;
     }

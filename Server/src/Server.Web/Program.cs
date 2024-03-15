@@ -1,11 +1,13 @@
 using SunRaysMarket.Client.Web;
 using SunRaysMarket.Server.Application.Extensions;
+using SunRaysMarket.Server.Application.State;
 using SunRaysMarket.Server.Components.Extensions;
 using SunRaysMarket.Server.Infrastructure.Extensions;
 using SunRaysMarket.Server.Web.Components;
 using SunRaysMarket.Server.Web.Endpoints;
 using SunRaysMarket.Server.Web.Middleware;
 using SunRaysMarket.Server.Web.RenderMethods;
+using SunRaysMarket.Server.Web.State;
 using SunRaysMarket.Shared.Extensions.RenderMethods;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +51,7 @@ builder.Services.AddServerComponentsAssembly();
 
 builder.Services.AddCustomMiddleware();
 builder.Services.AddSingleton<IRenderContext, ServerRenderContext>();
+builder.Services.AddScoped<ISessionStateProvider, SessionStateProvider>();
 
 var app = builder.Build();
 
@@ -78,9 +81,11 @@ app.UseSession();
 app.UseTrackedCookies();
 app.UseCustomerPreferences();
 app.UseShoppingCart();
+app.UseSessionState();
 
 app.MapApiEndpoints();
 app.MapRazorComponents<App>()
+    .WithGroupName("BlazorPageEndpoints")
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(IClientIdentifier).Assembly);

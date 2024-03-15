@@ -19,4 +19,10 @@ public static class MiddlewareAppExtensions
         app.UseMiddleware<TrackedCookiesMiddleware>();
         return app;
     }
+    
+    public static IApplicationBuilder UseSessionState(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<SessionStateMiddleware>();
+        return app;
+    }
 }
