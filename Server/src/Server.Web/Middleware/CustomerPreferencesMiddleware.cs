@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using SunRaysMarket.Server.Application.Preferences;
 
 namespace SunRaysMarket.Server.Web.Middleware;
@@ -21,15 +22,19 @@ internal class CustomerPreferencesMiddleware(
                 ?? DefaultPreferences.Model;
 
         await next.Invoke(context);
+        
+        Debug.Assert(cookieService.Preferences is not null);
 
         if (cookieService.WasCookieUpdated(cs => cs.Preferences))
-            await customerPreferencesService.SetCustomerPreferences(
-                new UpdateCustomerPreferencesModel
-                {
-                    PreferredStoreId =
-                        cookieService.Preferences.PreferredStoreId
-                        ?? currentPreferences.PreferredStoreId!.Value
-                }
-            );
+        {
+            var preferences =new UpdateCustomerPreferencesModel
+            {
+                PreferredStoreId =
+                    cookieService.Preferences?.PreferredStoreId
+                    ?? currentPreferences.PreferredStoreId!.Value
+            };
+            await customerPreferencesService.SetCustomerPreferences(preferences);
+        }
+         
     }
 }
