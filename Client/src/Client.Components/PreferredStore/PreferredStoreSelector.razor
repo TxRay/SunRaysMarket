@@ -1,48 +1,53 @@
 @namespace SunRaysMarket.Client.Components
 @inherits OwningComponentBase<IStoreLocationService>
-@rendermode InteractiveAuto
+@rendermode InteractiveWebAssembly
 
-<div class="store-dropdown" @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave">
-    <div class="store-btn" id="@StoreBtnId">
-        <svg class="store-btn__icon">
-            <use href="/img/icons/solid.svg#store"></use>
-        </svg>
-
-        <h6 class="store-btn__heading">
-            Your Store
-        </h6>
-        <span class="store-btn__location">@SelectedStoreName</span>
-        <svg class="store-btn__chevron">
-            <use href="/img/icons/solid.svg#chevron-down"></use>
-        </svg>
-    </div>
-
-    @{
-        var menuTop = _btnHeight > 0 ? $"{_btnHeight}px" : "0";
-        var menuMinWidth = _btnWidth > 0 ? $"{_btnWidth}px" : "0";
-        var scaleY = _showMenu ? 1 : 0;
-    }
-
-    <div class="store-menu" id="@StoreMenuId"
-         style="--top: @menuTop; --min-width: @menuMinWidth; --scaleY: @scaleY">
-        @if (_showMenu)
-        {
-            <EditForm EditContext="@StoreLocationEditContext" FormName="storeLocationForm">
-                <InputRadioGroup @bind-Value="StoreLocationModel.SelectedStoreLocationId">
-                    <div class="store-menu__list">
-                        @foreach (var location in StoreLocations)
-                        {
-                            var locationId = $"storeLocation{location.Id}";
-                            <InputRadio class="d-none store-menu__radio" Value="@location.Id" id="@locationId"/>
-                            <label class="store-menu__option" for="@locationId">@location.LocationName</label>
-                        }
-                    </div>
-
-                </InputRadioGroup>
-            </EditForm>
-        }
-    </div>
-</div>
+<DisplayByUiState State="_uiState">
+    <UiLoaded>
+        <div class="store-dropdown" @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave">
+                <div class="store-btn" id="@StoreBtnId">
+                    <svg class="store-btn__icon">
+                        <use href="/img/icons/solid.svg#store"></use>
+                    </svg>
+        
+                    <h6 class="store-btn__heading">
+                        Your Store
+                    </h6>
+                    <span class="store-btn__location">@SelectedStoreName</span>
+                    <svg class="store-btn__chevron">
+                        <use href="/img/icons/solid.svg#chevron-down"></use>
+                    </svg>
+                </div>
+        
+                @{
+                    var menuTop = _btnHeight > 0 ? $"{_btnHeight}px" : "0";
+                    var menuMinWidth = _btnWidth > 0 ? $"{_btnWidth}px" : "0";
+                    var scaleY = _showMenu ? 1 : 0;
+                    Console.WriteLine(scaleY);
+                }
+        
+                <div class="store-menu" id="@StoreMenuId"
+                     style="--top: @menuTop; --min-width: @menuMinWidth; --scaleY: @scaleY">
+                    @if (_showMenu)
+                    {
+                        <EditForm EditContext="@StoreLocationEditContext" FormName="storeLocationForm">
+                            <InputRadioGroup @bind-Value="StoreLocationModel.SelectedStoreLocationId">
+                                <div class="store-menu__list">
+                                    @foreach (var location in StoreLocations)
+                                    {
+                                        var locationId = $"storeLocation{location.Id}";
+                                        <InputRadio class="d-none store-menu__radio" Value="@location.Id" id="@locationId"/>
+                                        <label class="store-menu__option" for="@locationId">@location.LocationName</label>
+                                    }
+                                </div>
+        
+                            </InputRadioGroup>
+                        </EditForm>
+                    }
+                </div>
+            </div>
+    </UiLoaded>
+</DisplayByUiState>
 
 @code {
     private const string StoreBtnId = "storeBtn";
@@ -50,6 +55,7 @@
     private bool _showMenu;
     private int _btnHeight;
     private int _btnWidth;
+    private UiState _uiState = UiState.Loading;
 
 #nullable disable
     [Inject] private ILogger<PreferredStoreSelector> Logger { get; set; }
@@ -77,6 +83,7 @@
     {
         StoreLocations = await Service.GetStoreLocationsAsync();
         StoreLocationModel.SelectedStoreLocationId = await Service.GetPreferredStoreAsync() ?? default;
+        _uiState = UiState.Loaded;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

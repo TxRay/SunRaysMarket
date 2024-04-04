@@ -1,3 +1,4 @@
+using SunRaysMarket.Server.Application.Preferences;
 using SunRaysMarket.Server.Application.Services;
 using SunRaysMarket.Server.Application.UnitOfWork;
 using SunRaysMarket.Shared.Services.Interfaces;
@@ -24,6 +25,8 @@ public class StoreLocationsService(
 
     public Task<int?> GetPreferredStoreAsync()
     {
-        return Task.FromResult(cookieService.Preferences?.PreferredStoreId);
+        return Task.FromResult(
+            cookieService.Preferences?.PreferredStoreId ?? DefaultPreferences.Model.PreferredStoreId
+            );
     }
 }

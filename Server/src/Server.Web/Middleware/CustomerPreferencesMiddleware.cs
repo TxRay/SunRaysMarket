@@ -23,8 +23,6 @@ internal class CustomerPreferencesMiddleware(
 
         await next.Invoke(context);
         
-        Debug.Assert(cookieService.Preferences is not null);
-
         if (cookieService.WasCookieUpdated(cs => cs.Preferences))
         {
             var preferences =new UpdateCustomerPreferencesModel

@@ -11,6 +11,7 @@ internal static class StoreLocationEndpoints
         var storeLocationsGroup = endpoints.MapGroup("/store-locations");
 
         storeLocationsGroup.MapGet("/", GetAllStoreLocationsHandler);
+        storeLocationsGroup.MapGet("/preferred", GetPreferredStoreLocationHandler);
 
         return endpoints;
     }
@@ -26,4 +27,12 @@ internal static class StoreLocationEndpoints
             }
         );
     }
+
+    private static async Task<IResult> GetPreferredStoreLocationHandler(IStoreLocationService storeLocationService)
+        => Results.Json(
+            new CustomerStorePreferenceResponse
+            {
+                PreferredStoreId = await storeLocationService.GetPreferredStoreAsync()
+            }
+        );
 }

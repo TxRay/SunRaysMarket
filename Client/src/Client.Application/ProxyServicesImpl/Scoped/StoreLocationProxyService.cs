@@ -26,7 +26,7 @@ public class StoreLocationProxyService(HttpClient client) : IStoreLocationServic
     {
         return (
             await client.GetFromJsonAsync<CustomerStorePreferenceResponse>(
-                "/api/customer/preferences/store"
+                "/api/store-locations/preferred"
             )
         )?.PreferredStoreId;
     }
