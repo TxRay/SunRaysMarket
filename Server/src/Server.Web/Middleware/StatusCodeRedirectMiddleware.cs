@@ -8,7 +8,7 @@ public class StatusCodeRedirectMiddleware : IMiddleware
 
         var path = context.Request.Path.ToUriComponent(); 
         
-        if (context.Response.StatusCode <= 400
+        if (context.Response.StatusCode >= 400
             && !path.Contains("_framework")
             && !path.Contains("_blazor")
             && !path.StartsWith("/api/")
