@@ -39,6 +39,7 @@ html {
 
 body {
   background-color: #f6f9fc;
+  overflow-x: hidden;
 }
 
 body {
@@ -603,7 +604,7 @@ body {
 
 .layout {
   display: grid;
-  grid-template-columns: [page-start] minmax(5rem, 1fr) [layout-start] repeat(1, [col-start] minmax(min-content, 144rem) [col-end]) [layout-end] minmax(5rem, 1fr) [page-end];
+  grid-template-columns: [page-start] clamp(28px, 5.6vw, 80px) [layout-start] repeat(1, [col-start] 1fr [col-end]) [layout-end] clamp(28px, 5.6vw, 80px) [page-end];
   grid-auto-rows: min-content;
 }
 .layout--application, .layout--admin {
@@ -612,10 +613,15 @@ body {
 .layout--application {
   grid-template-rows: [navigation-start topbar-start] 8.5rem [topbar-end nav-start] 6.5rem [navigation-end nav-end content-start] 1fr [content-end];
   min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
 }
 .layout--admin {
   grid-template-rows: [header-start] min-content [header-end content-start] 1fr [content-end];
   row-gap: 6.4rem;
+}
+.layout--page, .layout--full {
+  width: 100vw;
 }
 .layout--page {
   grid-column: page;
@@ -649,10 +655,11 @@ body {
 @media only screen and (max-width: 725px) {
   .search {
     display: grid;
-    grid-template-columns: [page-start] minmax(5rem, 1fr) [layout-start] repeat(1, [col-start] minmax(min-content, 144rem) [col-end]) [layout-end] minmax(5rem, 1fr) [page-end];
+    grid-template-columns: [page-start] clamp(28px, 5.6vw, 80px) [layout-start] repeat(1, [col-start] 1fr [col-end]) [layout-end] clamp(28px, 5.6vw, 80px) [page-end];
     grid-auto-rows: min-content;
     grid-column: page;
     align-content: center;
+    width: 100vw;
     position: absolute;
     top: 0;
     left: 0;
@@ -704,10 +711,12 @@ body {
 .search__button:active {
   transform: translateY(2px);
 }
+.search__button > .search__icon {
+  fill: #545454;
+}
 .search__icon {
   height: 2rem;
   aspect-ratio: 1/1;
-  fill: #8c8c8c;
 }
 .search__icon--close {
   fill: #cc3300;
@@ -718,6 +727,9 @@ body {
 .search__close, .search__open {
   display: none;
 }
+.search__open > .search__icon {
+  fill: #f5f5f5;
+}
 @media only screen and (max-width: 725px) {
   .search__checkbox:not(:checked) ~ .search__open, .search__checkbox:checked ~ .search__close {
     display: block;
@@ -727,7 +739,7 @@ body {
   .search__checkbox:checked ~ .search__close {
     position: absolute;
     top: calc(50% - 1rem);
-    right: 7rem;
+    right: 4rem;
     z-index: 3000;
   }
 }
@@ -851,7 +863,7 @@ body {
 }
 @media only screen and (max-width: 610px) {
   .store-btn {
-    grid-template-columns: repeat(2, max-content);
+    grid-template-columns: max-content;
   }
 }
 .store-btn__icon {
@@ -890,7 +902,7 @@ body {
 }
 @media only screen and (max-width: 610px) {
   .store-btn__chevron {
-    grid-column: 2/-1;
+    display: none;
   }
 }
 .store-btn:hover .store-btn__icon {
@@ -904,18 +916,16 @@ body {
 }
 
 .store-menu {
-  --top: 0;
-  --min-width: 0;
-  --scaleY: 0;
   position: absolute;
-  top: var(--top);
+  top: var(--top, 8.5rem);
   right: 0;
-  min-width: var(--min-width);
+  z-index: 1000;
+  min-width: var(--min-width, 0);
   padding: 2.4rem;
   background-color: #f6f9fc;
   border-radius: 1rem;
   box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.2);
-  transform: scaleY(var(--scaleY));
+  transform: scaleY(var(--scaleY, 0));
   transform-origin: top;
   transition: 250ms ease-in-out;
 }
@@ -1154,7 +1164,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 2.8rem;
+  gap: clamp(8px, 2vw, 28px);
 }
 
 .cart {
@@ -1192,6 +1202,7 @@ body {
     transform: scaleY(0);
     transform-origin: top;
     transition: transform 350ms ease-in-out;
+    z-index: 2000;
   }
 }
 .nav__content {
@@ -1511,7 +1522,7 @@ body {
 
 .hero-home {
   display: grid;
-  grid-template-columns: [page-start] minmax(5rem, 1fr) [layout-start] repeat(1, [col-start] minmax(min-content, 144rem) [col-end]) [layout-end] minmax(5rem, 1fr) [page-end];
+  grid-template-columns: [page-start] clamp(28px, 5.6vw, 80px) [layout-start] repeat(1, [col-start] 1fr [col-end]) [layout-end] clamp(28px, 5.6vw, 80px) [page-end];
   grid-auto-rows: min-content;
   grid-column: page;
   grid-template-rows: [hero-start] 1fr [hero-end];

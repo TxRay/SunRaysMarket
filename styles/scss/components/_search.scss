@@ -14,6 +14,7 @@
     @include mxn.layout;
     @include mxn.layout-full;
     align-content: center;
+    width: 100vw;
 
     position: absolute;
     top: 0;
@@ -68,13 +69,17 @@
     &:active {
       transform: translateY(2px);
     }
+    
+    & > .search__icon {
+      fill: var.$color-grey-dark-2;
+    }
+    
   }
 
   &__icon {
     height: var.$fs-xl;
     aspect-ratio: 1 / 1;
-    fill: var.$color-grey-dark-1;
-
+    
     &--close {
       fill: var.$color-danger;
     }
@@ -87,7 +92,12 @@
   &__close, &__open {
     display: none;
   }
-
+  
+  
+  &__open > &__icon {
+    fill: var.$color-grey-light-1;
+  }
+  
   &__checkbox:not(:checked) ~ &__open, &__checkbox:checked ~ &__close {
     @include mxn.media(phone-lg) {
       display: block;
@@ -98,7 +108,7 @@
     @include mxn.media(phone-lg) {
       position: absolute;
       top: calc(50% - (var.$fs-xl / 2));
-      right: 7rem;
+      right: 4rem;
       z-index: 3000;
     }
   }
@@ -108,5 +118,4 @@
       transform: scaleX(1);
     }
   }
-
 }

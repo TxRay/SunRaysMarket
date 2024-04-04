@@ -1,5 +1,5 @@
 @use "sass:map";
-@use "variables";
+@use "variables" as var;
 
 @mixin reset-link {
   text-decoration: none;
@@ -54,12 +54,12 @@ $_media-breakpoints: (
 // layout mixins
 @mixin layout($columns: 1, $max-width: 144rem) {
   display: grid;
-
+  $column-width: calc(var.$content-width / $columns);
   grid-template-columns:
-    [page-start] minmax(5rem, 1fr) [layout-start] repeat(
-      $columns, [col-start] minmax(min-content, calc($max-width / $columns)) [col-end]
+    [page-start] var.$layout-padding-x [layout-start] repeat(
+      $columns, [col-start] 1fr [col-end]
     )
-    [layout-end] minmax(5rem, 1fr) [page-end];
+    [layout-end] var.$layout-padding-x [page-end];
   grid-auto-rows: min-content;
 }
 

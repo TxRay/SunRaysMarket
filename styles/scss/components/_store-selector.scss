@@ -19,7 +19,7 @@
 
 
   @include mxn.media(phone-sm) {
-    grid-template-columns: repeat(2, max-content);
+    grid-template-columns:  max-content;
   }
 
   &__icon {
@@ -68,7 +68,7 @@
     fill: var.$color-grey-light-2;
 
     @include mxn.media(phone-sm) {
-      grid-column: 2 / -1;
+      display: none;
     }
   }
 
@@ -86,21 +86,18 @@
 }
 
 .store-menu {
-  --top: 0;
-  --min-width: 0;
-  --scaleY: 0;
-
   position: absolute;
-  top: var(--top);
+  top: var(--top, var.$topbar-height);
   right: 0;
+  z-index: 1000;
 
-  min-width: var(--min-width);
+  min-width: var(--min-width, 0);
   padding: var.$spacing-m;
   background-color: var.$color-background;
   border-radius: 1rem;
   box-shadow: var.$shadow-dark;
 
-  transform: scaleY(var(--scaleY));
+  transform: scaleY(var(--scaleY, 0));
   transform-origin: top;
   transition: 250ms ease-in-out;
 

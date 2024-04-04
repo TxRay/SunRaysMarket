@@ -74,6 +74,11 @@ $topbar-height: 8.5rem;
 $navbar-height: 6.5rem;
 $footer-height: 25rem;
 
+// horizontal layout width
+$max-width: 1424px;
+$layout-padding-x: clamp(28px, 5.6vw, 80px);
+$content-width: min(1424px, calc(100vw - (2 * $layout-padding-x)));
+
 // vertical content span
 $vertical-content-height-main: calc(100vh - ($topbar-height + $navbar-height));
 $vertical-content-height: calc($vertical-content-height-main - $footer-height);
