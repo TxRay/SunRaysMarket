@@ -18,7 +18,7 @@
   transition: all 200ms ease-in-out;
 
 
-  @include mxn.media(phone-sm) {
+  @include mxn.media(tab-port) {
     grid-template-columns:  max-content;
   }
 
@@ -54,7 +54,7 @@
   }
 
   &__heading, &__location {
-    @include mxn.media(phone-sm) {
+    @include mxn.media(tab-port) {
       display: none;
     }
   }
@@ -67,7 +67,7 @@
     aspect-ratio: 1 / 1;
     fill: var.$color-grey-light-2;
 
-    @include mxn.media(phone-sm) {
+    @include mxn.media(tab-port) {
       display: none;
     }
   }
