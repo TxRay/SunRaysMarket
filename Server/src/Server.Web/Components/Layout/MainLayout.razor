@@ -7,7 +7,10 @@
         <div class="topbar">
             <div class="topbar__content">
                 <NavLink href="/" class="topbar__brand">
-                    <img src="img/logo.png" alt="Sun Rays Market Logo"/>
+                    <picture>
+                        <source media="(max-width:416px)" srcset="img/logo-phone.png"/>
+                        <img src="img/logo.png" alt="Sun Rays Market Logo"/>
+                    </picture>
                 </NavLink>
 
                 <ProductSearch/>

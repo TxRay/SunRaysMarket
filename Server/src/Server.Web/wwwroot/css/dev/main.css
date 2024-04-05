@@ -1231,12 +1231,11 @@ body {
   justify-content: space-between;
 }
 .topbar__brand {
-  flex: 0 0 20rem;
   display: inline-flex;
 }
 .topbar__brand img {
   display: block;
-  width: 100%;
+  height: 6rem;
 }
 .topbar__nav {
   align-self: stretch;
