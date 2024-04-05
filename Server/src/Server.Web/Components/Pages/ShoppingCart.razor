@@ -1,8 +1,9 @@
 @page "/shopping-cart"
-@*@attribute [StreamRendering]*@
 @inherits OwningComponentBase
 
-
+@{
+    var price = CartItems.FirstOrDefault()?.ProductPrice;
+}
 <PageLayout CssClasses="shopping-cart" ContentWidth="ContentWidth.PageContent">
     <h3 class="cart-title">Shopping Cart</h3>
     <CartPageContent CartItems="@CartItems" CartItemInfoList="@CartItemInfoList" ComponentUiState="@_uiState"/>
@@ -10,12 +11,7 @@
 
 @code {
     private UiState _uiState = UiState.Loading;
-
-
-#nullable disable
-    private ICartControlsService CartControlsService { get; set; }
-#nullable enable
-
+    
     private IEnumerable<CartItemListModel> CartItems { get; set; } = [];
     private IEnumerable<CartItemControlModel> CartItemInfoList { get; set; } = [];
 

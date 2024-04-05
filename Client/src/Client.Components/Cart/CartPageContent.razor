@@ -1,16 +1,17 @@
 @namespace SunRaysMarket.Client.Components
-@rendermode InteractiveAuto
+@rendermode InteractiveWebAssembly
 
 <DisplayByUiState State="@ComponentUiState">
     <UiLoading>
-        <RingSpinner/>
+        <RingSpinner SizeProperty="200px"/>
     </UiLoading>
     <UiLoaded>
         @if (CartItems.Any())
         {
-            <div class="cart-item-display">
+            <section class="cart-item-display">
                 @foreach (var item in CartItems)
                 {
+                    Console.WriteLine(item.ProductPrice);
                     var itemInfo = CartItemInfoList.FirstOrDefault(ci => ci.Id == item.Id);
 
                     <div class="cart-item">
@@ -24,7 +25,7 @@
                                       OnItemDeleted="OnItemRemoved"/>
                     </div>
                 }
-            </div>
+            </section>
 
             <div class="cart-page-controls">
                 <button class="btn btn--md btn--danger cart-page-controls__empty-btn" @onclick="OnEmptyCartBtnClicked">
@@ -32,16 +33,33 @@
                 </button>
             </div>
 
-            <div class="cart-summary">
+            <section class="cart-summary">
                 @{
                     var cartSummary = CartItems.GetCartSummary();
                 }
                 <h4 class="cart-summary__title">Cart Summary</h4>
-                <p class="cart-summary__item">Subtotal: @cartSummary.Subtotal</p>
-                <p class="cart-summary__item">Savings: @cartSummary.Discount</p>
-                <p class="cart-summary__item">Tax: @cartSummary.Tax</p>
-                <p class="cart-summary__item">Total: @cartSummary.TotalPrice</p>
-            </div>
+
+                @{
+                    IReadOnlyDictionary<string, object> cartSummeryDictionary =
+                        new Dictionary<string, object>
+                        {
+                            { "Subtotal", cartSummary.Subtotal },
+                            { "Savings", cartSummary.Discount },
+                            { "Tax", cartSummary.Tax },
+                            { "Total", cartSummary.TotalPrice }
+                        };
+                }
+
+                <ul class="cart-summary__list">
+                    @foreach (var (name, value) in cartSummeryDictionary)
+                    {
+                        <li class="cart-summary__item">
+                            <span>@name:</span>
+                            <span>@value</span>
+                        </li>
+                    }
+                </ul>
+            </section>
             <NavLink href="/checkout" class="btn btn--md btn--primary cart-btn">Checkout</NavLink>
         }
         else

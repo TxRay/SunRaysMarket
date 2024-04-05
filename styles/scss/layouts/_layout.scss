@@ -24,8 +24,8 @@
     //padding-bottom: var.$spacing-3xl;
   }
 
-  &--page, &--full {
-    width: 100vw;
+  &--page, &--full, &{
+    max-width: 100vw;
   }
   
   &--page {

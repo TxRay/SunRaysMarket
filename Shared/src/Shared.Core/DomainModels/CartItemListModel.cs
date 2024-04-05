@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using SunRaysMarket.Shared.Core.DomainModels.BaseModels;
 
 namespace SunRaysMarket.Shared.Core.DomainModels;
@@ -11,8 +12,8 @@ public class CartItemListModel : TimeStampBaseDomainModel
     public string ProductPhotoUrl { get; init; } = null!;
     public int Quantity { get; init; }
     public float RegularPrice { get; init; }
-    public float DiscountDecimal { private get; init; }
-
-    public float Discount => RegularPrice * DiscountDecimal;
-    public float ProductPrice => RegularPrice - Discount;
+    [JsonInclude] public float DiscountDecimal { private get; init; }
+    
+    [JsonIgnore] public float Discount => RegularPrice * DiscountDecimal;
+    [JsonIgnore] public float ProductPrice => RegularPrice - Discount;
 }
