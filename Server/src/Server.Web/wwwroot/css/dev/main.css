@@ -1719,63 +1719,81 @@ body {
 
 .product-details {
   display: grid;
-  grid-template-columns: [x-full-start left-start] 2fr [left-end right-start] 3fr [right-end x-full-end];
+  grid-template-areas: "photo body";
+  grid-template-columns: 2fr 3fr;
+}
+@media only screen and (max-width: 725px) {
+  .product-details {
+    grid-template-areas: "photo" "body";
+    grid-template-columns: 1fr;
+    grid-template-rows: min-content 1fr;
+  }
 }
 .product-details__img {
-  grid-column: left;
-  grid-row: y-full;
+  grid-area: photo;
   align-self: center;
   justify-self: center;
   display: block;
   width: 80%;
 }
 .product-details__body {
-  grid-column: right;
-  grid-row: body;
+  grid-area: body;
   display: grid;
-  grid-template-columns: 1fr max-content max-content;
+  grid-template-areas: "name tag" "price unit" "description description" "quant quant";
+  grid-template-columns: 1fr max-content;
   grid-auto-rows: min-content;
   align-items: center;
-  column-gap: 2rem;
+  gap: 0 2rem;
   margin: 4rem;
 }
+@media only screen and (max-width: 560px) {
+  .product-details__body {
+    grid-template-areas: "tag tag" "name name" "price unit" "quant quant" "description description";
+  }
+}
 .product-details__name {
-  grid-column: 1/-2;
+  grid-area: name;
   font-size: 3.6rem;
   font-weight: 300;
   color: #545454;
 }
 .product-details__tag {
-  grid-column: -2/-1;
+  grid-area: tag;
   font-size: 1.4rem;
   font-weight: 300;
   color: #fff;
   background-color: blue;
   padding: 0.2rem 0.75rem;
 }
+@media only screen and (max-width: 560px) {
+  .product-details__tag {
+    justify-self: start;
+  }
+}
 .product-details__price {
-  grid-column: 1/2;
+  grid-area: price;
   justify-self: start;
   margin-top: 1.6rem;
 }
 .product-details__unit-price {
-  grid-column: 2/-1;
+  grid-area: unit;
   justify-self: end;
   margin-top: 1rem;
 }
 .product-details__description {
-  grid-column: 1/-1;
+  grid-area: description;
   justify-self: start;
   margin-top: 3.6rem;
   margin-bottom: 6rem;
 }
-.product-details__quantity {
-  grid-column: 1/2;
+.product-details__cart-controls {
+  grid-area: quant;
   justify-self: start;
 }
-.product-details__cart-controls {
-  grid-column: 1/2;
-  justify-self: start;
+@media only screen and (max-width: 560px) {
+  .product-details__cart-controls {
+    margin-top: 4.8rem;
+  }
 }
 .product-details__btn--hidden {
   display: none !important;

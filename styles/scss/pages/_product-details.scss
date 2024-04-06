@@ -1,13 +1,19 @@
 @use "../abstracts/variables" as var;
+@use "../abstracts/mixins" as mxn;
 
 .product-details {
   display: grid;
-  grid-template-columns: [x-full-start left-start] 2fr [left-end right-start] 3fr [right-end x-full-end];
+  grid-template-areas: "photo body";
+  grid-template-columns: 2fr 3fr;
 
+  @include mxn.media(phone-lg) {
+    grid-template-areas: "photo" "body";
+    grid-template-columns: 1fr;
+    grid-template-rows: min-content 1fr;
+  }
 
   &__img {
-    grid-column: left;
-    grid-row: y-full;
+    grid-area: photo;
     align-self: center;
     justify-self: center;
 
@@ -17,21 +23,33 @@
 
 
   &__body {
-    grid-column: right;
-    grid-row: body;
+    grid-area: body;
 
     display: grid;
-    grid-template-columns: 1fr max-content max-content;
+    grid-template-areas: 
+            "name tag"
+            "price unit"
+            "description description"
+            "quant quant";
+    grid-template-columns: 1fr max-content;
     grid-auto-rows: min-content;
     align-items: center;
-    column-gap: 2rem;
-    
+    gap: 0 2rem;
     margin: 4rem;
+
+    @include mxn.media(phone-xs) {
+      grid-template-areas:
+              "tag tag"
+              "name name"
+              "price unit"
+              "quant quant"
+              "description description"
+    }
   }
 
 
   &__name {
-    grid-column: 1 / -2;
+    grid-area: name;
 
     font-size: 3.6rem;
     font-weight: 300;
@@ -39,7 +57,7 @@
   }
 
   &__tag {
-    grid-column: -2 / -1;
+    grid-area: tag;
 
 
     font-size: 1.4rem;
@@ -48,45 +66,48 @@
     background-color: blue;
     //margin-top: 1.25rem;
     //margin-right: 1rem;
-    padding: 0.2rem 0.75rem
+    padding: 0.2rem 0.75rem;
+
+    @include mxn.media(phone-xs) {
+      justify-self: start;
+    }
+
   }
 
   &__price {
-    grid-column: 1 / 2;
+    grid-area: price;
     justify-self: start;
 
     margin-top: 1.6rem;
   }
 
   &__unit-price {
-    grid-column: 2 / -1;
+    grid-area: unit;
     justify-self: end;
 
     margin-top: 1rem;
   }
 
   &__description {
-    grid-column: 1 / -1;
+    grid-area: description;
     justify-self: start;
 
     margin-top: 3.6rem;
     margin-bottom: 6rem;
   }
 
-  &__quantity {
-    grid-column: 1 / 2;
-    justify-self: start;
-
-
-  }
-
   &__cart-controls {
-    grid-column: 1 / 2;
+    grid-area: quant;
     justify-self: start;
+
+    @include mxn.media(phone-xs) {
+      margin-top: var.$spacing-2xl;
+    }
+
+
   }
 
   &__btn {
-
     &--hidden {
       display: none !important;
     }
