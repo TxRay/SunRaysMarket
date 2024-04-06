@@ -1251,17 +1251,22 @@ body {
   gap: 4rem;
 }
 .footer__list {
+  align-self: center;
   display: flex;
-  gap: 2rem;
+  flex-wrap: wrap;
+  gap: 1.6rem 2.4rem;
 }
 .footer__item {
+  display: inline-block;
   list-style: none;
+  flex: 0 1;
 }
 .footer__link:link, .footer__link:visited {
   display: inline-block;
   text-decoration: none;
   font-size: 1.75rem;
   color: #d6d6d6;
+  text-wrap: nowrap;
   padding-bottom: 0.15rem;
   border-bottom: 1px solid transparent;
   transition: all 200ms ease-in-out;

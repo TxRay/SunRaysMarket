@@ -15,12 +15,18 @@
   }
 
   &__list {
+    align-self: center;
+    
     display: flex;
-    gap: 2rem;
+    flex-wrap: wrap;
+    gap: var.$spacing-s var.$spacing-m;
   }
 
   &__item {
+    display: inline-block;
+    //width: max-content;
     list-style: none;
+    flex: 0 1;
   }
 
   &__link {
@@ -32,6 +38,7 @@
       //font-family: var.$font-primary;
       font-size: 1.75rem;
       color: var.$color-grey-light-2;
+      text-wrap: nowrap;
       padding-bottom: 0.15rem;
       border-bottom: 1px solid transparent;
       transition: all 200ms ease-in-out;
