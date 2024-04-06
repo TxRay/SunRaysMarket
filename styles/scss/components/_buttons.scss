@@ -11,6 +11,7 @@
   &:hover {
     transform: translateY(-3px);
     box-shadow: 0 1rem 2rem rgba(#000, 0.2);
+    filter: brightness(80%);
   }
 
   &:active {
@@ -79,6 +80,11 @@
     &:active {
       bottom: lighten(var.$color-danger, 20%);
     }
+  }
+  
+  &--info {
+    background-color: var.$color-info;
+    color: darken(var.$color-info, 30%);
   }
 
   &--pill {

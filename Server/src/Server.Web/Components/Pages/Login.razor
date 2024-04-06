@@ -1,5 +1,6 @@
 @using SunRaysMarket.Server.Application.Services.Auth
 @using Blazored.FluentValidation
+@using SunRaysMarket.Server.Application.Results
 @inherits OwningComponentBase
 @inject IUserService UserService
 @page "/login"
@@ -8,71 +9,63 @@
 
 <PageLayout ContentWidth="ContentWidth.PageFull">
     <h2 class="auth__title">Login</h2>
-    @if (!ShowLoginConfirmation)
+
+    @switch (_loginResult)
     {
-        <EditForm
-            class="form--auth"
-            method="post"
-            EditContext="@EditContext"
-            OnValidSubmit="LoginUserAsync"
-            OnInvalidSubmit="OnInvalidSubmitAsync"
-            FormName="loginForm">
-            <FluentValidationValidator/>
-            <ValidationSummary/>
-            <div>
-                <InputText
-                    class="form__input"
-                    placeholder="Enter your email address"
-                    id="loginEmail"
-                    @bind-Value="@Model!.Email"/>
-                <label for="loginEmail" class="form__label">Email</label>
+        case AuthResult.AuthNone:
+            <div class="login-content">
+                <LoginForm OnValidLoginSubmit="model => LoginUserAsync(model)"/>
+                <div class="login-content__sample">
+                    <h3>Sample Users</h3>
+                    <ul>
+                        <li>
+                            <span>Jack Black</span>
+                            <button class="btn btn--pill btn--md btn--info">Fill Form</button>
+                        </li>
+                        <li>
+                            <span>Jain Blaine</span>
+                            <button class="btn btn--pill btn--md btn--info">Fill Form</button>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
-            <div>
-                <InputText type="password"
-                           class="form__input"
-                           placeholder="Enter your password"
-                           id="loginPassword"
-                           @bind-Value="@Model!.Password"/>
-                <label for="loginPassword" class="form__label">Password</label>
+            break;
+        case AuthResult.AuthFailure resultFailure:
+            <NotificationDetails Level="NotificationDetails.NotificationLevel.Error"
+                                 Summary="Login Failed"
+                                 Message="@resultFailure.Message"/>
+            <div class="login-content">
+                <LoginForm OnValidLoginSubmit="LoginUserAsync"/>
+                <div class="login-content__sample">
+                    <h3>Sample Users</h3>
+                    <ul>
+                        <li>
+                            <span>Jack Black</span>
+                            <button class="btn btn--pill btn--md btn--info">Fill Form</button>
+                        </li>
+                        <li>
+                            <span>Jain Blaine</span>
+                            <button class="btn btn--pill btn--md btn--info">Fill Form</button>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
-            <button type="submit" class="btn btn--primary btn--md" id="loginSubmit">Login</button>
-
-        </EditForm>
+            break;
+        case AuthResult.AuthSuccess resultSuccess:
+            <div class="alert alert--success">
+                <p>@resultSuccess.Message</p>
+            </div>
+            break;
     }
-    else
-    {
-        <div class="alert alert--success">
-            <p>You have successfully logged in!</p>
-        </div>
-    }
-
 </PageLayout>
 
 
 @code {
-    [Inject] NavigationManager Navigation { get; set; } = default!;
-    [SupplyParameterFromForm] private LoginModel? Model { get; set; }
-
-    private EditContext? EditContext { get; set; }
-
-    protected override void OnInitialized()
+    private AuthResult _loginResult = new AuthResult.AuthNone();
+    
+    private async Task LoginUserAsync(LoginModel model)
     {
-        Model ??= new LoginModel();
-        EditContext = new EditContext(Model);
+        _loginResult = await UserService.LoginAsync(model);
     }
-
-    private bool ShowLoginConfirmation { get; } = false;
-
-    private async Task LoginUserAsync()
-    {
-        var loginResult = await UserService.LoginAsync(Model!);
-        Navigation.NavigateTo("/", true);
-    }
-
-    private async Task OnInvalidSubmitAsync()
-    {
-    }
-
 }
+

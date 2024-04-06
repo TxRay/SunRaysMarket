@@ -1,0 +1,17 @@
+@namespace SunRaysMarket.Server.Components
+
+<details class="notification-details @(Level.ToString().ToLower())" open>
+    <summary>@(Summary ?? Level.ToString())</summary>
+    <p>@Message</p>
+</details>
+
+@code {
+    [Parameter] public string? Summary { get; set; }
+    [Parameter, EditorRequired] public string Message { get; set; } = default!;
+    [Parameter] public NotificationLevel Level { get; set; }
+    
+    public enum NotificationLevel
+    {
+        Success, Info, Warning, Error
+    }
+}

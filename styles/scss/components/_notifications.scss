@@ -1,0 +1,61 @@
+@use "../abstracts/variables" as var;
+
+@mixin _colorize($bg, $line) {
+  background-color: $bg;
+  border-color: $line;
+  color: $line;
+
+  &[open] {
+    summary {
+      border-color: $line;
+    }
+  }
+}
+
+.notification-details {
+  justify-self: center;
+  
+  width: min(600px, var.$content-width);
+  
+  display: inline-block;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 10px;
+  padding: 0.8em;
+
+  &.info {
+    @include _colorize(lighten(var.$color-info, 20%), darken(var.$color-info, 10%))
+  }
+
+  &.warning {
+    @include _colorize(lighten(var.$color-warning, 20%), darken(var.$color-warning, 10%))
+  }
+
+  &.error {
+    @include _colorize(lighten(var.$color-danger, 50%), darken(var.$color-danger, 20%))
+
+  }
+
+  &.success {
+    @include _colorize(lighten(var.$color-success, 30%), darken(var.$color-success, 10%))
+  }
+  
+  summary {
+    font-size: var.$fs-3xl;
+    font-weight: var.$weight-medium;
+  }
+  
+  p {
+    font-size: var.$fs-l;
+  }
+
+  &[open] {
+    padding: 1.6em;
+
+    summary {
+      border-bottom-width: 1.5px;
+      border-bottom-style: solid;
+      margin-bottom: var.$spacing-s;
+    }
+  }
+}

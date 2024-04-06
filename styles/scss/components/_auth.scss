@@ -16,10 +16,15 @@
     //grid-row: header;
     justify-self: center;
     align-self: center;
-    font-size: var.$fs-4xl;
+    font-size: var.$fs-5xl;
     font-weight: var.$weight-bold;
     margin-top: var.$spacing-xs;
+    margin-bottom: var.$spacing-xl;
     margin-left: var.$spacing-xs;
+    
+    &:has(+ .notification-details) {
+      margin-bottom: var.$spacing-2xl;
+    }
   }
 }
 

@@ -2,27 +2,37 @@ using FluentValidation.Results;
 
 namespace SunRaysMarket.Server.Application.Results;
 
-public class AuthResult
+public abstract record AuthResult
 {
+    public record AuthNone : AuthResult;
+
+    public abstract record AuthSome(string? Message) : AuthResult;
+    public record AuthSuccess(UserDetailsModel User, string? Message = default) : AuthSome(Message);
+
+    public abstract record AuthFailure(string? Message) : AuthSome(Message);
+
+    public record AuthExecutionFailure(string? Message = default) : AuthFailure(Message);
+
+    public record AuthValidationFailure(ValidationResult ValidationResult, string? Message = default)
+        : AuthFailure(Message);
+
+
     public UserDetailsModel? User { get; init; }
-    public string Message { get; init; } = null!;
 
     public ValidationResult? ValidationResult { get; init; }
 
-    public bool WasSuccessful => User is not null;
-    public bool IsValidationFailure => ValidationResult is not null;
-
-    public static AuthResult Success(UserDetailsModel user)
+    public static AuthSuccess Success(UserDetailsModel user)
     {
-        return new AuthResult
-        {
-            User = user,
-            Message = $"The user was successfully logged in as {user.FirstName}."
-        };
+        return new AuthSuccess(User: user, Message: $"The user was successfully logged in as {user.FirstName}.");
     }
 
-    public static AuthResult Failure(string message)
+    public static AuthFailure Failure(string message, ValidationResult? validationResult = default)
     {
-        return new AuthResult { Message = message };
+        if (validationResult is not null)
+        {
+            return new AuthValidationFailure(ValidationResult: validationResult, Message: message);
+        }
+
+        return new AuthExecutionFailure(Message: message);
     }
 }

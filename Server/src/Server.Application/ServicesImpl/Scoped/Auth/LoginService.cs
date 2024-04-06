@@ -10,7 +10,7 @@ internal class LoginService(
     IUserRepository userRepository
 ) : ILoginService
 {
-    public async Task<AuthResult> LoginAsync(LoginModel loginModel)
+    public async Task<AuthResult.AuthSome> LoginAsync(LoginModel loginModel)
     {
         var user = await userRepository.AuthenticateAsync(loginModel);
 

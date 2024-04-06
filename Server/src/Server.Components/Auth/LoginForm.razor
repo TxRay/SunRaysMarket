@@ -1,0 +1,69 @@
+@using Microsoft.AspNetCore.Components.Forms
+@namespace SunRaysMarket.Server.Components
+
+<EditForm
+    class="form--auth login-content__form"
+    method="post"
+    EditContext="@_editContext"
+    OnValidSubmit="OnValidFormSubmitAsync"
+    OnInvalidSubmit="OnInvalidFormSubmitAsync"
+    FormName="loginForm">
+    <FluentValidationValidator/>
+    <div>
+        <InputText
+            class="form__input"
+            type="email"
+            required
+            placeholder="Enter your email address"
+            id="loginEmail"
+            @bind-Value="@Model.Email"/>
+        <label for="loginEmail" class="form__label">Email</label>
+        <ValidationMessage For="() => Model.Email"/>
+    </div>
+
+    <div>
+        <InputText
+            class="form__input"
+            type="password"
+            required
+            placeholder="Enter your password"
+            id="loginPassword"
+            @bind-Value="@Model.Password"/>
+        <label for="loginPassword" class="form__label">Password</label>
+        <ValidationMessage For="() => Model.Password"/>
+    </div>
+
+    <button type="submit" class="btn btn--primary btn--md" id="loginSubmit">Login</button>
+</EditForm>
+
+@* ReSharper disable InconsistentNaming *@
+
+@code {
+    private EditContext _editContext = default!;
+
+    [SupplyParameterFromForm] private LoginModel Model { get; set; } = new();
+
+    [Parameter] public LoginModel? InitialModel { get; set; }
+    [Parameter] public EventCallback<LoginModel> OnValidLoginSubmit { get; set; }
+    [Parameter] public EventCallback OnInvalidLoginSubmit { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (InitialModel is not null)
+            Model = InitialModel;
+
+        _editContext = new EditContext(Model);
+    }
+
+    private async Task OnValidFormSubmitAsync()
+    {
+        await OnValidLoginSubmit.InvokeAsync(Model);
+    }
+
+    private async Task OnInvalidFormSubmitAsync()
+    {
+        if (OnInvalidLoginSubmit.HasDelegate)
+            await OnInvalidLoginSubmit.InvokeAsync();
+    }
+
+}

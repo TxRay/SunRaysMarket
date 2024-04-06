@@ -1,5 +1,6 @@
 @using Blazored.FluentValidation
 @using SunRaysMarket.Server.Application.Enums
+@using SunRaysMarket.Server.Application.Results
 @inherits OwningComponentBase<SunRaysMarket.Server.Application.Services.Auth.IUserService>
 
 @page "/signup"
@@ -75,6 +76,8 @@
 </PageLayout>
 
 @code {
+    private AuthResult _result = new AuthResult.AuthNone();
+    
     [SupplyParameterFromForm] public SignUpModel? SignUpModel { get; set; }
 
     private bool ShowConfirmation { get; set; }
@@ -86,8 +89,7 @@
 
     public async Task SignUpUser()
     {
-        var signUpResult = await Service.SignUpAsync(SignUpModel!, new[] { Role.Customer });
-        ShowConfirmation = signUpResult.WasSuccessful;
+        _result = await Service.SignUpAsync(SignUpModel!, new[] { Role.Customer });
     }
 
 }

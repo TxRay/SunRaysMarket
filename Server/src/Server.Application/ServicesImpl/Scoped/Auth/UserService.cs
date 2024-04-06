@@ -37,14 +37,14 @@ internal class UserService(
             : null;
     }
 
-    public async Task<AuthResult> LoginAsync(LoginModel loginModel)
+    public async Task<AuthResult.AuthSome> LoginAsync(LoginModel loginModel)
     {
         var user = await userRepository.AuthenticateAsync(loginModel);
 
         return user is null ? AuthResult.Failure("Invalid credentials.") : AuthResult.Success(user);
     }
 
-    public async Task<AuthResult> LoginAdminAsync(LoginModel loginModel)
+    public async Task<AuthResult.AuthSome> LoginAdminAsync(LoginModel loginModel)
     {
         var user = await userRepository.AuthenticateAsync(loginModel);
 
@@ -56,7 +56,7 @@ internal class UserService(
             : AuthResult.Failure("The user is not admin");
     }
 
-    public async Task<AuthResult> SignUpAsync(SignUpModel signUpModel, IEnumerable<Role> roles)
+    public async Task<AuthResult.AuthSome> SignUpAsync(SignUpModel signUpModel, IEnumerable<Role> roles)
     {
         var user = await userRepository.CreateUserAsync(signUpModel);
 
