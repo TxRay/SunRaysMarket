@@ -14,9 +14,9 @@
   [navigation-end nav-end content-start] 1fr [content-end];
     min-height: 100vh;
     width: 100vw;
-    overflow-x: hidden;
+    overflow: hidden;
   }
-
+  
   &--admin {
     grid-template-rows: [header-start] min-content [header-end content-start] 1fr [content-end];
     //column-gap: var.$spacing-3xl;
@@ -47,6 +47,7 @@
 
   &__content-vertical--main {
     min-height: var.$vertical-content-height-main;
+    overflow-y: auto;
   }
 
   &__content--p-default {
