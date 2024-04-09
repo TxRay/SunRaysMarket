@@ -9,7 +9,7 @@ services:
       - "5000:5000"
       - "5001:5001"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=5000
       - ASPNETCORE_HTTPS_PORTS=5001
       - ASPNETCORE_Kestrel__Certificates__Default__Password=BadPass@321*
@@ -31,7 +31,7 @@ services:
     image: postgres:latest
     container_name: srm.postgres.db
     environment:
-      - POSTGRES_DB=srm_test_db
+      - POSTGRES_DB=srm_db
       - POSTGRES_USER=srm_user
       - POSTGRES_PASSWORD=BadPass@123*
     expose:
