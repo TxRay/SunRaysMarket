@@ -10,33 +10,26 @@ public class PageLayout : ComponentBase
 {
     private const string BaseClass = "layout";
 
-    [Inject]
-    private ILogger<PageLayout>? Logger { get; set; }
-    
-    
-    [Parameter]
-    public string Element { get; set; } = "div";
+    [Inject] private ILogger<PageLayout>? Logger { get; set; }
+
+
+    [Parameter] public string Element { get; set; } = "div";
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> Attributes { get; set; } = new();
-    
-    [Parameter]
-    public bool UseDefaultPadding { get; set; }
-    
-    [Parameter]
-    public string CssClasses { get; set; } = string.Empty;
+
+    [Parameter] public bool UseDefaultPadding { get; set; }
+
+    [Parameter] public string CssClasses { get; set; } = string.Empty;
 
     [Parameter] public LayoutType LayoutType { get; set; } = LayoutType.Page;
 
-    [Parameter]
-    public ContentWidth? ContentWidth { get; set; }
+    [Parameter] public ContentWidth? ContentWidth { get; set; }
 
-    [Parameter]
-    public bool FitVerticalContent { get; set; } = true;
+    [Parameter] public bool FitVerticalContent { get; set; } = true;
 
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
     private bool ClassesSet { get; set; }
 
     private string? VerticalLayoutClass
@@ -50,17 +43,8 @@ public class PageLayout : ComponentBase
         }
     }
 
-    private string? DefaultPaddingClass
-    {
-        get
-        {
-            if (!UseDefaultPadding && (LayoutType != LayoutType.Page || Element == "main"))
-                return null;
+    private string? DefaultPaddingClass => !UseDefaultPadding ? null : "layout__content--p-default";
 
-            return "layout__content--p-default";
-        }
-    }
-    
     private string RenderBaseCssClasses()
     {
         string[] classList =
@@ -81,7 +65,7 @@ public class PageLayout : ComponentBase
         if (!Attributes.TryAdd("class", RenderBaseCssClasses()) && !ClassesSet)
             throw new InvalidOperationException(
                 "The 'class' attribute should not be directly set."
-                    + "Use the 'CssClasses' parameter to apply additional css classes."
+                + "Use the 'CssClasses' parameter to apply additional css classes."
             );
 
         ClassesSet = true;
