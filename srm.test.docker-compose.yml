@@ -14,7 +14,7 @@ services:
       - ASPNETCORE_HTTPS_PORTS=5001
       - ASPNETCORE_Kestrel__Certificates__Default__Password=BadPass@321*
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      - SUNRAYSMARKET_DbConnection__Server=srm.postgres.db
+      - SUNRAYSMARKET_DbConnection__Host=srm.postgres.db
       - SUNRAYSMARKET_DbConnection__Database=srm_db
       - SUNRAYSMARKET_DbConnection__Username=srm_user
       - SUNRAYSMARKET_DbConnection__Password=BadPass@123*
