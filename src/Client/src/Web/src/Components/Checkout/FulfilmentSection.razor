@@ -1,0 +1,175 @@
+@using SunRaysMarket.Shared.Core.Services
+@using SunRaysMarket.Shared.Core.DomainModels
+@using SunRaysMarket.Client.Web.Components.Modals
+@using SunRaysMarket.Client.Web.Components.Stores
+@using SunRaysMarket.Client.Application.Models
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
+
+<CheckoutSection
+    ShowSection="true"
+    OnActionButtonClicked="OnFulfillmentActionBtnClicked"
+    Status="@Status"
+    ComponentUiState="@_sectionUiState">
+    <Heading>
+        <span>
+            @switch (Model)
+            {
+                case FulfillmentModel.DeliveryModel:
+                    @: Delivery
+                    break;
+                case FulfillmentModel.PickupModel:
+                    @: Pickup
+                    break;
+                default:
+                    @: Pickup or Delivery
+                    break;
+            }
+        </span>
+    </Heading>
+    <ActionButton>
+        @if (Model is FulfillmentModel.NonEmptyModel)
+        {
+            @: Change time
+        }
+        else
+        {
+            @: Select time
+        }
+
+    </ActionButton>
+    <ChildContent>
+        @switch (Model)
+        {
+            case FulfillmentModel.EmptyModel:
+                <span class="fulfillment-section__content--invalid">
+                    Please select a pickup or delivery time.
+                </span>
+                break;
+            case FulfillmentModel.NonEmptyModel { TimeSlotId: 0 }:
+                <span class="fulfillment-section__content--invalid">
+                    Please select a timeslot.
+                </span>
+                break;
+            case FulfillmentModel.DeliveryModel { DeliveryAddressId: null or 0 }:
+                <span class="fulfillment-section__content--invalid"> Please provide a delivery address </span>
+                break;
+            case FulfillmentModel.DeliveryModel { IsValid: true }:
+                <div class="fulfillment-section__content--valid">
+                    <span class="fulfilment-section__line">
+                        Between @_timeSlotModel?.TimeSlotDefinition.TimeSlotRange.ToString()
+                    </span>
+
+                    @if (_address is not null)
+                    {
+                        <span> to @_address.Street, @_address.City, @_address.State.</span>
+                    }
+                </div>
+                break;
+            case FulfillmentModel.PickupModel { IsValid: true }:
+                <div class="fulfillment-section__content--valid">
+                    <span class="fulfilment-section__line">
+                        Between @_timeSlotModel?.TimeSlotDefinition.TimeSlotRange.ToString()
+                    </span>
+                    <span class="fulfilment-section__line">
+                        at the @_storeLocationName Location.
+                    </span>
+                </div>
+                break;
+            default:
+                <span class="fulfillment-section__content--invalid">
+                    Please be sure to select all required options.
+                </span>
+                break;
+        }
+    </ChildContent>
+    <ErrorContent>
+        <p>Something went wrong while loading the content.</p>
+    </ErrorContent>
+</CheckoutSection>
+
+@code {
+    private UiState _sectionUiState = UiState.Loading;
+    private AddressModel? _address;
+    private string _storeLocationName = string.Empty;
+    private TimeSlotModel? _timeSlotModel;
+
+#nullable disable
+    [Inject] private IAddressService AddressService { get; set; }
+    [Inject] private ICheckoutService CheckoutService { get; set; }
+    [Inject] private IModalController ModalController { get; set; }
+    [Inject] private IStore Store { get; set; }
+    [Inject] IStoreLocationService StoreLocationService { get; set; }
+#nullable enable
+
+    [Parameter] public FulfillmentModel Model { get; set; } = new FulfillmentModel.EmptyModel();
+    [Parameter] public EventCallback<FulfillmentModel> ModelChanged { get; set; }
+
+    private CheckoutSectionStatus Status => Model switch
+    {
+        FulfillmentModel.EmptyModel or null => CheckoutSectionStatus.Unset,
+        FulfillmentModel.NonEmptyModel { IsValid: false } => CheckoutSectionStatus.Invalid,
+        FulfillmentModel.NonEmptyModel { IsValid: true } => CheckoutSectionStatus.Valid,
+        _ => CheckoutSectionStatus.Unset
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Store is null)
+        {
+            _sectionUiState = UiState.Error;
+            return;
+        }
+
+        if (ModalController is not null)
+            ModalController.OnChange += Modal_OnChange;
+
+        await RetrieveFulfillmentInfo();
+        _sectionUiState = UiState.Loaded;
+    }
+
+    private async Task RetrieveFulfillmentInfo()
+    {
+        Model = await Store!.TryGetValueAsync<FulfillmentModel.DeliveryModel>("FulfillmentData")
+                ?? await Store!.TryGetValueAsync<FulfillmentModel.PickupModel>("FulfillmentData")
+                ?? Model;
+
+
+        if (Model is FulfillmentModel.NonEmptyModel { IsValid: true } nonEmptyModel)
+        {
+            _timeSlotModel = await CheckoutService.GetCheckoutTimeSlotAsync(nonEmptyModel.TimeSlotId);
+
+            switch (nonEmptyModel)
+            {
+                case FulfillmentModel.PickupModel pickupModel:
+                    _storeLocationName = (await StoreLocationService.GetStoreLocationsAsync())
+                                         .FirstOrDefault(sl => sl.Id == pickupModel.StoreId)?
+                                         .LocationName
+                                         ?? string.Empty;
+                    break;
+                case FulfillmentModel.DeliveryModel { DeliveryAddressId: not null } deliveryModel:
+                    _address = await AddressService.GetAddressAsync(deliveryModel.DeliveryAddressId.Value);
+                    break;
+            }
+        }
+    }
+
+    private async void Modal_OnChange()
+    {
+        await RetrieveFulfillmentInfo();
+        await ModelChanged.InvokeAsync(Model);
+        StateHasChanged();
+    }
+
+    private async Task OnFulfillmentActionBtnClicked()
+    {
+        var options = new ModalOptions
+        {
+            Title = "Select time",
+            Width = "75%",
+            Height = "75%"
+        };
+
+        await ModalController!.DispatchAsync<FulfillmentModal, AddressModel>(options);
+    }
+
+}

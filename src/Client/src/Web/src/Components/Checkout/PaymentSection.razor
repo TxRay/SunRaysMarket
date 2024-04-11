@@ -1,0 +1,78 @@
+@using SunRaysMarket.Shared.Core.Payment
+@using SunRaysMarket.Shared.Core.Utilities
+@using SunRaysMarket.Client.Web.Components.Stores
+@implements IDisposable
+
+@{
+    var paymentSectionStatus = PaymentModel?.PaymentMethodId is null
+        ? CheckoutSectionStatus.Invalid
+        : CheckoutSectionStatus.Valid;
+}
+
+<CheckoutSection ShowSection="@ShowPaymentSection" Status="@paymentSectionStatus">
+    <Heading> Payment method</Heading>
+    <ChildContent>
+        <EditForm EditContext="@PaymentMethodEditContext" FormName="PaymentMethodForm">
+            <div>
+                <InputCheckoutOptionGroup TValue="string" @bind-Value="PaymentModel!.PaymentMethodId">
+                    @foreach (var (id, title, card) in TestCards.CardList)
+                    {
+                        <InputCheckoutOption Value="id" IdBase="payment">
+                            <div class="payment-option">
+                                <div class="payment-option__header">
+                                    @*<svg>
+                                        <use href="/img/icons/payment/visa.svg"></use>
+                                    </svg>*@
+                                    <span>@title</span>
+                                </div>
+                                <span class="payment-option__number">
+                                    card ending in @FormatHelpers.ShortenCardNumber(card.Number)
+                                </span>
+                            </div>
+                        </InputCheckoutOption>
+                    }
+                </InputCheckoutOptionGroup>
+            </div>
+        </EditForm>
+    </ChildContent>
+</CheckoutSection>
+
+@code {
+#nullable disable
+    [Inject] IStore Store { get; set; }
+#nullable enable
+
+    [Parameter] public string? PaymentMethodId { get; set; }
+    [Parameter] public EventCallback<string?> PaymentMethodIdChanged { get; set; }
+    [Parameter] public bool ShowPaymentSection { get; set; }
+
+    private PaymentMethodModel? PaymentModel { get; set; }
+    private EditContext PaymentMethodEditContext { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        PaymentModel = new PaymentMethodModel { PaymentMethodId = PaymentMethodId };
+        PaymentMethodEditContext = new EditContext(PaymentModel);
+        PaymentMethodEditContext.OnFieldChanged += PaymentMethodEditContext_OnFieldChanged;
+    }
+
+    private async void PaymentMethodEditContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        //.LogInformation("Calling 'Checkout.PaymentMethodEditContext_OnFieldChanged'.");
+        PaymentModel = PaymentMethodEditContext.Model as PaymentMethodModel ?? new PaymentMethodModel();
+        PaymentMethodId = PaymentModel.PaymentMethodId;
+        await Store!.SetValueAsync("PaymentInfo", PaymentModel);
+        await PaymentMethodIdChanged.InvokeAsync(PaymentMethodId);
+    }
+
+    internal class PaymentMethodModel
+    {
+        public string? PaymentMethodId { get; set; }
+    }
+
+    public void Dispose()
+    {
+        PaymentMethodEditContext.OnFieldChanged -= PaymentMethodEditContext_OnFieldChanged;
+    }
+
+}

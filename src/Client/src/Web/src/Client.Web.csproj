@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>SunRaysMarket.Client.Web</RootNamespace>
+        <!-- <BlazorCacheBootResources>false</BlazorCacheBootResources> -->
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.1" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\..\Libraries\src\Components\src\Libraries.Components.csproj" />
+        <ProjectReference Include="..\..\..\..\Shared\src\Components\src\Shared.Components.csproj" />
+        <ProjectReference Include="..\..\Application\src\Client.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="wwwroot\css\app.css"/>
+        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css"/>
+        <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map"/>
+        <_ContentIncludedByDefault Remove="wwwroot\favicon.png"/>
+        <_ContentIncludedByDefault Remove="wwwroot\icon-192.png"/>
+        <_ContentIncludedByDefault Remove="wwwroot\index.html"/>
+        <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json"/>
+    </ItemGroup>
+
+</Project>

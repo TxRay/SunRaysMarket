@@ -1,0 +1,204 @@
+@using BlazorPageScript
+@using SunRaysMarket.Server.Core.DomainModels
+@inherits OwningComponentBase
+@attribute [StreamRendering]
+@page "/admin/products/{action}/{id:int?}"
+
+<SectionContent SectionName="page-title">@PageTitle</SectionContent>
+
+<DisplayByUiState State="_uiState">
+    <UiLoading>
+        <RingSpinner/>
+    </UiLoading>
+    <UiLoaded>
+        <PageScript Src="./Components/Pages/Admin/ProductActions.razor.js"/>
+
+        <EditForm
+            Model="Product"
+            class="form--admin"
+            method="post"
+            OnValidSubmit="OnValidSubmitAsync"
+            FormName="ProductActions"
+            enctype="multipart/form-data">
+            <div class="form__admin-group">
+
+                <div>
+                    <InputText class="form__input"
+                               placeholder="Enter product name"
+                               id="name"
+                               @bind-Value="Product.Name"/>
+                    <label for="name" class="form__label form__label--input">Name</label>
+
+                </div>
+                <div>
+                    <InputText class="form__input"
+                               placeholder="Enter product description"
+                               id="description"
+                               @bind-Value="Product.Description"/>
+                    <label for="description" class="form__label form__label--input">Description</label>
+
+                </div>
+                <div>
+                    <InputFile
+                        class="form__input"
+                        placeholder="Upload a product photo"
+                        id="photoFile"
+                        name="Model.Image"/>
+                    <InputText type="hidden" id="photoUrl" @bind-Value="Product.PhotoUrl"/>
+                    <label for="photoFile" class="form__label form__label--input">ProductPhoto</label>
+                </div>
+                <div>
+                    <InputNumber class="form__input"
+                                 placeholder="Price = $0.00"
+                                 id="price"
+                                 @bind-Value="Product.Price"/>
+                    <label for="price" class="form__label form__label--input">Price</label>
+                </div>
+                <div>
+                    <InputNumber class="form__input"
+                                 placeholder="Discount = 0%"
+                                 id="discount"
+                                 @bind-Value="Product.DiscountPercent"/>
+                    <label for="discount" class="form__label form__label--input">Discount</label>
+                </div>
+                <div>
+                    <InputNumber class="form__input"
+                                 placeholder="Enter the measure"
+                                 id="measure"
+                                 TValue="float"
+                                 @bind-Value="Product.Measure"/>
+                    <label for="measure" class="form__label form__label--input">Measure</label>
+                </div>
+            </div>
+
+            <div class="form__admin-group">
+                <div>
+                    <InputSelect class="form__select"
+                                 id="unitOfMeasurement"
+                                 @bind-Value="Product.UnitOfMeasureId">
+                        @foreach (var unitOfMeasure in UnitsOfMeasure)
+                        {
+                            <option value="@unitOfMeasure.Id">@unitOfMeasure.Name</option>
+                        }
+                    </InputSelect>
+                    <label for="unitOfMeasurement" class="form__label">Unit of Measure</label>
+                </div>
+                <div>
+                    <InputSelect class="form__select"
+                                 id="productType"
+                                 @bind-Value="Product.ProductTypeId">
+                        @foreach (var productType in ProductTypes)
+                        {
+                            <option value="@productType.Id">@productType.Name</option>
+                        }
+                    </InputSelect>
+                    <label for="productType" class="form__label">Product Type</label>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn--primary">
+                    Submit
+                </button>
+            </div>
+        </EditForm>
+
+    </UiLoaded>
+</DisplayByUiState>
+
+
+@code {
+    private UiState _uiState = UiState.Loading;
+
+#nullable disable
+    [Inject] private NavigationManager NavManager { get; set; }
+#nullable enable
+
+    [Parameter] public string Action { get; set; } = default!;
+    [Parameter] public int? Id { get; set; }
+
+    private IUnitOfWork? UnitOfWork { get; set; }
+
+    [SupplyParameterFromForm] private CreateProductModel? Product { get; set; }
+    private IEnumerable<UnitOfMeasureListModel> UnitsOfMeasure { get; set; } = new List<UnitOfMeasureListModel>();
+    private IEnumerable<ProductTypeDetailsModel> ProductTypes { get; set; } = new List<ProductTypeDetailsModel>();
+
+    private string ActionName { get; set; } = string.Empty;
+    private string PageTitle => $"{ActionName} Product";
+
+    protected override void OnInitialized()
+    {
+        UnitOfWork = ScopedServices.GetRequiredService<IUnitOfWork>();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        UnitsOfMeasure = await UnitOfWork!.UnitOfMeasureRepository.GetAllAsync();
+        ProductTypes = await UnitOfWork!.ProductTypeRepository.GetAllAsync();
+
+        switch (Action, Id.HasValue)
+        {
+            case ("create", false):
+                ActionName = "Create";
+                Product ??= new CreateProductModel();
+                _uiState = UiState.Loaded;
+                break;
+            case ("edit", true):
+                ActionName = "Edit";
+                Product ??= await UnitOfWork!.ProductRepository.GetForEditAsync(Id!.Value)
+                            ?? new CreateProductModel();
+                _uiState = UiState.Loaded;
+                break;
+            case ("delete", true):
+                await DeleteProductAsync();
+                NavManager!.NavigateTo("admin/products");
+                break;
+            default:
+                NavManager!.NavigateTo("error/404/not-found");
+                break;
+        }
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (Id.HasValue)
+            await UpdateProductAsync();
+        else
+            await AddProductAsync();
+    }
+
+
+    private async Task AddProductAsync()
+    {
+        await UnitOfWork!.ProductRepository.CreateAsync(Product!);
+        await UnitOfWork!.SaveChangesAsync();
+
+        NavManager.NavigateTo("admin/products");
+    }
+
+    private async Task UpdateProductAsync()
+    {
+        var product = new UpdateProductModel
+        {
+            Id = Id!.Value,
+            Name = Product!.Name,
+            Description = Product.Description,
+            DiscountPercent = Product.DiscountPercent,
+            Measure = Product.Measure,
+            PhotoUrl = Product.PhotoUrl ?? string.Empty,
+            Price = Product.Price,
+            ProductTypeId = Product.ProductTypeId,
+            UnitOfMeasureId = Product.UnitOfMeasureId
+        };
+
+        await UnitOfWork!.ProductRepository.UpdateAsync(product);
+        await UnitOfWork!.SaveChangesAsync();
+    }
+
+    private async Task DeleteProductAsync()
+    {
+        await UnitOfWork!.ProductRepository.DeleteAsync(Id!.Value);
+        await UnitOfWork!.SaveChangesAsync();
+    }
+
+}

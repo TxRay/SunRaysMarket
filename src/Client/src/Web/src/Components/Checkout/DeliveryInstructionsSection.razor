@@ -1,0 +1,35 @@
+@using SunRaysMarket.Client.Web.Components.Stores
+<CheckoutSection ShowSection="@ShowSection">
+    <Heading>Delivery Instructions</Heading>
+    <ChildContent>
+        <EditForm FormName="DeliveryInstructionsForm">
+            <InputTextArea @bind-Value="@DeliveryInstructions"></InputTextArea>
+        </EditForm>
+    </ChildContent>
+</CheckoutSection>
+
+@code {
+#nullable disable
+    [Inject] private IStore Store { get; set; }
+#nullable enable
+
+    [Parameter] public string? DeliveryInstructions { get; set; }
+    [Parameter] public EventCallback<string?> DeliveryInstructionsChanged { get; set; }
+    [Parameter] public bool ShowSection { get; set; }
+
+    private EditContext DeliveryInstructionsEditContext { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        DeliveryInstructions ??= string.Empty;
+        DeliveryInstructionsEditContext = new EditContext(DeliveryInstructions);
+        DeliveryInstructionsEditContext.OnFieldChanged += DeliveryInstructionsEditContext_OnFieldChanged;
+    }
+
+    private async void DeliveryInstructionsEditContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        await Store.SetValueAsync("DeliveryInstructions", DeliveryInstructions);
+        await DeliveryInstructionsChanged.InvokeAsync(DeliveryInstructions);
+    }
+
+}

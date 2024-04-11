@@ -1,0 +1,157 @@
+@namespace SunRaysMarket.Client.Web.Components.Checkout
+@using SunRaysMarket.Client.Application.Models
+@inherits SunRaysMarket.Client.Web.Components.Modals.ModalContentBase<SunRaysMarket.Shared.Core.DomainModels.AddressModel>
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
+
+@if (TabsComponentShouldLoad)
+{
+    <Tabs InitialIndex="@InitialTabIndex"
+          OnTabLoaded="OnTabLoaded"
+          OnTabUnloaded="OnTabUnloaded">
+        <Tab Label="Pickup">
+            <div class="checkout-column">
+                @{
+                    var hasStoreId = Model is FulfillmentModel.PickupModel { StoreId: > 0 };
+                    var storeSelectSectionStatus = hasStoreId
+                        ? CheckoutSectionStatus.Valid
+                        : CheckoutSectionStatus.Invalid;
+                    var showSection = StoreSelectionModel is not null && StoreLocationInfoList.Any();
+                }
+
+                <CheckoutSection ShowSection="@showSection" Status="@storeSelectSectionStatus">
+                    <Heading>Select pickup location</Heading>
+                    <ChildContent>
+                        <EditForm EditContext="@StoreSelectionContext" FormName="StoreLocationForm">
+                            <InputCheckoutOptionGroup @bind-Value="StoreSelectionModel!.SelectedStoreId">
+                                @foreach (var storeLocation in StoreLocationInfoList)
+                                {
+                                    <InputCheckoutOption Value="storeLocation.Id" IdBase="store-location">
+                                        @storeLocation.LocationName
+                                    </InputCheckoutOption>
+                                }
+                            </InputCheckoutOptionGroup>
+                        </EditForm>
+                    </ChildContent>
+                </CheckoutSection>
+
+                @{
+                    showSection = showSection
+                                  && PickupModel is not null
+                                  && PickupTimeSlots.Any()
+                                  && hasStoreId;
+
+                    var timesSlotSelectionStatus
+                        = Model is FulfillmentModel.PickupModel { TimeSlotId: > 0 }
+                            ? CheckoutSectionStatus.Valid
+                            : CheckoutSectionStatus.Invalid;
+                }
+
+                <CheckoutSection ShowSection="@showSection" Status="@timesSlotSelectionStatus">
+                    <Heading>Select pickup time</Heading>
+                    <ChildContent>
+                        <EditForm EditContext="@PickupContext" FormName="PickupTimeSlotsForm">
+                            <InputCheckoutOptionGroup @bind-Value="PickupModel!.SelectedTimeSlotId">
+                                @foreach (var timeSlot in PickupTimeSlots)
+                                {
+                                    <InputCheckoutOption Value="timeSlot.Id" IdBase="pickup-timeslot">
+                                        @timeSlot.TimeSlotDefinition.TimeSlotRange.ToString()
+                                    </InputCheckoutOption>
+                                }
+                            </InputCheckoutOptionGroup>
+                        </EditForm>
+                    </ChildContent>
+                </CheckoutSection>
+            </div>
+
+        </Tab>
+        <Tab Label="Delivery">
+
+            <div class="checkout-column">
+                @{
+                    hasStoreId = Model is FulfillmentModel.DeliveryModel { StoreId: > 0 };
+                    storeSelectSectionStatus = hasStoreId
+                        ? CheckoutSectionStatus.Valid
+                        : CheckoutSectionStatus.Invalid;
+                    showSection = DeliveryModel is not null && DeliveryTimeSlots.Any();
+                }
+
+                <CheckoutSection ShowSection="@showSection" Status="@storeSelectSectionStatus">
+                    <Heading>Select pickup location</Heading>
+                    <ChildContent>
+                        <EditForm EditContext="@StoreSelectionContext" FormName="StoreLocationForm">
+                            <InputCheckoutOptionGroup @bind-Value="StoreSelectionModel!.SelectedStoreId">
+                                @foreach (var storeLocation in StoreLocationInfoList)
+                                {
+                                    <InputCheckoutOption Value="storeLocation.Id" IdBase="store-location">
+                                        @storeLocation.LocationName
+                                    </InputCheckoutOption>
+                                }
+                            </InputCheckoutOptionGroup>
+                        </EditForm>
+                    </ChildContent>
+                </CheckoutSection>
+
+                @{
+                    showSection = showSection
+                                  && DeliveryModel is not null
+                                  && DeliveryTimeSlots.Any()
+                                  && hasStoreId;
+                    var timeSlotSectionStatus
+                        = Model is FulfillmentModel.DeliveryModel { TimeSlotId: > 0 }
+                            ? CheckoutSectionStatus.Valid
+                            : CheckoutSectionStatus.Invalid;
+                }
+
+                <CheckoutSection ShowSection="showSection" Status="@timeSlotSectionStatus">
+                    <Heading>Select delivery time </Heading>
+                    <ChildContent>
+                        <EditForm EditContext="@DeliveryContext" FormName="DeliveryTimeSlotsForm">
+                            <InputCheckoutOptionGroup @bind-Value="DeliveryModel!.SelectedTimeSlotId">
+                                @foreach (var timeSlot in DeliveryTimeSlots)
+                                {
+                                    <InputCheckoutOption Value="timeSlot.Id" IdBase="delivery-timeslot">
+                                        @timeSlot.TimeSlotDefinition.TimeSlotRange.ToString()
+                                    </InputCheckoutOption>
+                                }
+                            </InputCheckoutOptionGroup>
+                        </EditForm>
+                    </ChildContent>
+                </CheckoutSection>
+
+                @{
+                    var addressSectionStatus = Model is FulfillmentModel.DeliveryModel { DeliveryAddressId: > 0 }
+                        ? CheckoutSectionStatus.Valid
+                        : CheckoutSectionStatus.Invalid;
+                }
+
+                <CheckoutSection
+                    OnActionButtonClicked="@OnAddAddressBtnClicked"
+                    ShowSection="@showSection"
+                    Status="@addressSectionStatus">
+                    <Heading>Select address</Heading>
+                    <ActionButton>Add new address</ActionButton>
+                    <ChildContent>
+                        @if (CustomerAddresses.Any())
+                        {
+                            <EditForm EditContext="@CustomerAddressContext" FormName="DeliveryAddressForm">
+                                <InputCheckoutOptionGroup @bind-Value="CustomerAddressModel!.SelectedAddressId">
+                                    @foreach (var address in CustomerAddresses)
+                                    {
+                                        <InputCheckoutOption Value="address.Id" IdBase="address">
+                                            @address.Street
+                                        </InputCheckoutOption>
+                                    }
+                                </InputCheckoutOptionGroup>
+                            </EditForm>
+                        }
+                        else
+                        {
+                            <p>No addresses available.</p>
+                        }
+                    </ChildContent>
+                </CheckoutSection>
+            </div>
+
+        </Tab>
+    </Tabs>
+}

@@ -1,0 +1,96 @@
+@using Blazored.FluentValidation
+@using SunRaysMarket.Server.Core.DomainModels
+@using SunRaysMarket.Server.Core.Enums
+@using SunRaysMarket.Server.Core.Results
+@inherits OwningComponentBase<SunRaysMarket.Server.Core.Services.Auth.IUserService>
+
+@page "/signup"
+
+<AppPageTitle> Sign Up </AppPageTitle>
+
+<PageLayout ContentWidth="ContentWidth.PageFull">
+    <h2 class="auth__title">Sign Up</h2>
+
+    @if (!ShowConfirmation)
+    {
+        <EditForm class="form--signup"
+                  method="post"
+                  Model="@SignUpModel"
+                  OnValidSubmit="SignUpUser"
+                  FormName="signUpForm">
+            <FluentValidationValidator/>
+            <ValidationSummary/>
+            <div class="form--signup__email">
+                <InputText type="email"
+                           class="form__input"
+                           placeholder="Enter your email address"
+                           id="signUpEmail"
+                           @bind-Value="@SignUpModel!.Email"/>
+                <label for="signUpEmail" class="form__label form__label--input">Email</label>
+            </div>
+            <div class="form--signup__password">
+                <InputText type="password"
+                           class="form__input"
+                           placeholder="Enter your password"
+                           id="signUpPassword"
+                           @bind-Value="@SignUpModel!.Password"/>
+                <label for="signUpPassword" class="form__label form__label--input">Password</label>
+            </div>
+
+            <div class="form--signup__confirm-password">
+                <InputText type="password"
+                           class="form__input"
+                           placeholder="Confirm your password"
+                           id="signUpPasswordConfirm"
+                           @bind-Value="@SignUpModel!.ConfirmPassword"/>
+                <label for="signUpPasswordConfirm" class="form__label form__label--input">Confirm Password</label>
+            </div>
+
+            <div class="form--signup__first-name">
+                <InputText class="form__input"
+                           placeholder="Enter your first name"
+                           id="signUpFirstName"
+                           @bind-Value="@SignUpModel!.FirstName"/>
+                <label for="signUpFirstName" class="form__label form__label--input">First Name</label>
+            </div>
+            <div class="form--signup__last-name">
+                <InputText class="form__input"
+                           placeholder="Enter your last name"
+                           id="signUpLastName"
+                           @bind-Value="@SignUpModel!.LastName"/>
+                <label for="signUpLastName" class="form__label form__label--input">Last Name</label>
+            </div>
+
+            <div class="form--signup__submit">
+                <button type="submit" class="btn btn--primary btn--md">Sign Up</button>
+            </div>
+        </EditForm>
+    }
+    else
+    {
+        <div class="alert alert--success">
+            <p>You have successfully signed up.</p>
+        </div>
+    }
+
+
+</PageLayout>
+
+@code {
+    private AuthResult _result = new AuthResult.AuthNone();
+    
+    [SupplyParameterFromForm] public SignUpModel? SignUpModel { get; set; }
+
+    private bool ShowConfirmation { get; set; }
+
+    protected override void OnInitialized()
+    {
+        SignUpModel ??= new SignUpModel();
+    }
+
+    public async Task SignUpUser()
+    {
+        _result = await Service.SignUpAsync(SignUpModel!, new[] { Role.Customer });
+    }
+
+}
