@@ -1,0 +1,29 @@
+﻿@using SunRaysMarket.Server.Core.DomainModels
+@inherits OwningComponentBase<IUnitOfWork>
+
+<div class="nav__menu">
+    @if (Departments.Any())
+    {
+        <ul class="nav__list">
+            @foreach (var department in Departments)
+            {
+                <li class="nav__item">
+                    <NavLink href="@($"departments/{department.Slug}/{department.Id}")"
+                             class="nav__link">
+                        @department.Name
+                    </NavLink>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    private IEnumerable<DepartmentListModel> Departments { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        Departments = await Service.DepartmentRepository.GetAllAsync();
+    }
+
+}

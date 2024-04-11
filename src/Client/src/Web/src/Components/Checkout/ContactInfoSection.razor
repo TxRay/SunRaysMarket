@@ -1,0 +1,47 @@
+@using SunRaysMarket.Client.Web.Components.Stores
+@implements IDisposable
+
+@{
+    var status = string.IsNullOrEmpty(ContactNumber)
+        ? CheckoutSectionStatus.Invalid
+        : CheckoutSectionStatus.Valid;
+}
+
+<CheckoutSection ShowSection="@ShowSection" Status="@status">
+    <Heading>Contact Number</Heading>
+    <ChildContent>
+        <EditForm class="form__group" EditContext="@ContactNumberEditContext" FormName="ContactInfoForm">
+            <InputText @bind-Value="@ContactNumber" placeholder="(xxx)-xxx-xxxxx" class="form__input"/>
+        </EditForm>
+    </ChildContent>
+</CheckoutSection>
+
+@code {
+#nullable disable
+    [Inject] private IStore Store { get; set; }
+#nullable enable
+
+    [Parameter] public string? ContactNumber { get; set; }
+    [Parameter] public EventCallback<string?> ContactNumberChanged { get; set; }
+    [Parameter] public bool ShowSection { get; set; }
+
+    private EditContext ContactNumberEditContext { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        ContactNumber ??= string.Empty;
+        ContactNumberEditContext = new EditContext(ContactNumber);
+        ContactNumberEditContext.OnFieldChanged += ContactNumberEditContext_OnFieldChanged;
+    }
+
+    private async void ContactNumberEditContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        await Store.SetValueAsync("ContactNumber", ContactNumber);
+    }
+
+    public void Dispose()
+    {
+        ContactNumberEditContext.OnFieldChanged -= ContactNumberEditContext_OnFieldChanged;
+    }
+
+}

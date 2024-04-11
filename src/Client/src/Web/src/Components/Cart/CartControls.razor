@@ -1,0 +1,99 @@
+@inherits CartControlsBase
+@namespace SunRaysMarket.Client.Web.Components.Cart
+@rendermode InteractiveAuto
+
+<div class="@CssClasses"
+     id="cartControls-@UniqueIdSuffix">
+
+    @if (ShowAddToCartButton)
+    {
+        var addToCartBtnClasses = Size switch
+        {
+            ControlsSize.Small => "btn btn--primary btn--round",
+            ControlsSize.Medium => "btn btn--primary btn--round",
+            ControlsSize.Large => "btn btn--primary btn--md",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        <button class="@addToCartBtnClasses"
+                id="addToCartBtn-@UniqueIdSuffix"
+                @onclick="OnAddToCartClick">
+
+            @switch (Size)
+            {
+                case ControlsSize.Small:
+                    <svg class="cart-controls__add-icon cart-controls__add-icon--sm">
+                        <use href="img/icons/solid.svg#plus"></use>
+                    </svg>
+                    break;
+                case ControlsSize.Medium:
+                    <svg class="cart-controls__add-icon cart-controls__add-icon--md">
+                        <use href="img/icons/solid.svg#plus"></use>
+                    </svg>
+                    break;
+                case ControlsSize.Large:
+                    <span>Add To Cart</span>
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        </button>
+    }
+    else
+    {
+        var quantityClasses = Size switch
+        {
+            ControlsSize.Small => "quantity quantity--sm",
+            ControlsSize.Medium => "quantity quantity--md",
+            ControlsSize.Large => "quantity quantity--lg",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        <div class="cart-controls cart-controls--visible"
+             id="quantityControls-@UniqueIdSuffix">
+            <div class=@quantityClasses>
+                @if (ShowDecrementQuantityButton)
+                {
+                    <button
+                        id="decrementQuantityBtn-@UniqueIdSuffix"
+                        @onclick="OnDecrementQuantityClick">
+                        <svg>
+                            <use href="/img/icons/solid.svg#minus"></use>
+                        </svg>
+                    </button>
+                }
+                else
+                {
+                    <button
+                        id="removeFromCartBtn-@UniqueIdSuffix"
+                        @onclick="OnRemoveFromCartClick">
+                        <svg>
+                            <use href="/img/icons/solid.svg#trash"></use>
+                        </svg>
+                    </button>
+                }
+                <input type="number"
+                       value="@CartItemInfo?.Quantity"
+                       id="cartControlQuantity-@UniqueIdSuffix">
+                <button
+                    id="incrementQuantityBtn-@UniqueIdSuffix"
+                    @onclick="OnIncrementQuantityClick">
+                    <svg>
+                        <use href="/img/icons/solid.svg#plus"></use>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public ControlsSize Size { get; set; } = ControlsSize.Medium;
+
+    public enum ControlsSize
+    {
+        Small,
+        Medium,
+        Large
+    }
+
+}

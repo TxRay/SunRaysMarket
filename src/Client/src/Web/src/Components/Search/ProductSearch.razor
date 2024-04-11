@@ -1,0 +1,46 @@
+@using SunRaysMarket.Shared.Core.DomainModels.Responses
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager Navigation
+@namespace SunRaysMarket.Client.Web.Components.Search
+@rendermode InteractiveAuto
+
+<input class="search__checkbox" type="checkbox" id="search-toggle"/>
+<div class="search">
+    <EditForm class="search__form" Model="@Model" FormName="productSearch" OnValidSubmit="OnSearchSubmit">
+        <InputText
+            type="text"
+            class="search__input"
+            placeholder="Search for products"
+            @bind-Value="Model.Query"/>
+        <button type="submit" class="search__button">
+            <svg class="search__icon">
+                <use href="/img/icons/solid.svg#magnifying-glass"></use>
+            </svg>
+        </button>
+    </EditForm>
+</div>
+<label class="search__open" for="search-toggle">
+    <svg class="search__icon">
+        <use href="/img/icons/solid.svg#magnifying-glass"></use>
+    </svg>
+</label>
+<label class="search__close" for="search-toggle">
+    <svg class="search__icon search__icon--close">
+        <use href="/img/icons/solid.svg#circle-xmark"></use>
+    </svg>
+</label>
+
+@code {
+    private ProductSearchCommand Model { get; set; } = new();
+
+    private void OnSearchSubmit()
+    {
+        var queryStrings = new Dictionary<string, string?>
+        {
+            { "query", Model.Query }
+        };
+
+        Navigation.NavigateTo(QueryHelpers.AddQueryString("search", queryStrings));
+    }
+
+}

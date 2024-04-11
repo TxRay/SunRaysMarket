@@ -1,0 +1,77 @@
+@namespace SunRaysMarket.Client.Web.Components.Checkout
+@inherits ApiComponentBase
+@rendermode InteractiveAuto
+
+@if (ShowSection)
+{
+    var statusClass = Status switch
+    {
+        CheckoutSectionStatus.Unset => string.Empty,
+        CheckoutSectionStatus.Invalid => "checkout-section--invalid",
+        CheckoutSectionStatus.Valid => "checkout-section--valid",
+        _ => string.Empty
+    };
+
+    var sectionClasses = string.Join(" ", ["checkout-section", statusClass]).Trim();
+
+
+    <div class="@sectionClasses">
+        <h3 class="checkout-section__heading">@Heading</h3>
+        @if (ActionButton is not null && ComponentUiState is UiState.Loaded)
+        {
+            <button class="checkout-section__action-btn" @onclick="HandleActionBtnClick">
+                <span>@ActionButton</span>
+                <svg>
+                    <use href="/img/icons/solid.svg#chevron-right"></use>
+                </svg>
+            </button>
+        }
+        <div class="checkout-section__content">
+
+            @switch (ComponentUiState)
+            {
+                case UiState.Loading:
+                    @LoadingContent
+                    break;
+                case UiState.Loaded:
+                    @ChildContent
+                    break;
+                case UiState.Error:
+                    @ErrorContent
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        </div>
+    </div>
+}
+
+@code {
+
+    private RenderFragment _defaultLoadingContent = builder =>
+    {
+        builder.OpenComponent<RingSpinner>(1);
+        builder.AddComponentParameter(2, nameof(RingSpinner.ColorProperty), "#80a7d9");
+        builder.AddComponentParameter(3, nameof(RingSpinner.SizeProperty), "5rem");
+        builder.CloseComponent();
+    };
+
+    [Parameter] public override UiState ComponentUiState { get; set; } = UiState.Loaded;
+    [Parameter] public RenderFragment? Heading { get; set; }
+    [Parameter] public RenderFragment? ActionButton { get; set; }
+    [Parameter] public bool ShowSection { get; set; } = true;
+    [Parameter] public CheckoutSectionStatus Status { get; set; } = CheckoutSectionStatus.Unset;
+    [Parameter] public EventCallback OnActionButtonClicked { get; set; }
+
+    private async Task HandleActionBtnClick()
+    {
+        if (ActionButton is not null && OnActionButtonClicked.HasDelegate)
+            await OnActionButtonClicked.InvokeAsync();
+    }
+
+    protected override void OnInitialized()
+    {
+        LoadingContent = _defaultLoadingContent;
+    }
+
+}

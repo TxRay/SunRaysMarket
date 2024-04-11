@@ -1,0 +1,122 @@
+@using SunRaysMarket.Server.Core.DomainModels
+@inherits OwningComponentBase<IUnitOfWork>
+@page "/admin/department/{action}/{id:int?}"
+
+<SectionContent SectionName="page-title">@PageTitle</SectionContent>
+
+<EditForm
+    Model="NewDepartment"
+    OnValidSubmit="OnValidSubmitAsync"
+    FormName="DepartmentActionsForm"
+    class="form--admin"
+    method="post">
+    <div class="form__admin-group">
+        <div>
+            <InputText class="form__input"
+                       placeholder="Enter product name"
+                       id="name"
+                       @bind-Value="NewDepartment.Name"/>
+            <label for="name" class="form__label form__label--input">Name</label>
+
+        </div>
+        <div>
+            <InputText class="form__input"
+                       placeholder="Enter product description"
+                       id="description"
+                       @bind-Value="NewDepartment.Description"/>
+            <label for="description" class="form__label form__label--input">Description</label>
+
+        </div>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn--primary">
+            Submit
+        </button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public string Action { get; set; } = default!;
+    [Parameter] public int? Id { get; set; }
+
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+    [SupplyParameterFromForm] private CreateDepartmentModel NewDepartment { get; set; } = new();
+
+    private string ActionName { get; set; } = string.Empty;
+    private string PageTitle => $"{ActionName} Department";
+
+    protected override async Task OnInitializedAsync()
+    {
+        switch (Action, Id.HasValue)
+        {
+            case ("create", false):
+                ActionName = "Create";
+                break;
+            case ("edit", true):
+                ActionName = "Edit";
+                var department = await Service.DepartmentRepository.GetForEditAsync(Id!.Value);
+
+                if (department is null) return;
+
+                NewDepartment = new CreateDepartmentModel
+                {
+                    Name = department.Name,
+                    Description = department.Description
+                };
+                break;
+            case ("delete", true):
+                await DeleteDepartmentAsync();
+                Navigation.NavigateTo("admin/departments");
+                break;
+            default:
+                Navigation.NavigateTo("error/404/not-found");
+                break;
+        }
+    }
+
+    private Task OnSubmitAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (Id.HasValue)
+        {
+            await UpdateDepartment();
+        }
+        else
+        {
+            await AddDepartment();
+        }
+    }
+
+    private async Task AddDepartment()
+    {
+        await Service.DepartmentRepository.CreateAsync(NewDepartment);
+        await Service.SaveChangesAsync();
+
+        Navigation.NavigateTo("admin/departments/");
+    }
+
+    private async Task UpdateDepartment()
+    {
+        var department = new UpdateDepartmentModel
+        {
+            Id = Id!.Value,
+            Name = NewDepartment.Name,
+            Description = NewDepartment.Description
+        };
+
+        await Service.DepartmentRepository.UpdateAsync(department);
+        await Service.SaveChangesAsync();
+    }
+
+    private async Task DeleteDepartmentAsync()
+    {
+        await Service.DepartmentRepository.DeleteAsync(Id!.Value);
+        await Service.SaveChangesAsync();
+    }
+
+}
