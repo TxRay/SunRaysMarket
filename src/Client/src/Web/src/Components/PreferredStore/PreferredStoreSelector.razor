@@ -1,4 +1,4 @@
-@namespace SunRaysMarket.Client.Web.Components.PreferredStore
+@namespace SunRaysMarket.Client.Web.Components
 @using SunRaysMarket.Shared.Core.DomainModels
 @inherits OwningComponentBase<SunRaysMarket.Shared.Core.Services.IStoreLocationService>
 @rendermode InteractiveWebAssembly
@@ -87,7 +87,7 @@
         _uiState = UiState.Loaded;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    /*protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
 
@@ -98,7 +98,7 @@
             StoreBtnId,
             Reference
         );
-    }
+    }*/
 
     protected override void Dispose(bool disposing)
     {

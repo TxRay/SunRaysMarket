@@ -68,11 +68,11 @@
 
             <div class="checkout-column">
                 @{
-                    hasStoreId = Model is FulfillmentModel.DeliveryModel { StoreId: > 0 };
-                    storeSelectSectionStatus = hasStoreId
+                    var hasStoreId = Model is FulfillmentModel.DeliveryModel { StoreId: > 0 };
+                    var storeSelectSectionStatus = hasStoreId
                         ? CheckoutSectionStatus.Valid
                         : CheckoutSectionStatus.Invalid;
-                    showSection = DeliveryModel is not null && DeliveryTimeSlots.Any();
+                    var showSection = DeliveryModel is not null && DeliveryTimeSlots.Any();
                 }
 
                 <CheckoutSection ShowSection="@showSection" Status="@storeSelectSectionStatus">
