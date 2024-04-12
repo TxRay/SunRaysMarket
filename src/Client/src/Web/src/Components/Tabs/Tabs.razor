@@ -48,7 +48,7 @@ else
 
     [Parameter] public EventCallback<string> OnTabUnloaded { get; set; }
 
-    private Dictionary<string, Tab> TabIndex { get; set; } = new();
+    private Dictionary<string, Tab> TabIndex { get; } = new();
 
     private string? CurrentIndex { get; set; }
 

@@ -10,8 +10,8 @@ public class StoreLocationProxyService(HttpClient client) : IStoreLocationServic
     public async Task<IEnumerable<StoreListModel>> GetStoreLocationsAsync()
     {
         return (
-                await client.GetFromJsonAsync<StoreLocationsResponse>("/api/store-locations")
-            )?.StoreLocations ?? [];
+            await client.GetFromJsonAsync<StoreLocationsResponse>("/api/store-locations")
+        )?.StoreLocations ?? [];
     }
 
     public Task SetPreferredStoreAsync(int storeId)

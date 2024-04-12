@@ -1,6 +1,5 @@
 using System.Net.Http.Json;
 using SunRaysMarket.Shared.Core.DomainModels;
-using SunRaysMarket.Shared.Core.DomainModels.Responses;
 using SunRaysMarket.Shared.Core.Services;
 
 namespace SunRaysMarket.Client.Application.ProxyServicesImpl.Scoped;
@@ -31,5 +30,4 @@ public class ProductProxyService(HttpClient httpClient) : IProductService
             $"/api/products/{departmentId}"
         );
     }
-    
 }

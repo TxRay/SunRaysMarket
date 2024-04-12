@@ -10,8 +10,12 @@ namespace SunRaysMarket.Shared.Extensions.Reflection;
 public record NamespaceDescriptor(Assembly Assembly, string NameSpace)
 {
     public static NamespaceDescriptor FromType(Type type)
-        => new NamespaceDescriptor(type.Assembly, type.Namespace!);
-    
+    {
+        return new NamespaceDescriptor(type.Assembly, type.Namespace!);
+    }
+
     public static IEnumerable<NamespaceDescriptor> FromTypes(params Type[] types)
-        => types.Select(FromType);
+    {
+        return types.Select(FromType);
+    }
 }

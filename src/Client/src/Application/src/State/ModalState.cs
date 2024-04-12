@@ -39,5 +39,7 @@ public class ModalState<TState> : IModalState
         OnChange?.Invoke();
     }
 
-    protected virtual void AfterStateUpdated() { }
+    protected virtual void AfterStateUpdated()
+    {
+    }
 }

@@ -1,3 +1,5 @@
 namespace SunRaysMarket.Shared.Core.Payment;
 
-public static class CardValidator { }
+public static class CardValidator
+{
+}

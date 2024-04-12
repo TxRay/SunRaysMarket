@@ -11,14 +11,14 @@ internal class CartControlsProxyService(HttpClient client) : ICartControlsServic
     public async Task<CreateCartResponse> CreateCartAsync()
     {
         return await client
-                .PostAsync("api/cart/create", null)
-                .ContinueWith(messageTask =>
-                {
-                    var message = messageTask.Result;
-                    message.EnsureSuccessStatusCode();
-                    return message.Content.ReadFromJsonAsync<CreateCartResponse>();
-                })
-                .Unwrap() ?? throw new InvalidOperationException("CreateCartResponse was null");
+            .PostAsync("api/cart/create", null)
+            .ContinueWith(messageTask =>
+            {
+                var message = messageTask.Result;
+                message.EnsureSuccessStatusCode();
+                return message.Content.ReadFromJsonAsync<CreateCartResponse>();
+            })
+            .Unwrap() ?? throw new InvalidOperationException("CreateCartResponse was null");
     }
 
     public async Task<CartItemControlModel?> GetCartItemInfoAsync(int cartItemId)
@@ -65,14 +65,14 @@ internal class CartControlsProxyService(HttpClient client) : ICartControlsServic
         var command = optionsBuilder.Options.Command!;
 
         return await client
-                .PostAsJsonAsync("api/cart/add-item", command)
-                .ContinueWith(messageTask =>
-                {
-                    var message = messageTask.Result;
-                    message.EnsureSuccessStatusCode();
-                    return message.Content.ReadFromJsonAsync<AddItemToCartResponse>();
-                })
-                .Unwrap() ?? throw new InvalidOperationException("AddItemToCartResponse was null");
+            .PostAsJsonAsync("api/cart/add-item", command)
+            .ContinueWith(messageTask =>
+            {
+                var message = messageTask.Result;
+                message.EnsureSuccessStatusCode();
+                return message.Content.ReadFromJsonAsync<AddItemToCartResponse>();
+            })
+            .Unwrap() ?? throw new InvalidOperationException("AddItemToCartResponse was null");
     }
 
     public async Task<UpdateCartItemQuantityResponse> UpdateQuantityAsync(
@@ -80,15 +80,15 @@ internal class CartControlsProxyService(HttpClient client) : ICartControlsServic
     )
     {
         return await client
-                .PostAsJsonAsync("api/cart/update-item-quantity", command)
-                .ContinueWith(messageTask =>
-                {
-                    var message = messageTask.Result;
-                    message.EnsureSuccessStatusCode();
-                    return message.Content.ReadFromJsonAsync<UpdateCartItemQuantityResponse>();
-                })
-                .Unwrap()
-            ?? throw new InvalidOperationException("UpdateCartItemQuantityResponse was null");
+                   .PostAsJsonAsync("api/cart/update-item-quantity", command)
+                   .ContinueWith(messageTask =>
+                   {
+                       var message = messageTask.Result;
+                       message.EnsureSuccessStatusCode();
+                       return message.Content.ReadFromJsonAsync<UpdateCartItemQuantityResponse>();
+                   })
+                   .Unwrap()
+               ?? throw new InvalidOperationException("UpdateCartItemQuantityResponse was null");
     }
 
     public Task RemoveItemAsync(RemoveCartItemCommand command)

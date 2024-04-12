@@ -9,14 +9,14 @@ public class CartProxyService(HttpClient client) : ICartService
     public async Task<IEnumerable<CartItemListModel>> GetCartItemsAsync(int cartId)
     {
         return await client.GetFromJsonAsync<IEnumerable<CartItemListModel>>(
-                $"api/cart/items/{cartId}"
-            ) ?? [];
+            $"api/cart/items/{cartId}"
+        ) ?? [];
     }
 
     public async Task<IEnumerable<CartItemListModel>> GetActiveCartItemsAsync()
     {
         return await client.GetFromJsonAsync<IEnumerable<CartItemListModel>>("api/cart/items")
-            ?? [];
+               ?? [];
     }
 
     public async IAsyncEnumerable<CartItemListModel> GetActiveCartItemsAsyncEnumerable()

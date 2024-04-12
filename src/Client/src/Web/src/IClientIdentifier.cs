@@ -1,3 +1,5 @@
 namespace SunRaysMarket.Client.Web;
 
-public interface IClientIdentifier { }
+public interface IClientIdentifier
+{
+}

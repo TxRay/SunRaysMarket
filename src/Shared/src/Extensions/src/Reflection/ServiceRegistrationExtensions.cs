@@ -168,7 +168,7 @@ public static class ServiceRegistrationExtensions
                 interfaceTypes.FirstOrDefault(type => type.IsAssignableFrom(implType))
                 ?? throw new InvalidOperationException(
                     $"The service '{implType.FullName}' does not implement an interface "
-                        + $"from the given namespaces."
+                    + $"from the given namespaces."
                 );
 
             var lifetimeValue =

@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using SunRaysMarket.Client.Application.ProxyServicesImpl.Scoped;
 using SunRaysMarket.Client.Application.State;
 using SunRaysMarket.Shared.Core.Services;
 using SunRaysMarket.Shared.Extensions.Reflection;

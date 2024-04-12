@@ -7,20 +7,15 @@ namespace SunRaysMarket.Client.Web.Components.Cart;
 
 public abstract class CartControlsBase : OwningComponentBase<ICartControlsService>
 {
-    [CascadingParameter]
-    private int? CartId { get; set; }
+    [CascadingParameter] private int? CartId { get; set; }
 
-    [Parameter]
-    public CartItemControlModel? CartItemInfo { get; set; }
+    [Parameter] public CartItemControlModel? CartItemInfo { get; set; }
 
-    [Parameter]
-    public string CssClasses { get; set; } = string.Empty;
+    [Parameter] public string CssClasses { get; set; } = string.Empty;
 
-    [Parameter]
-    public int ProductId { get; set; }
+    [Parameter] public int ProductId { get; set; }
 
-    [Parameter]
-    public EventCallback<int> OnItemDeleted { get; set; }
+    [Parameter] public EventCallback<int> OnItemDeleted { get; set; }
 
     protected static string UniqueIdSuffix => Convert.ToBase64String(Guid.NewGuid().ToByteArray());
     protected bool ShowAddToCartButton => CartItemInfo is null;

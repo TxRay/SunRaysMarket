@@ -36,7 +36,7 @@ public class PageLayout : ComponentBase
     {
         get
         {
-            if (!FitVerticalContent || LayoutType != Enums.LayoutType.Page)
+            if (!FitVerticalContent || LayoutType != LayoutType.Page)
                 return null;
 
             return "layout__content-vertical" + (Element == "main" ? "--main" : string.Empty);

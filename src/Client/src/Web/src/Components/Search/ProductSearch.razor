@@ -31,7 +31,7 @@
 </label>
 
 @code {
-    private ProductSearchCommand Model { get; set; } = new();
+    private ProductSearchCommand Model { get; } = new();
 
     private void OnSearchSubmit()
     {

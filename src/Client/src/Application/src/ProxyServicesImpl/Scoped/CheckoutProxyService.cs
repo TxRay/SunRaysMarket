@@ -18,14 +18,14 @@ internal class CheckoutProxyService(HttpClient httpClient) : ICheckoutService
         var result = await httpClient.GetAsync($"api/checkout/timeslots/{storeId}/{orderType}");
 
         return await result.Content.ReadFromJsonAsync<IEnumerable<TimeSlotListModel>>()
-            ?? new List<TimeSlotListModel>();
+               ?? new List<TimeSlotListModel>();
     }
 
     public async Task<IEnumerable<StoreListModel>> GetStoreLocationsAsync()
     {
         return (
-                await httpClient.GetFromJsonAsync<StoreLocationsResponse>("api/checkout/locations")
-            )?.StoreLocations ?? [];
+            await httpClient.GetFromJsonAsync<StoreLocationsResponse>("api/checkout/locations")
+        )?.StoreLocations ?? [];
     }
 
     public Task<TimeSlotModel?> GetCheckoutTimeSlotAsync(int id)
@@ -38,8 +38,8 @@ internal class CheckoutProxyService(HttpClient httpClient) : ICheckoutService
         var httpResponseMessage = await httpClient.PostAsJsonAsync("api/checkout", model);
 
         return await httpResponseMessage.Content.ReadFromJsonAsync<CheckoutResponse>()
-            ?? new CheckoutResponse.Warning(
-                "Something went wrong. No response was returned by the server."
-            );
+               ?? new CheckoutResponse.Warning(
+                   "Something went wrong. No response was returned by the server."
+               );
     }
 }

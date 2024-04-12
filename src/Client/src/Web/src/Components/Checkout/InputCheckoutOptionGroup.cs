@@ -8,17 +8,13 @@ namespace SunRaysMarket.Client.Web.Components.Checkout;
 
 public class InputCheckoutOptionGroup<TValue> : ComponentBase
 {
-    [Inject]
-    private ILogger<InputCheckoutOption<TValue>>? Logger { get; set; }
+    [Inject] private ILogger<InputCheckoutOption<TValue>>? Logger { get; set; }
 
-    [Parameter]
-    public TValue? Value { get; set; }
+    [Parameter] public TValue? Value { get; set; }
 
-    [Parameter]
-    public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
 
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {

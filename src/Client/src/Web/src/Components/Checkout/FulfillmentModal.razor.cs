@@ -13,11 +13,9 @@ public partial class FulfillmentModal : ModalContentBase<AddressModel>
 {
     private const string StoreKey = "FulfillmentData";
 
-    [Parameter]
-    public EventCallback<FulfillmentModel> OnStateChanged { get; set; }
+    [Parameter] public EventCallback<FulfillmentModel> OnStateChanged { get; set; }
 
-    [Parameter]
-    public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
 
     private bool TabsComponentShouldLoad { get; set; }
     private string? InitialTabIndex { get; set; }
@@ -109,7 +107,7 @@ public partial class FulfillmentModal : ModalContentBase<AddressModel>
         IEnumerable<StoreListModel>,
         int?,
         SelectStoreModel
-    )> RetrieveStoreLocationInfo()
+        )> RetrieveStoreLocationInfo()
     {
         var storeInfoList = await CheckoutService.GetStoreLocationsAsync();
         var customerPreferredStoreId = await StoreLocationService.GetPreferredStoreAsync();
@@ -311,20 +309,14 @@ public partial class FulfillmentModal : ModalContentBase<AddressModel>
     {
         public int SelectedStoreId { get; set; }
     }
-
 #nullable disable
-    [Inject]
-    private ILogger<FulfillmentModal> Logger { get; set; }
+    [Inject] private ILogger<FulfillmentModal> Logger { get; set; }
 
-    [Inject]
-    private ICheckoutService CheckoutService { get; set; }
+    [Inject] private ICheckoutService CheckoutService { get; set; }
 
-    [Inject]
-    private IStoreLocationService StoreLocationService { get; set; }
+    [Inject] private IStoreLocationService StoreLocationService { get; set; }
 
-    [Inject]
-    private IStore Store { get; set; }
+    [Inject] private IStore Store { get; set; }
 
-    [Inject]
-    private ICustomerAddressService CustomerAddressService { get; set; }
+    [Inject] private ICustomerAddressService CustomerAddressService { get; set; }
 }

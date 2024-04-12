@@ -42,7 +42,8 @@ public abstract record FulfillmentModel
         [JsonIgnore]
         public override bool IsValid =>
             this
-                is {
+                is
+                {
                     TimeSlotId: > 0,
                     DeliveryAddressId: > 0,
                     OrderType: OrderType.Delivery,

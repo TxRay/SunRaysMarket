@@ -6,15 +6,11 @@ namespace SunRaysMarket.Client.Web.Components.Checkout;
 
 public class InputCheckoutOption<TValue> : ComponentBase
 {
-    [Parameter]
-    [EditorRequired]
-    public string IdBase { get; set; } = default!;
+    [Parameter] [EditorRequired] public string IdBase { get; set; } = default!;
 
-    [Parameter]
-    public TValue? Value { get; set; }
+    [Parameter] public TValue? Value { get; set; }
 
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
     protected string HtmlId => $"{IdBase}--{Value}";
 
