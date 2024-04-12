@@ -1,39 +1,38 @@
 ﻿@using SunRaysMarket.Server.Components.Base
 @inherits LayoutComponentBase
-<div data-enhance-nav="false">
-    <PageLayout LayoutType="LayoutType.Application" Element="div" xmlns="http://www.w3.org/1999/html">
-        <div class="topbar">
-            <div class="topbar__content">
-                <NavLink href="/" class="topbar__brand">
-                    <picture>
-                        <source media="(max-width:416px)" srcset="img/logo-phone.png"/>
-                        <img src="img/logo.png" alt="Sun Rays Market Logo"/>
-                    </picture>
-                </NavLink>
 
-                <ProductSearch/>
-                <TopBarNav/>
-            </div>
+<PageLayout LayoutType="LayoutType.Application" Element="div" xmlns="http://www.w3.org/1999/html">
+    <div class="topbar">
+        <div class="topbar__content">
+            <NavLink href="/" class="topbar__brand">
+                <picture>
+                    <source media="(max-width:416px)" srcset="img/logo-phone.png"/>
+                    <img src="img/logo.png" alt="Sun Rays Market Logo"/>
+                </picture>
+            </NavLink>
+
+            <ProductSearch/>
+            <TopBarNav/>
         </div>
-        <nav class="nav">
-            <div class="nav__content">
-                <NavToggle/>
-                <NavMenu/>
-                <NavAccount/>
-            </div>
-        </nav>
-        <PageLayout
-            CssClasses="@(StateProvider.State.LayoutClass ?? string.Empty)"
-            Element="main"
-            FitVerticalContent="true"
-            LayoutType="LayoutType.Page">
-            @Body
-            <MainFooter/>
-        </PageLayout>
+    </div>
+    <nav class="nav">
+        <div class="nav__content">
+            <NavToggle/>
+            <NavMenu/>
+            <NavAccount/>
+        </div>
+    </nav>
+    <PageLayout
+        CssClasses="@(StateProvider.State.LayoutClass ?? string.Empty)"
+        Element="main"
+        FitVerticalContent="true"
+        LayoutType="LayoutType.Page">
+        @Body
+        <MainFooter/>
     </PageLayout>
+</PageLayout>
 
-    <Modal/>
-</div>
+<Modal/>
 
 @code {
     [Inject] PageStateProvider StateProvider { get; set; } = default!;
