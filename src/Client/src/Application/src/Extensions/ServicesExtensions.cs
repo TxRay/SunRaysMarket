@@ -11,17 +11,11 @@ public static class ServicesExtensions
         this IServiceCollection services
     )
     {
-        var interfaceNamespaceDescriptors = new[]
-        {
-            new NamespaceDescriptor(
-                typeof(IAddressService).Assembly,
-                typeof(IAddressService).Namespace!
-            )
-        };
+        var interfaceNamespaceDescriptors = NamespaceDescriptor.FromTypes(typeof(IAddressService));
 
         services.AddInterfacesWithImplementationsFromLocalNamespace(
             interfaceNamespaceDescriptors,
-            "SunRaysMarket.Client.ProxyServicesImpl"
+            "SunRaysMarket.Client.Application.ProxyServicesImpl"
         );
 
         services.AddSingleton<ProductModalState>();

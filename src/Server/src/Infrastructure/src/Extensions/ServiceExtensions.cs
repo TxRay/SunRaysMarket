@@ -130,7 +130,7 @@ public static class ServiceExtensions
 
         services.AddInterfacesWithImplementationsFromLocalNamespace(
             interfaceNamespaceDescriptors,
-            "SunRaysMarket.Client.Application.ProxyServicesImpl"
+            "SunRaysMarket.Server.Infrastructure.ServicesImpl"
         );
 
         return services;
