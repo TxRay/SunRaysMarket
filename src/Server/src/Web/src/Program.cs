@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Net.Http.Headers;
 using SunRaysMarket.Client.Web;
 using SunRaysMarket.Server.Application.Extensions;
 using SunRaysMarket.Server.Application.State;
@@ -9,6 +12,7 @@ using SunRaysMarket.Server.Web.Middleware;
 using SunRaysMarket.Server.Web.RenderMethods;
 using SunRaysMarket.Server.Web.State;
 using SunRaysMarket.Shared.Extensions.RenderMethods;
+using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +25,16 @@ builder
     .AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddResponseCompression(options =>
+    {
+        options.EnableForHttps = true;
+        options.Providers.Add<BrotliCompressionProvider>();
+        options.Providers.Add<GzipCompressionProvider>();
+    }
+);
+
+builder.Services.AddResponseCaching();
 
 builder
     .Services
@@ -69,7 +83,23 @@ else
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+
+app.UseStaticFiles(
+    new StaticFileOptions
+    {
+        HttpsCompression = HttpsCompressionMode.Compress,
+        OnPrepareResponse = (context) =>
+        {
+            var headers = context.Context.Response.GetTypedHeaders();
+            headers.CacheControl = new CacheControlHeaderValue
+            {
+                Public = true,
+                MaxAge = TimeSpan.FromDays(20)
+            };
+        }
+    }
+);
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
@@ -83,12 +113,18 @@ app.UseSessionState();
 app.UseStatusCodeRedirect();
 /************************/
 
+app.UseResponseCompression();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseResponseCaching();
+}
+
 app.MapApiEndpoints();
 app.MapRazorComponents<App>()
     .WithGroupName("BlazorPageEndpoints")
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(IClientIdentifier).Assembly);
-
 
 app.Run();
