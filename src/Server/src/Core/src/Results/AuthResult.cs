@@ -16,7 +16,8 @@ public abstract record AuthResult
 
     public static AuthFailure Failure(string message, ValidationResult? validationResult = default)
     {
-        if (validationResult is not null) return new AuthValidationFailure(validationResult, message);
+        if (validationResult is not null)
+            return new AuthValidationFailure(validationResult, message);
 
         return new AuthExecutionFailure(message);
     }
@@ -31,6 +32,8 @@ public abstract record AuthResult
 
     public record AuthExecutionFailure(string? Message = default) : AuthFailure(Message);
 
-    public record AuthValidationFailure(ValidationResult ValidationResult, string? Message = default)
-        : AuthFailure(Message);
+    public record AuthValidationFailure(
+        ValidationResult ValidationResult,
+        string? Message = default
+    ) : AuthFailure(Message);
 }

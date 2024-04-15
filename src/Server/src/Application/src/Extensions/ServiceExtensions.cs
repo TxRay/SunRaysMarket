@@ -16,7 +16,6 @@ public static class ServiceExtensions
             typeof(IAddressService)
         );
 
-
         services.AddInterfacesWithImplementationsFromLocalNamespace(
             interfaceNamespaceDescriptors,
             "SunRaysMarket.Server.Application.ServicesImpl"

@@ -26,13 +26,14 @@ builder
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddResponseCompression(options =>
+builder
+    .Services
+    .AddResponseCompression(options =>
     {
         options.EnableForHttps = true;
         options.Providers.Add<BrotliCompressionProvider>();
         options.Providers.Add<GzipCompressionProvider>();
-    }
-);
+    });
 
 builder.Services.AddResponseCaching();
 
@@ -86,7 +87,7 @@ app.UseStaticFiles(
     new StaticFileOptions
     {
         HttpsCompression = HttpsCompressionMode.Compress,
-        OnPrepareResponse = (context) =>
+        OnPrepareResponse = context =>
         {
             var headers = context.Context.Response.GetTypedHeaders();
             headers.CacheControl = new CacheControlHeaderValue
@@ -109,14 +110,12 @@ app.UseCustomerPreferences();
 app.UseShoppingCart();
 app.UseSessionState();
 app.UseStatusCodeRedirect();
+
 /************************/
 
 app.UseResponseCompression();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseResponseCaching();
-}
+if (!app.Environment.IsDevelopment()) app.UseResponseCaching();
 
 app.MapApiEndpoints();
 app.MapRazorComponents<App>()

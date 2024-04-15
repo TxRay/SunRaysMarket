@@ -29,7 +29,9 @@ internal static class StoreLocationEndpoints
         );
     }
 
-    private static async Task<IResult> GetPreferredStoreLocationHandler(IStoreLocationService storeLocationService)
+    private static async Task<IResult> GetPreferredStoreLocationHandler(
+        IStoreLocationService storeLocationService
+    )
     {
         return Results.Json(
             new CustomerStorePreferenceResponse

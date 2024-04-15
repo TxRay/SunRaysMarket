@@ -12,7 +12,6 @@ public class PageLayout : ComponentBase
 
     [Inject] private ILogger<PageLayout>? Logger { get; set; }
 
-
     [Parameter] public string Element { get; set; } = "div";
 
     [Parameter(CaptureUnmatchedValues = true)]

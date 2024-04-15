@@ -12,8 +12,10 @@ public class CartItemListModel : TimeStampBaseDomainModel
     public string ProductPhotoUrl { get; init; } = null!;
     public int Quantity { get; init; }
     public float RegularPrice { get; init; }
+
     [JsonInclude] public float DiscountDecimal { private get; init; }
 
     [JsonIgnore] public float Discount => RegularPrice * DiscountDecimal;
+
     [JsonIgnore] public float ProductPrice => RegularPrice - Discount;
 }

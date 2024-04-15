@@ -25,25 +25,28 @@ internal static class ProductEndpoints
         return endpoints;
     }
 
-    private static IAsyncEnumerable<IResult> ProductSearchHandler([FromBody] ProductSearchCommand searchCommand,
-        IProductSearchService productSearchService)
+    private static IAsyncEnumerable<IResult> ProductSearchHandler(
+        [FromBody] ProductSearchCommand searchCommand,
+        IProductSearchService productSearchService
+    )
     {
-        return productSearchService.GetSearchResults(searchCommand.Query).Select(product => Results.Json(product));
+        return productSearchService
+            .GetSearchResults(searchCommand.Query)
+            .Select(product => Results.Json(product));
     }
 
-    private static IAsyncEnumerable<IResult> GetFeatureProductsAsync(
-        IProductService productService
-    )
+    private static IAsyncEnumerable<IResult> GetFeatureProductsAsync(IProductService productService)
     {
         return productService.GetAllProductsAsync().Select(product => Results.Json(product));
     }
-
 
     private static IAsyncEnumerable<IResult> GetDepartmentFeaturedProductsAsync(
         int departmentId,
         IProductService productService
     )
     {
-        return productService.GetAllProductsAsync(departmentId).Select(product => Results.Json(product));
+        return productService
+            .GetAllProductsAsync(departmentId)
+            .Select(product => Results.Json(product));
     }
 }

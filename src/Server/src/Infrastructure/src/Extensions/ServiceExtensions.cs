@@ -7,7 +7,6 @@ using SunRaysMarket.Server.Core.Services;
 using SunRaysMarket.Server.Infrastructure.Configuration;
 using SunRaysMarket.Server.Infrastructure.PaymentServices;
 using SunRaysMarket.Server.Infrastructure.UnitOfWorkImplementation;
-using SunRaysMarket.Shared.Core.Services;
 using SunRaysMarket.Shared.Extensions.Reflection;
 
 namespace SunRaysMarket.Server.Infrastructure.Extensions;

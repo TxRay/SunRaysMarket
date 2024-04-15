@@ -26,8 +26,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\..\Client\src\Web\src\Client.Web.csproj" />
-        <ProjectReference Include="..\..\..\..\Shared\src\Core\src\Shared.Core.csproj" />
+        <ProjectReference Include="..\..\..\..\Client\src\Web\src\Client.Web.csproj"/>
+        <ProjectReference Include="..\..\..\..\Shared\src\Core\src\Shared.Core.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

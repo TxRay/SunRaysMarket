@@ -20,7 +20,8 @@ public abstract class PageComponentBase : OwningComponentBase
     }
 }
 
-public abstract class PageComponentBase<TService> : OwningComponentBase<TService> where TService : notnull
+public abstract class PageComponentBase<TService> : OwningComponentBase<TService>
+    where TService : notnull
 {
     [Inject] private PageStateProvider? StateProvider { get; set; }
 

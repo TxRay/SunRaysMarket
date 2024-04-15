@@ -57,7 +57,10 @@ internal class UserService(
             : AuthResult.Failure("The user is not admin");
     }
 
-    public async Task<AuthResult.AuthSome> SignUpAsync(SignUpModel signUpModel, IEnumerable<Role> roles)
+    public async Task<AuthResult.AuthSome> SignUpAsync(
+        SignUpModel signUpModel,
+        IEnumerable<Role> roles
+    )
     {
         var user = await userRepository.CreateUserAsync(signUpModel);
 

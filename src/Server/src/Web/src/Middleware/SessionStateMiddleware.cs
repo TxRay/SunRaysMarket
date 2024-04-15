@@ -16,16 +16,21 @@ public class SessionStateMiddleware(IServiceScopeFactory serviceScopeFactory) : 
     /// <inheritdoc />
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        if (context.GetEndpoint() is RouteEndpoint endpoint
-            && endpoint.Metadata.Any(
-                item => item is EndpointGroupNameAttribute
-                        {
-                            EndpointGroupName: "BlazorPageEndpoints"
-                        }
+        if (
+            context.GetEndpoint() is RouteEndpoint endpoint
+            && endpoint
+                .Metadata
+                .Any(
+                    item =>
+                        item
+                            is EndpointGroupNameAttribute
+                            {
+                                EndpointGroupName: "BlazorPageEndpoints"
+                            }
                         && context.Request.Path.Value is { } path
                         && !path.Contains("_framework")
-            )
-           )
+                )
+        )
         {
             var sessionState = await PopulateSessionState(context);
             var sessionStateJson = JsonSerializer.Serialize(sessionState);
@@ -53,7 +58,8 @@ public class SessionStateMiddleware(IServiceScopeFactory serviceScopeFactory) : 
             ? Encoding.UTF8.GetString(pathByteArray)
             : null;
 
-        if (!context.User.IsAuthenticated()) return new SessionState { PageReturnUrl = path };
+        if (!context.User.IsAuthenticated())
+            return new SessionState { PageReturnUrl = path };
 
         var userService = serviceScope.ServiceProvider.GetRequiredService<IUserService>();
         var customerService = serviceScope.ServiceProvider.GetRequiredService<ICustomerService>();

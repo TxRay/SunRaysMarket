@@ -9,8 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\..\Shared\src\Extensions\src\Shared.Extensions.csproj" />
-        <ProjectReference Include="..\..\Core\src\Server.Core.csproj" />
+        <ProjectReference Include="..\..\..\..\Shared\src\Extensions\src\Shared.Extensions.csproj"/>
+        <ProjectReference Include="..\..\Core\src\Server.Core.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -21,5 +21,5 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
-    
+
 </Project>

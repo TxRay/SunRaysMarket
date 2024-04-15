@@ -20,8 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Components\src\Server.Components.csproj" />
-        <ProjectReference Include="..\..\Infrastructure\src\Server.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\Components\src\Server.Components.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\src\Server.Infrastructure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

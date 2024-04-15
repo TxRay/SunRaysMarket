@@ -14,7 +14,12 @@ public class SessionStateProvider(IHttpContextAccessor httpContextAccessor) : IS
             if (httpContextAccessor.HttpContext is null)
                 throw new InvalidOperationException("The HTTP context is not available.");
 
-            if (!httpContextAccessor.HttpContext.Session.TryGetValue("SessionState", out var sessionStateByteArray))
+            if (
+                !httpContextAccessor
+                    .HttpContext
+                    .Session
+                    .TryGetValue("SessionState", out var sessionStateByteArray)
+            )
                 throw new InvalidOperationException("The session state is not available.");
 
             _sessionState ??= JsonSerializer.Deserialize<SessionState>(sessionStateByteArray);
