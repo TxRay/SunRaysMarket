@@ -1,0 +1,23 @@
+services:
+  srm.app:
+    image: srm_test_app
+    container_name: srm.app
+    build:
+      context: .
+      dockerfile: srm.test.dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=80
+      - SUNRAYSMARKET_DbConnection__Server=${DB_SERVER}
+      - SUNRAYSMARKET_DbConnection__Name=${DB_NAME}
+      - SUNRAYSMARKET_DbConnection__Username=${DB_USER}
+      - SUNRAYSMARKET_DbConnection__Password=${DB_PASSWORD}
+      - SUNRAYSMARKET_DbConnection__Port=${DB_PORT}
+      - SUNRAYSMARKET_Stripe__SecretKey=${STRIPE_KEY}
+      - SUNRAYSMARKET_SuperAdminUser__Email=${SUPERADMIN_EMAIL}
+      - SUNRAYSMARKET_SuperAdminUser__Password=${SUPERADMIN_PASSWORD}
+      - SUNRAYSMARKET_SuperAdminUser__FirstName=${SUPERADMIN_FIRSTNAME}
+      - SUNRAYSMARKET_SuperAdminUser__LastName=${SUPERADMIN_LASTNAME}
+      - SUNRAYSMARKET_CACHE__REDIS__ENDPOINT=${REDIS_CACHE_ENDPOINT}

@@ -1,0 +1,84 @@
+name: Deploy Sun Rays Market web app Docker container to AWS ECS
+
+on:
+  push:
+    branches: [ "deployment" ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: srm
+  ECS_SERVICE: srm-service
+  ECS_CLUSTER: srm-cluster
+  ECS_TASK_DEFINITION: .aws/srm-task-definition.json
+  CONTAINER_NAME: srm.app  
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    name: Deploy the container
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build tar image for src build files
+        # Build a tar image containing sln and csproj files.
+        # The original folder structure is preserved when files are copied 
+        # from a tar archive using the 'ADD' command in a Dockerfile.
+        run:
+          tar -cf build-files.tar ./*.sln ./src/*/src/*/src/*.csproj
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+          
+      - name: Sts Get Caller Identity
+        run: |
+          aws sts get-caller-identity
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          IMAGE_TAG: ${{ steps.login-ecr.outputs.registry }}/${{ ECR_REPOSITORY }}:${{ github.sha }}
+          DB_PORT: 5432
+          SUPERADMIN_EMAIL: timothy@timray.dev
+          SUPERADMIN_FIRSTNAME: Timothy
+          SUPERADMIN_LASTNAME: Ray
+          # The following secrets are used in the Dockerfile
+          # to set environment variables for the container.
+          STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
+          SUPERADMIN_PASSWORD: ${{ secrets.SUPERADMIN_PASSWORD }}
+          DB_SERVER: ${{ secrets.DB_SERVER }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          REDIS_CACHE_ENDPOINT: ${{ secrets.REDIS_CACHE_ENDPOINT }}
+        run:
+          docker-compose -f srm.prod.docker-compose.yml build
+          docker push $IMAGE_TAG
+          echo "image=$IMAGE_TAG >> $GITHUB_OUTPUT
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+            
+          

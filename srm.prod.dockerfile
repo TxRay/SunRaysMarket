@@ -1,12 +1,7 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /
-USER root
-RUN apt update
-RUN apt install -y nodejs npm 
-USER app
+FROM mrc.microsoft.com/dotnet/aspnet:8.0 AS base
+USER srm
 WORKDIR /app
-EXPOSE 5000
-EXPOSE 5001
+EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
